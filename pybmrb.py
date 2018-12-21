@@ -8,10 +8,11 @@ import os
 import plotly
 import pynmrstar
 import optparse
+import ntpath
 
 # Determine if we are running in python3
 PY3 = (sys.version_info[0] == 3)
-
+(scriptPath, scriptName) = ntpath.split(os.path.realpath(__file__))
 # pylint: disable=wrong-import-position,no-name-in-module
 # pylint: disable=import-error,wrong-import-order
 # Python version dependent loads
@@ -134,7 +135,7 @@ class Spectra(object):
         :param filtered: exclude the outliers
         :return: python dictionary object
         """
-        fname = 'data/nn_pp_{}_{}_filtered.txt'.format(atom, nn)
+        fname = scriptPath+'/data/nn_pp_{}_{}_filtered.txt'.format(atom, nn)
         with open(fname, 'r') as f:
             dat = f.read().split("\n")[:-1]
         if filtered:
@@ -845,8 +846,8 @@ class Histogram(object):
             data = d1 + d2
             layout = plotly.graph_objs.Layout(
                 barmode='overlay',
-                xaxis=dict(title='Chemical Shift [ppm]'),
-                yaxis=dict(title=count))
+                xaxis=dict(autorange='reversed', title='Chemical Shift [ppm]'),
+                yaxis=dict(autorange='reversed',title=count))
             fig = plotly.graph_objs.Figure(data=data, layout=layout)
             if outfilename is None:
                 out_file = 'Multiple_atom_histogram.html'
@@ -882,6 +883,7 @@ class Histogram(object):
         layout = plotly.graph_objs.Layout(
             autosize=True,
             xaxis=dict(
+                autorange='reversed',
                 zeroline=False,
                 domain=[0, 0.85],
                 showgrid=True,
@@ -889,6 +891,7 @@ class Histogram(object):
 
             ),
             yaxis=dict(
+                autorange='reversed',
                 zeroline=False,
                 domain=[0, 0.85],
                 showgrid=True,
@@ -896,12 +899,14 @@ class Histogram(object):
 
             ),
             xaxis2=dict(
+                autorange='reversed',
                 zeroline=False,
                 domain=[0.85, 1],
                 showgrid=True
 
             ),
             yaxis2=dict(
+                autorange='reversed',
                 zeroline=False,
                 domain=[0.85, 1],
                 showgrid=True
@@ -937,8 +942,8 @@ class Histogram(object):
             count = 'Count'
         layout = plotly.graph_objs.Layout(
             barmode='overlay',
-            xaxis=dict(title='Chemical Shift [ppm]'),
-            yaxis=dict(title=count))
+            xaxis=dict(autorange='reversed',title='Chemical Shift [ppm]'),
+            yaxis=dict(autorange='reversed',title=count))
         data = self.get_histogram_api(residue, atom, filtered, sd_limit, normalized)
         fig = plotly.graph_objs.Figure(data=data, layout=layout)
         if outfilename is None:
@@ -972,8 +977,8 @@ class Histogram(object):
                 data.append(dd)
         layout = plotly.graph_objs.Layout(
             barmode='overlay',
-            xaxis=dict(title='Chemical Shift [ppm]'),
-            yaxis=dict(title=count))
+            xaxis=dict(autorange='reversed',title='Chemical Shift [ppm]'),
+            yaxis=dict(autorange='reversed',title=count))
         fig = plotly.graph_objs.Figure(data=data, layout=layout)
         if outfilename is None:
             out_file = 'Multiple_atom_histogram.html'
@@ -1005,8 +1010,8 @@ class Histogram(object):
             count = 'Count'
         layout = plotly.graph_objs.Layout(
             barmode='overlay',
-            xaxis=dict(title='Chemical Shift [ppm]'),
-            yaxis=dict(title=count))
+            xaxis=dict(autorange='reversed',title='Chemical Shift [ppm]'),
+            yaxis=dict(autorange='reversed',title=count))
         data = [self.get_histogram_api(residue, atom, filtered, sd_limit, normalized)[0],
                 self.get_conditional_histogram_api(residue, atom, atomlist, cslist, filtered, sd_limit, normalized)
                 ]
