@@ -847,7 +847,7 @@ class Histogram(object):
             layout = plotly.graph_objs.Layout(
                 barmode='overlay',
                 xaxis=dict(autorange='reversed', title='Chemical Shift [ppm]'),
-                yaxis=dict(autorange='reversed',title=count))
+                yaxis=dict(title=count))
             fig = plotly.graph_objs.Figure(data=data, layout=layout)
             if outfilename is None:
                 out_file = 'Multiple_atom_histogram.html'
@@ -899,14 +899,12 @@ class Histogram(object):
 
             ),
             xaxis2=dict(
-                autorange='reversed',
                 zeroline=False,
                 domain=[0.85, 1],
                 showgrid=True
 
             ),
             yaxis2=dict(
-                autorange='reversed',
                 zeroline=False,
                 domain=[0.85, 1],
                 showgrid=True
@@ -943,7 +941,7 @@ class Histogram(object):
         layout = plotly.graph_objs.Layout(
             barmode='overlay',
             xaxis=dict(autorange='reversed',title='Chemical Shift [ppm]'),
-            yaxis=dict(autorange='reversed',title=count))
+            yaxis=dict(title=count))
         data = self.get_histogram_api(residue, atom, filtered, sd_limit, normalized)
         fig = plotly.graph_objs.Figure(data=data, layout=layout)
         if outfilename is None:
@@ -978,7 +976,7 @@ class Histogram(object):
         layout = plotly.graph_objs.Layout(
             barmode='overlay',
             xaxis=dict(autorange='reversed',title='Chemical Shift [ppm]'),
-            yaxis=dict(autorange='reversed',title=count))
+            yaxis=dict(title=count))
         fig = plotly.graph_objs.Figure(data=data, layout=layout)
         if outfilename is None:
             out_file = 'Multiple_atom_histogram.html'
@@ -1011,7 +1009,7 @@ class Histogram(object):
         layout = plotly.graph_objs.Layout(
             barmode='overlay',
             xaxis=dict(autorange='reversed',title='Chemical Shift [ppm]'),
-            yaxis=dict(autorange='reversed',title=count))
+            yaxis=dict(title=count))
         data = [self.get_histogram_api(residue, atom, filtered, sd_limit, normalized)[0],
                 self.get_conditional_histogram_api(residue, atom, atomlist, cslist, filtered, sd_limit, normalized)
                 ]
