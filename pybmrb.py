@@ -2,13 +2,14 @@
 from __future__ import print_function
 
 import json
-import numpy as np
-import sys
+import ntpath
+import optparse
 import os
+import sys
+
+import numpy as np
 import plotly
 import pynmrstar
-import optparse
-import ntpath
 
 # Determine if we are running in python3
 PY3 = (sys.version_info[0] == 3)
@@ -482,7 +483,7 @@ class Spectra(object):
         return outdata
 
     def n15hsqc(self, bmrbid=None, filename=None, seq=None, nn=3, colorby=None, groupbyres=False,
-                outfilename='n15hsqc.html'):
+                outfilename='n15hsqc', file_type ='html'):
         """
         Plots hsqc peak positions for a given list of BMRB ids
         :param bmrbid: entry id or list of entry ids
@@ -492,6 +493,7 @@ class Spectra(object):
         :param colorby: Color by res/entry (default res for single entry/ entry for multiple entries)
         :param groupbyres: if TRUE connects the same seq ids by line; default False
         :param outfilename: Output filename
+        :param file_type: Output file file_type html/png/svg default: html
         :return: plotly plot object or html file
         """
         if nn == 3:
@@ -502,7 +504,6 @@ class Spectra(object):
             tag = "HeptaPeptide"
         else:
             tag = "Not a valid model"
-
         title = 'Simulated N15-HSQC peak positions'
 
         csdata = self.get_entry(bmrbid, filename, seq, tag, nn)
@@ -535,7 +536,11 @@ class Spectra(object):
                     data_sets[gid][0].append(hsqcdata[1][i])
                     data_sets[gid][1].append(hsqcdata[2][i])
                     data_sets[gid][2].append(hsqcdata[0][i])
-                    data_sets[gid][3].append('{}{}'.format(hsqcdata[0][i].split("-")[1],self.threeTOone[hsqcdata[0][i].split("-")[2]]))
+                    try:
+                        data_sets[gid][3].append('{}{}'.format(hsqcdata[0][i].split("-")[1],self.threeTOone[hsqcdata[0][i].split("-")[2]]))
+                    except KeyError:
+                        data_sets[gid][3].append(
+                            '{}{}'.format(hsqcdata[0][i].split("-")[1], hsqcdata[0][i].split("-")[2]))
 
 
         if groupbyres:
@@ -548,25 +553,40 @@ class Spectra(object):
                         data_sets2[gid][0].append(hsqcdata[1][i])
                         data_sets2[gid][1].append(hsqcdata[2][i])
                         data_sets2[gid][2].append(hsqcdata[0][i])
-                        data_sets[gid][3].append(
-                            '{}{}'.format(hsqcdata[0][i].split("-")[1], self.threeTOone[hsqcdata[0][i].split("-")[2]]))
+                        try:
+                            data_sets[gid][3].append(
+                                '{}{}'.format(hsqcdata[0][i].split("-")[1], self.threeTOone[hsqcdata[0][i].split("-")[2]]))
+                        except KeyError:
+                            data_sets[gid][3].append(
+                                '{}{}'.format(hsqcdata[0][i].split("-")[1],
+                                              hsqcdata[0][i].split("-")[2]))
 
         data = []
         for k in data_sets.keys():
-            data.append(plotly.graph_objs.Scatter(x=data_sets[k][0],
-                                                  y=data_sets[k][1],
-                                                  text=data_sets[k][3],
-                                                  textposition='bottom center',
-                                                  mode='markers+text',
-                                                  opacity=0.75,
-                                                  name=k)
-                        )
+
+
+            if file_type == 'png' or file_type == 'svg':
+                data.append(plotly.graph_objs.Scatter(x=data_sets[k][0],
+                                                      y=data_sets[k][1],
+                                                      text=data_sets[k][3],
+                                                      textposition='bottom center',
+                                                      mode='markers+text',
+                                                      opacity=0.75,
+                                                      #showlegend=False,
+                                                      name=k))
+            else:
+                data.append(plotly.graph_objs.Scatter(x=data_sets[k][0],
+                                                      y=data_sets[k][1],
+                                                      text=data_sets[k][2],
+                                                      mode='markers',
+                                                      opacity=0.75,
+                                                      name=k))
+
         if groupbyres:
             for k in data_sets2.keys():
                 data.append(plotly.graph_objs.Scatter(x=data_sets2[k][0],
                                                       y=data_sets2[k][1],
                                                       text=data_sets2[k][2],
-                                                      #textposition='bottom center',
                                                       mode='lines',
                                                       name=k,
                                                       opacity=0.75,
@@ -586,9 +606,21 @@ class Spectra(object):
             if _NOTEBOOK:
                 plotly.offline.iplot(fig)
             else:
-                plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-                plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN,image='jpeg')
-                plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN,image='svg')
+                if file_type == 'html':
+
+                    plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
+                elif file_type == 'png':
+                    #plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN,image='png')
+                    plotly.offline.plot(fig, auto_open=_AUTOOPEN, filename=outfilename,
+                                        image='png')
+                elif file_type == 'svg':
+                   # plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN,image='svg')
+                    plotly.offline.plot(fig, auto_open=_AUTOOPEN, filename=outfilename,
+                                        image='svg')
+                else:
+                    print('Output file_type not recognised. Supported formats html,png,svg')
+                    exit(1)
+
 
 
 
@@ -833,7 +865,19 @@ class Histogram(object):
         return data
 
     def hist(self, residue=None, atom=None, atom_list=None, filtered=True, sd_limit=10, normalized=False,
-             outfilename=None):
+             outfilename=None,file_type='html'):
+        """
+            Chemical shift histogram from BMRB database
+        :param residue: 3 letter amino acid code
+        :param atom: IUPAC atom name
+        :param atom_list: list of atoms example: ['ALA-CA','GLY-N']
+        :param filtered: True/False Filters based on standard deviation cutoff Default:True
+        :param sd_limit:  Number of time Standard deviation for filtering default: 10
+        :param normalized: True/False Plots either Count/Density default: False
+        :param outfilename: output file name
+        :param file_type: Output file file_type html/png/svg default: html
+        :return: writes output in a html file
+        """
         if normalized:
             count = 'Density'
         else:
@@ -870,17 +914,17 @@ class Histogram(object):
             else:
                 plotly.offline.plot(fig, filename=out_file, auto_open=_AUTOOPEN)
         elif residue is None and atom is None and atom_list is not None:
-            self.multiple_atom(atom_list, filtered, sd_limit, normalized, outfilename)
+            self.multiple_atom(atom_list, filtered, sd_limit, normalized, outfilename,file_type)
         elif residue is not None and atom is not None and atom_list is None:
-            self.single_atom(residue, atom, filtered, sd_limit, normalized, outfilename)
+            self.single_atom(residue, atom, filtered, sd_limit, normalized, outfilename,file_type)
         elif residue is not None and atom is None and atom_list is None:
-            self.single_atom(residue, '*', filtered, sd_limit, normalized, outfilename)
+            self.single_atom(residue, '*', filtered, sd_limit, normalized, outfilename,file_type)
         elif residue is None and atom is not None and atom_list is None:
-            self.single_atom('*', atom, filtered, sd_limit, normalized, outfilename)
+            self.single_atom('*', atom, filtered, sd_limit, normalized, outfilename,file_type)
         else:
             print("Not a valid option")
 
-    def hist2d(self, residue, atom1, atom2, filtered=True, sd_limit=10, normalized=False, outfilename=None):
+    def hist2d(self, residue, atom1, atom2, filtered=True, sd_limit=10, normalized=False, outfilename=None,file_type='html'):
         """
         Generates chemical shift correlation plots for a given two atoms in a given amino acid
         :param residue: 3 letter amino acid code
@@ -890,6 +934,7 @@ class Histogram(object):
         :param sd_limit: Number of time Standard deviation for filtering default: 10
         :param normalized: True/False Plots either Count/Density default: False
         :param outfilename: output file name
+        :param file_type: Output file file_type html/png/svg default: html
         :return: writes output in a html file
         """
         layout = plotly.graph_objs.Layout(
@@ -933,9 +978,17 @@ class Histogram(object):
         if _NOTEBOOK:
             plotly.offline.iplot(fig)
         else:
-            plotly.offline.plot(fig, filename=out_file,auto_open=_AUTOOPEN)
+            if file_type == 'html':
+                plotly.offline.plot(fig, filename=out_file,auto_open=_AUTOOPEN)
+            elif file_type == 'png':
+                plotly.offline.plot(fig, filename=out_file, auto_open=_AUTOOPEN, image='png')
+            elif file_type == 'svg':
+                plotly.offline.plot(fig, filename=out_file, auto_open=_AUTOOPEN, image='svg')
+            else:
+                print('Output file_type not recognised. Supported formats html,png,svg')
+                exit(1)
 
-    def single_atom(self, residue, atom, filtered=True, sd_limit=10, normalized=False, outfilename=None):
+    def single_atom(self, residue, atom, filtered=True, sd_limit=10, normalized=False, outfilename=None, file_type = 'html'):
         """
         Generates histgram for a given atom in a given amino acid
         :param residue: 3 letter amino acid code
@@ -944,6 +997,7 @@ class Histogram(object):
         :param sd_limit: Number of time Standard deviation for filtering default: 10
         :param normalized: True/False Plots either Count/Density default: False
         :param outfilename: output file name
+        :param file_type: Output file file_type html/png/svg default: html
         :return: writes output in a html file
         """
         if normalized:
@@ -963,9 +1017,17 @@ class Histogram(object):
         if _NOTEBOOK:
             plotly.offline.iplot(fig)
         else:
-            plotly.offline.plot(fig, filename=out_file,auto_open=_AUTOOPEN)
+            if file_type == 'html':
+                plotly.offline.plot(fig, filename=out_file,auto_open=_AUTOOPEN)
+            elif file_type == 'png':
+                plotly.offline.plot(fig, filename=out_file, auto_open=_AUTOOPEN, image='png')
+            elif file_type == 'svg':
+                plotly.offline.plot(fig, filename=out_file, auto_open=_AUTOOPEN, image='svg')
+            else:
+                print('Output file_type not recognised. Supported formats html,png,svg')
+                exit(1)
 
-    def multiple_atom(self, atom_list, filtered=True, sd_limit=10, normalized=False, outfilename=None):
+    def multiple_atom(self, atom_list, filtered=True, sd_limit=10, normalized=False, outfilename=None,file_type='html'):
         """
         Generates histogram for a given list of atoms from various amino acids
         :param atom_list: atom list example ['ALA:CA','GLY:CA','ALA:HA']
@@ -973,6 +1035,7 @@ class Histogram(object):
         :param sd_limit: Number of time Standard deviation for filtering default: 10
         :param normalized: True/False Plots either Count/Density default: False
         :param outfilename: output file name
+        :param file_type: Output file file_type html/png/svg default: html
         :return: writes output in a html file
         """
         if normalized:
@@ -997,10 +1060,18 @@ class Histogram(object):
         if _NOTEBOOK:
             plotly.offline.iplot(fig)
         else:
-            plotly.offline.plot(fig, filename=out_file,auto_open=_AUTOOPEN)
+            if file_type == 'html':
+                plotly.offline.plot(fig, filename=out_file,auto_open=_AUTOOPEN)
+            elif file_type == 'png':
+                plotly.offline.plot(fig, filename=out_file, auto_open=_AUTOOPEN, image='png')
+            elif file_type == 'svg':
+                plotly.offline.plot(fig, filename=out_file, auto_open=_AUTOOPEN, image='svg')
+            else:
+                print('Output file_type not recognised. Supported formats html,png,svg')
+                exit(1)
 
     def conditional_hist(self, residue, atom, atomlist, cslist, filtered=True, sd_limit=10, normalized=False,
-                         outfilename=None):
+                         outfilename=None, file_type = 'html'):
         """
         Generates chemical shift histogram, which depends on the chemical shift values of given list of atoms
         in the same amino acid
@@ -1012,6 +1083,7 @@ class Histogram(object):
         :param sd_limit: Number of time Standard deviation for filtering default: 10
         :param normalized: True/False Plots either Count/Density default: False
         :param outfilename: output file name
+        :param file_type: Output file file_type html/png/svg default: html
         :return: writes output in a html file
         """
         if normalized:
@@ -1033,7 +1105,16 @@ class Histogram(object):
         if _NOTEBOOK:
             plotly.offline.iplot(fig)
         else:
-            plotly.offline.plot(fig, filename=out_file,auto_open=_AUTOOPEN)
+            if file_type == 'html':
+                plotly.offline.plot(fig, filename=out_file,auto_open=_AUTOOPEN)
+            elif file_type == 'png':
+                plotly.offline.plot(fig, filename=out_file, auto_open=_AUTOOPEN, image='png')
+            elif file_type == 'svg':
+                plotly.offline.plot(fig, filename=out_file, auto_open=_AUTOOPEN, image='svg')
+            else:
+                print('Output file_type not recognised. Supported formats html,png,svg')
+                exit(1)
+
 
 
 def _called_directly():
@@ -1056,6 +1137,9 @@ def _called_directly():
     optparser.add_option("--out", metavar="filename", action="store",
                          dest="outfile", default=None, nargs=1, type="string",
                          help="Output filename")
+    optparser.add_option("--type", metavar="output file type", action="store",
+                         dest="filetype", default='html', nargs=1, type="string",
+                         help="Output file type")
 
     # Options, parse 'em
     (options, cmd_input) = optparser.parse_args()
@@ -1067,9 +1151,9 @@ def _called_directly():
     if sum(1 for x in [options.hsqc,
                        options.hist, options.seq] if x) != 1:
         print("You have the following options \n"
-              "python pybmrb.py --hsqc <BMRBID> -out <output file name> \n"
-              "python pybmrb.py --hist <residue> <atom> -out <output file name>\n"
-              "python pybmrb.py --seq <one letter sequence> -out <output filename>\n"
+              "python pybmrb.py --hsqc <BMRBID> --out <output file name> --type <output file type>\n"
+              "python pybmrb.py --hist <residue> <atom> --out <output file name> --type <output file type>\n"
+              "python pybmrb.py --seq <one letter sequence> --out  <output filename> --type <output file type>\n"
               "python pybmrb.py --help")
         sys.exit(1)
     if options.outfile is None:
@@ -1078,13 +1162,13 @@ def _called_directly():
     if options.hsqc is not None:
         print(options.hsqc)
         s = Spectra()
-        s.n15hsqc(bmrbid=options.hsqc.split(','), outfilename='{}.html'.format(options.outfile))
+        s.n15hsqc(bmrbid=options.hsqc.split(','), outfilename=options.outfile,file_type=options.filetype)
     elif options.hist is not None:
         h = Histogram()
-        h.single_atom(residue=options.hist[0], atom=options.hist[1], outfilename='{}.html'.format(options.outfile))
+        h.single_atom(residue=options.hist[0], atom=options.hist[1], outfilename=options.outfile,file_type=options.filetype)
     elif options.seq is not None:
         s = Spectra()
-        s.n15hsqc(seq=options.seq, outfilename='{}.html'.format(options.outfile))
+        s.n15hsqc(seq=options.seq, outfilename=options.outfile,file_type=options.filetype)
     else:
         print("Nothing specified")
         sys.exit(0)
