@@ -35,6 +35,13 @@ class Spectra(object):
     """
 
     def __init__(self):
+        self.oneTOthree = {'I': 'ILE', 'Q': 'GLN', 'G': 'GLY', 'E': 'GLU', 'C': 'CYS',
+                   'D': 'ASP', 'S': 'SER', 'K': 'LYS', 'P': 'PRO', 'N': 'ASN',
+                   'V': 'VAL', 'T': 'THR', 'H': 'HIS', 'W': 'TRP', 'F': 'PHE',
+                   'A': 'ALA', 'M': 'MET', 'L': 'LEU', 'R': 'ARG', 'Y': 'TYR'}
+        self.threeTOone = {}
+        for kk in self.oneTOthree.keys():
+            self.threeTOone[self.oneTOthree[kk]] = kk
         if _NOTEBOOK:
             plotly.offline.init_notebook_mode(connected=True)
 
@@ -159,13 +166,9 @@ class Spectra(object):
         if seq is not None and nn in [3, 5, 7]:
             atom_list = {'N': 'N', 'H': 'H'}
             nearest_nei = nn
-            aa_dict = {'I': 'ILE', 'Q': 'GLN', 'G': 'GLY', 'E': 'GLU', 'C': 'CYS',
-                       'D': 'ASP', 'S': 'SER', 'K': 'LYS', 'P': 'PRO', 'N': 'ASN',
-                       'V': 'VAL', 'T': 'THR', 'H': 'HIS', 'W': 'TRP', 'F': 'PHE',
-                       'A': 'ALA', 'M': 'MET', 'L': 'LEU', 'R': 'ARG', 'Y': 'TYR'}
             standards_only = True
             for i in seq:
-                if i not in aa_dict.keys():
+                if i not in self.oneTOthree.keys():
                     standards_only = False
             if standards_only:
                 if nearest_nei == 3:
@@ -181,12 +184,12 @@ class Spectra(object):
                     cs_list_id = []
                     val = []
                     for i in [0, len(seq) - 1]:
-                        if aa_dict[seq[i]] != "PRO":
-                            tp = aa_dict[seq[i]]
+                        if self.oneTOthree[seq[i]] != "PRO":
+                            tp = self.oneTOthree[seq[i]]
                             for atm in atom_list.keys():
                                 eid.append(tag)
                                 comp_index_id.append(i + 1)
-                                comp_id.append(aa_dict[seq[i]])
+                                comp_id.append(self.oneTOthree[seq[i]])
                                 atom_id.append(atm)
                                 atom_type.append(atom_list[atm])
                                 cs_list_id.append('1')
@@ -197,12 +200,12 @@ class Spectra(object):
                                 else:
                                     print("Something wrong")
                     for i in range(1, len(seq) - 1):
-                        if aa_dict[seq[i]] != "PRO":
-                            tp3 = '{}-{}-{}'.format(aa_dict[seq[i - 1]], aa_dict[seq[i]], aa_dict[seq[i + 1]])
+                        if self.oneTOthree[seq[i]] != "PRO":
+                            tp3 = '{}-{}-{}'.format(self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]], self.oneTOthree[seq[i + 1]])
                             for atm in atom_list.keys():
                                 eid.append(tag)
                                 comp_index_id.append(i + 1)
-                                comp_id.append(aa_dict[seq[i]])
+                                comp_id.append(self.oneTOthree[seq[i]])
                                 atom_id.append(atm)
                                 atom_type.append(atom_list[atm])
                                 cs_list_id.append('1')
@@ -227,13 +230,13 @@ class Spectra(object):
                     cs_list_id = []
                     val = []
                     for i in [0, 1, len(seq) - 2, len(seq) - 1]:
-                        if aa_dict[seq[i]] != "PRO":
+                        if self.oneTOthree[seq[i]] != "PRO":
                             if i == 0 or i == len(seq) - 1:
-                                tp = aa_dict[seq[i]]
+                                tp = self.oneTOthree[seq[i]]
                                 for atm in atom_list.keys():
                                     eid.append(tag)
                                     comp_index_id.append(i + 1)
-                                    comp_id.append(aa_dict[seq[i]])
+                                    comp_id.append(self.oneTOthree[seq[i]])
                                     atom_id.append(atm)
                                     atom_type.append(atom_list[atm])
                                     cs_list_id.append('1')
@@ -244,11 +247,11 @@ class Spectra(object):
                                     else:
                                         print("Something wrong")
                             else:
-                                tp3 = '{}-{}-{}'.format(aa_dict[seq[i - 1]], aa_dict[seq[i]], aa_dict[seq[i + 1]])
+                                tp3 = '{}-{}-{}'.format(self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]], self.oneTOthree[seq[i + 1]])
                                 for atm in atom_list.keys():
                                     eid.append(tag)
                                     comp_index_id.append(i + 1)
-                                    comp_id.append(aa_dict[seq[i]])
+                                    comp_id.append(self.oneTOthree[seq[i]])
                                     atom_id.append(atm)
                                     atom_type.append(atom_list[atm])
                                     cs_list_id.append('1')
@@ -259,14 +262,14 @@ class Spectra(object):
                                     else:
                                         print("Something wrong")
                     for i in range(2, len(seq) - 2):
-                        if aa_dict[seq[i]] != "PRO":
-                            tp5 = '{}-{}-{}-{}-{}'.format(aa_dict[seq[i - 2]], aa_dict[seq[i - 1]], aa_dict[seq[i]],
-                                                          aa_dict[seq[i + 1]], aa_dict[seq[i + 2]])
-                            tp3 = '{}-{}-{}'.format(aa_dict[seq[i - 1]], aa_dict[seq[i]], aa_dict[seq[i + 1]])
+                        if self.oneTOthree[seq[i]] != "PRO":
+                            tp5 = '{}-{}-{}-{}-{}'.format(self.oneTOthree[seq[i - 2]], self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]],
+                                                          self.oneTOthree[seq[i + 1]], self.oneTOthree[seq[i + 2]])
+                            tp3 = '{}-{}-{}'.format(self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]], self.oneTOthree[seq[i + 1]])
                             for atm in atom_list.keys():
                                 eid.append(tag)
                                 comp_index_id.append(i + 1)
-                                comp_id.append(aa_dict[seq[i]])
+                                comp_id.append(self.oneTOthree[seq[i]])
                                 atom_id.append(atm)
                                 atom_type.append(atom_list[atm])
                                 cs_list_id.append('1')
@@ -299,13 +302,13 @@ class Spectra(object):
                     cs_list_id = []
                     val = []
                     for i in [0, 1, 2, len(seq) - 3, len(seq) - 2, len(seq) - 1]:
-                        if aa_dict[seq[i]] != "PRO":
+                        if self.oneTOthree[seq[i]] != "PRO":
                             if i == 0 or i == len(seq) - 1:
-                                tp = aa_dict[seq[i]]
+                                tp = self.oneTOthree[seq[i]]
                                 for atm in atom_list.keys():
                                     eid.append(tag)
                                     comp_index_id.append(i + 1)
-                                    comp_id.append(aa_dict[seq[i]])
+                                    comp_id.append(self.oneTOthree[seq[i]])
                                     atom_id.append(atm)
                                     atom_type.append(atom_list[atm])
                                     cs_list_id.append('1')
@@ -316,11 +319,11 @@ class Spectra(object):
                                     else:
                                         print("Something wrong")
                             elif i == 1 or i == len(seq) - 2:
-                                tp3 = '{}-{}-{}'.format(aa_dict[seq[i - 1]], aa_dict[seq[i]], aa_dict[seq[i + 1]])
+                                tp3 = '{}-{}-{}'.format(self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]], self.oneTOthree[seq[i + 1]])
                                 for atm in atom_list.keys():
                                     eid.append(tag)
                                     comp_index_id.append(i + 1)
-                                    comp_id.append(aa_dict[seq[i]])
+                                    comp_id.append(self.oneTOthree[seq[i]])
                                     atom_id.append(atm)
                                     atom_type.append(atom_list[atm])
                                     cs_list_id.append('1')
@@ -331,13 +334,13 @@ class Spectra(object):
                                     else:
                                         print("Something wrong")
                             else:
-                                tp5 = '{}-{}-{}-{}-{}'.format(aa_dict[seq[i - 2]], aa_dict[seq[i - 1]], aa_dict[seq[i]],
-                                                              aa_dict[seq[i + 1]], aa_dict[seq[i + 2]])
-                                tp3 = '{}-{}-{}'.format(aa_dict[seq[i - 1]], aa_dict[seq[i]], aa_dict[seq[i + 1]])
+                                tp5 = '{}-{}-{}-{}-{}'.format(self.oneTOthree[seq[i - 2]], self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]],
+                                                              self.oneTOthree[seq[i + 1]], self.oneTOthree[seq[i + 2]])
+                                tp3 = '{}-{}-{}'.format(self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]], self.oneTOthree[seq[i + 1]])
                                 for atm in atom_list.keys():
                                     eid.append(tag)
                                     comp_index_id.append(i + 1)
-                                    comp_id.append(aa_dict[seq[i]])
+                                    comp_id.append(self.oneTOthree[seq[i]])
                                     atom_id.append(atm)
                                     atom_type.append(atom_list[atm])
                                     cs_list_id.append('1')
@@ -354,19 +357,19 @@ class Spectra(object):
                                     else:
                                         print("Something wrong")
                     for i in range(3, len(seq) - 3):
-                        if aa_dict[seq[i]] != "PRO":
-                            tp7 = '{}-{}-{}-{}-{}-{}-{}'.format(aa_dict[seq[i - 3]], aa_dict[seq[i - 2]],
-                                                                aa_dict[seq[i - 1]], aa_dict[seq[i]],
-                                                                aa_dict[seq[i + 1]], aa_dict[seq[i + 2]],
-                                                                aa_dict[seq[i + 3]])
-                            tp5 = '{}-{}-{}-{}-{}'.format(aa_dict[seq[i - 2]], aa_dict[seq[i - 1]], aa_dict[seq[i]],
-                                                          aa_dict[seq[i + 1]], aa_dict[seq[i + 2]])
-                            tp3 = '{}-{}-{}'.format(aa_dict[seq[i - 1]], aa_dict[seq[i]],
-                                                    aa_dict[seq[i + 1]])
+                        if self.oneTOthree[seq[i]] != "PRO":
+                            tp7 = '{}-{}-{}-{}-{}-{}-{}'.format(self.oneTOthree[seq[i - 3]], self.oneTOthree[seq[i - 2]],
+                                                                self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]],
+                                                                self.oneTOthree[seq[i + 1]], self.oneTOthree[seq[i + 2]],
+                                                                self.oneTOthree[seq[i + 3]])
+                            tp5 = '{}-{}-{}-{}-{}'.format(self.oneTOthree[seq[i - 2]], self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]],
+                                                          self.oneTOthree[seq[i + 1]], self.oneTOthree[seq[i + 2]])
+                            tp3 = '{}-{}-{}'.format(self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]],
+                                                    self.oneTOthree[seq[i + 1]])
                             for atm in atom_list.keys():
                                 eid.append(tag)
                                 comp_index_id.append(i + 1)
-                                comp_id.append(aa_dict[seq[i]])
+                                comp_id.append(self.oneTOthree[seq[i]])
                                 atom_id.append(atm)
                                 atom_type.append(atom_list[atm])
                                 cs_list_id.append('1')
@@ -526,30 +529,35 @@ class Spectra(object):
             groups = []
         data_sets = {}
         for gid in groups:
-            data_sets[gid] = [[], [], []]
+            data_sets[gid] = [[], [], [], []]
             for i in range(len(hsqcdata[0])):
                 if hsqcdata[0][i].split("-")[idx] == gid:
                     data_sets[gid][0].append(hsqcdata[1][i])
                     data_sets[gid][1].append(hsqcdata[2][i])
                     data_sets[gid][2].append(hsqcdata[0][i])
+                    data_sets[gid][3].append('{}{}'.format(hsqcdata[0][i].split("-")[1],self.threeTOone[hsqcdata[0][i].split("-")[2]]))
+
 
         if groupbyres:
             groups2 = set(["-".join(k.split("-")[1:4]) for k in hsqcdata[0]])
             data_sets2 = {}
             for gid in groups2:
-                data_sets2[gid] = [[], [], []]
+                data_sets2[gid] = [[], [], [], []]
                 for i in range(len(hsqcdata[0])):
                     if "-".join(hsqcdata[0][i].split("-")[1:4]) == gid:
                         data_sets2[gid][0].append(hsqcdata[1][i])
                         data_sets2[gid][1].append(hsqcdata[2][i])
                         data_sets2[gid][2].append(hsqcdata[0][i])
+                        data_sets[gid][3].append(
+                            '{}{}'.format(hsqcdata[0][i].split("-")[1], self.threeTOone[hsqcdata[0][i].split("-")[2]]))
 
         data = []
         for k in data_sets.keys():
             data.append(plotly.graph_objs.Scatter(x=data_sets[k][0],
                                                   y=data_sets[k][1],
-                                                  text=data_sets[k][2],
-                                                  mode='markers',
+                                                  text=data_sets[k][3],
+                                                  textposition='bottom center',
+                                                  mode='markers+text',
                                                   opacity=0.75,
                                                   name=k)
                         )
@@ -558,6 +566,7 @@ class Spectra(object):
                 data.append(plotly.graph_objs.Scatter(x=data_sets2[k][0],
                                                       y=data_sets2[k][1],
                                                       text=data_sets2[k][2],
+                                                      #textposition='bottom center',
                                                       mode='lines',
                                                       name=k,
                                                       opacity=0.75,
@@ -578,6 +587,9 @@ class Spectra(object):
                 plotly.offline.iplot(fig)
             else:
                 plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
+                plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN,image='jpeg')
+                plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN,image='svg')
+
 
 
 class Histogram(object):
