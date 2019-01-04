@@ -10,6 +10,7 @@ import sys
 import numpy as np
 import plotly
 import pynmrstar
+from scipy.stats.kde import gaussian_kde
 
 # Determine if we are running in python3
 PY3 = (sys.version_info[0] == 3)
@@ -681,9 +682,14 @@ class Histogram(object):
                     lb = mean - (sd_limit * sd)
                     ub = mean + (sd_limit * sd)
                     x = [i for i in x if lb < i < ub]
+
                 if normalized:
+                    kde = gaussian_kde(x)
                     data.append(plotly.graph_objs.Histogram(x=x, name=atm,
                                                             histnorm='probability', opacity=0.75))
+                    data.append(plotly.graph_objs.Scatter(x=x, y=kde(x), name='Gaussian KED',
+                                                            mode='line', opacity=0.75))
+
                 else:
                     data.append(plotly.graph_objs.Histogram(x=x, name=atm, opacity=0.75))
 
@@ -695,9 +701,13 @@ class Histogram(object):
                 lb = mean - (sd_limit * sd)
                 ub = mean + (sd_limit * sd)
                 x = [i for i in x if lb < i < ub]
+
             if normalized:
+                kde = gaussian_kde(x)
                 data = [plotly.graph_objs.Histogram(x=x, name="{}-{}".format(residue, atom),
-                                                    histnorm='probability', opacity=0.75)]
+                                                    histnorm='probability', opacity=0.75),
+                        plotly.graph_objs.Scatter(x=x, y=kde(x), name='Gaussian KED',
+                                                  mode='markers', opacity=0.75)]
             else:
                 data = [plotly.graph_objs.Histogram(x=x, name="{}-{}".format(residue, atom), opacity=0.75)]
         return data
@@ -1165,7 +1175,7 @@ def _called_directly():
         s.n15hsqc(bmrbid=options.hsqc.split(','), outfilename=options.outfile,file_type=options.filetype)
     elif options.hist is not None:
         h = Histogram()
-        h.single_atom(residue=options.hist[0], atom=options.hist[1], outfilename=options.outfile,file_type=options.filetype)
+        h.single_atom(residue=options.hist[0], atom=options.hist[1], outfilename=options.outfile, normalized=True,file_type=options.filetype)
     elif options.seq is not None:
         s = Spectra()
         s.n15hsqc(seq=options.seq, outfilename=options.outfile,file_type=options.filetype)
@@ -1176,3 +1186,5 @@ def _called_directly():
 
 if __name__ == "__main__":
     _called_directly()
+    #h=Histogram()
+    #h.get_histogram_api(residue='ASN',atom='CG')
