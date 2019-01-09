@@ -10,7 +10,6 @@ import sys
 import numpy as np
 import plotly
 import pynmrstar
-from scipy.stats.kde import gaussian_kde
 
 # Determine if we are running in python3
 PY3 = (sys.version_info[0] == 3)
@@ -685,11 +684,8 @@ class Histogram(object):
                     x = [i for i in x if lb < i < ub]
 
                 if normalized:
-                    kde = gaussian_kde(x)
                     data.append(plotly.graph_objs.Histogram(x=x, name=atm,
                                                             histnorm='probability', opacity=0.75))
-                    data.append(plotly.graph_objs.Scatter(x=x, y=kde(x), name='Gaussian KED',
-                                                            mode='line', opacity=0.75))
 
                 else:
                     data.append(plotly.graph_objs.Histogram(x=x, name=atm, opacity=0.75))
@@ -704,11 +700,9 @@ class Histogram(object):
                 x = [i for i in x if lb < i < ub]
 
             if normalized:
-                kde = gaussian_kde(x)
+
                 data = [plotly.graph_objs.Histogram(x=x, name="{}-{}".format(residue, atom),
-                                                    histnorm='probability', opacity=0.75),
-                        plotly.graph_objs.Scatter(x=x, y=kde(x), name='Gaussian KED',
-                                                  mode='markers', opacity=0.75)]
+                                                    histnorm='probability', opacity=0.75)]
             else:
                 data = [plotly.graph_objs.Histogram(x=x, name="{}-{}".format(residue, atom), opacity=0.75)]
         return data
@@ -1162,10 +1156,10 @@ def _called_directly():
     if sum(1 for x in [options.hsqc,
                        options.hist, options.seq] if x) != 1:
         print("You have the following options \n"
-              "python pybmrb.py --hsqc <BMRBID> --out <output file name> --type <output file type>\n"
-              "python pybmrb.py --hist <residue> <atom> --out <output file name> --type <output file type>\n"
-              "python pybmrb.py --seq <one letter sequence> --out  <output filename> --type <output file type>\n"
-              "python pybmrb.py --help")
+              "python csviz.py --hsqc <BMRBID> --out <output file name> --type <output file type>\n"
+              "python csviz.py --hist <residue> <atom> --out <output file name> --type <output file type>\n"
+              "python csviz.py --seq <one letter sequence> --out  <output filename> --type <output file type>\n"
+              "python csviz.py --help")
         sys.exit(1)
     if options.outfile is None:
         print("Output file name must be specified with --out")

@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-from pybmrb.pybmrb import __version__
+from pybmrb.csviz import __version__
 
 setup(name='pybmrb',
       version=__version__,
@@ -11,4 +11,8 @@ setup(name='pybmrb',
       keywords=['bmrb', 'hsqc', 'chemical shift', 'nmrstar', 'biomagresbank', 'biological magnetic resonance bank'],
       url='https://github.com/uwbmrb/PyBMRB',
       package_data = {'pybmrb':['data/*','examples/*']},
+      install_requires = [
+            'pynmrstar',
+            'plotly',
+            'numpy'],
       license='MIT')
