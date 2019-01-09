@@ -25,4 +25,4 @@ been implemented as a pilot project.
 
 This library can produce stand alone interactive visualizations as an html file or it can 
 be used in a [Jupyter Notebook](https://jupyter.org/). Example notebooks can be found 
-[here](https://github.com/uwbmrb/PyBMRB/pybmrb/examples)
+[here](https://github.com/uwbmrb/PyBMRB/tree/master/pybmrb/examples)
