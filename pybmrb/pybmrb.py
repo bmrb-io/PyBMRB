@@ -28,6 +28,7 @@ _NOTEBOOK = False
 _AUTOOPEN = False
 __version__ = "1.1"
 
+__all__ = ['Spectra','Histogram']
 
 # http://webapi.bmrb.wisc.edu/v2/search/chemical_shifts?comp_id=ASP&atom_id=HD2
 

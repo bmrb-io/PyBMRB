@@ -1,1 +1,1 @@
-__all__ = ['pybmrb']
+name = 'pybmrb'
