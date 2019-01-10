@@ -631,7 +631,6 @@ class Histogram(object):
     """
 
     def __init__(self):
-        self.data_dir = '/home/kumaran/bmrbvis'
         if _NOTEBOOK:
             plotly.offline.init_notebook_mode(connected=True)
 
@@ -664,7 +663,11 @@ class Histogram(object):
         url.add_header('Application', 'BMRBiViz')
         r = urlopen(url)
         dump = json.loads(r.read())
-        d = [i for i in dump['data'] if i[dump['columns'].index('Atom_chem_shift.Comp_ID')] in standard]
+        if residue == "*":
+            d = [i for i in dump['data'] if i[dump['columns'].index('Atom_chem_shift.Comp_ID')] in standard]
+        else:
+            d = [i for i in dump['data']]
+
 
         alist = set(['{}-{}'.format(i[dump['columns'].index('Atom_chem_shift.Comp_ID')],
                                     i[dump['columns'].index('Atom_chem_shift.Atom_ID')]) for i in d])
@@ -682,7 +685,8 @@ class Histogram(object):
                     lb = mean - (sd_limit * sd)
                     ub = mean + (sd_limit * sd)
                     x = [i for i in x if lb < i < ub]
-
+                if len(x)==0:
+                    print ('{} has no data at BMRB. Please check the atom nomenclature.'.format(atm))
                 if normalized:
                     data.append(plotly.graph_objs.Histogram(x=x, name=atm,
                                                             histnorm='probability', opacity=0.75))
@@ -692,6 +696,8 @@ class Histogram(object):
 
         else:
             x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d]
+            if len(x) == 0:
+                print('{}-{} has no data at BMRB. Please check the atom nomenclature.'.format(residue,atom))
             if filtered:
                 mean = np.mean(x)
                 sd = np.std(x)
@@ -810,6 +816,14 @@ class Histogram(object):
             except KeyError:
                 pass
 
+        if len(x)==0:
+            print ("No data found for {}".format(atom2))
+            sys.exit("No data found for {}".format(atom2))
+        if len(y)==0:
+            print("No data found for {}".format(atom1))
+            sys.exit("No data found for {}".format(atom1))
+
+
         # y = [i[d2['columns'].index('Atom_chem_shift.Val')] for i in d2['data']]
         if filtered:
             meanx = np.mean(x)
@@ -833,10 +847,11 @@ class Histogram(object):
             binsizex = 0.05
         else:
             binsizex = 0.25
-        nbinsx = round((max(x) - min(x)) / binsizex)
-        nbinsy = round((max(y) - min(y)) / binsizey)
+        nbinsx = int(round((max(x) - min(x)) / binsizex))
+        nbinsy = int(round((max(y) - min(y)) / binsizey))
         if normalized:
-            data = [plotly.graph_objs.Histogram2dContour(x=x, y=y, histnorm='probability', colorscale='Jet'),
+            data = [plotly.graph_objs.Histogram2dContour(x=x, y=y, nbinsy=nbinsy,nbinsx=nbinsx,
+                                                         histnorm='probability', colorscale='Jet'),
                     plotly.graph_objs.Histogram(
                         y=y,
                         xaxis='x2',
