@@ -23,7 +23,7 @@ else:
     from urllib2 import urlopen, Request
 
 _API_URL = "http://webapi.bmrb.wisc.edu/v2"
-_NOTEBOOK = False
+NOTEBOOK = False
 _AUTOOPEN = False
 __version__ = "1.2"
 
@@ -44,7 +44,7 @@ class Spectra(object):
         self.threeTOone = {}
         for kk in self.oneTOthree.keys():
             self.threeTOone[self.oneTOthree[kk]] = kk
-        if _NOTEBOOK:
+        if NOTEBOOK:
             plotly.offline.init_notebook_mode(connected=True)
 
     def get_entry(self, bmrbid=None, filename=None, seq=None, tag='User', nn=3):
@@ -555,12 +555,11 @@ class Spectra(object):
                         data_sets2[gid][1].append(hsqcdata[2][i])
                         data_sets2[gid][2].append(hsqcdata[0][i])
                         try:
-                            data_sets[gid][3].append(
-                                '{}{}'.format(hsqcdata[0][i].split("-")[1], self.threeTOone[hsqcdata[0][i].split("-")[2]]))
+                            one_letter_code = self.threeTOone[hsqcdata[0][i].split("-")[2]]
                         except KeyError:
-                            data_sets[gid][3].append(
-                                '{}{}'.format(hsqcdata[0][i].split("-")[1],
-                                              hsqcdata[0][i].split("-")[2]))
+                            one_letter_code = hsqcdata[0][i].split("-")[2]
+                        seq_id = hsqcdata[0][i].split("-")[1]
+                        data_sets2[gid][3].append('{}{}'.format(seq_id,one_letter_code))
 
         data = []
         for k in data_sets.keys():
@@ -604,7 +603,7 @@ class Spectra(object):
             title=title)
         fig = plotly.graph_objs.Figure(data=data, layout=layout)
         if len(data):
-            if _NOTEBOOK:
+            if NOTEBOOK:
                 plotly.offline.iplot(fig)
             else:
                 if file_type == 'html':
@@ -631,7 +630,7 @@ class Histogram(object):
     """
 
     def __init__(self):
-        if _NOTEBOOK:
+        if NOTEBOOK:
             plotly.offline.init_notebook_mode(connected=True)
 
     @staticmethod
@@ -929,7 +928,7 @@ class Histogram(object):
                 out_file = 'Multiple_atom_histogram.html'
             else:
                 out_file = outfilename
-            if _NOTEBOOK:
+            if NOTEBOOK:
                 plotly.offline.iplot(fig)
             else:
                 plotly.offline.plot(fig, filename=out_file, auto_open=_AUTOOPEN)
@@ -995,7 +994,7 @@ class Histogram(object):
             out_file = 'histogram2d.html'
         else:
             out_file = outfilename
-        if _NOTEBOOK:
+        if NOTEBOOK:
             plotly.offline.iplot(fig)
         else:
             if file_type == 'html':
@@ -1034,7 +1033,7 @@ class Histogram(object):
             out_file = '{}_{}.html'.format(residue, atom)
         else:
             out_file = outfilename
-        if _NOTEBOOK:
+        if NOTEBOOK:
             plotly.offline.iplot(fig)
         else:
             if file_type == 'html':
@@ -1077,7 +1076,7 @@ class Histogram(object):
             out_file = 'Multiple_atom_histogram.html'
         else:
             out_file = outfilename
-        if _NOTEBOOK:
+        if NOTEBOOK:
             plotly.offline.iplot(fig)
         else:
             if file_type == 'html':
@@ -1122,7 +1121,7 @@ class Histogram(object):
             out_file = '{}_{}.html'.format(residue, atom)
         else:
             out_file = outfilename
-        if _NOTEBOOK:
+        if NOTEBOOK:
             plotly.offline.iplot(fig)
         else:
             if file_type == 'html':
