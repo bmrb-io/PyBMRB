@@ -10,18 +10,18 @@
  
  BMRB maintains its data in a relational data base and also as flat files in [NMR-STAR](https://doi.org/10.1007/s10858-018-0220-3)
   format. It also provides data access via API and provide software tools to handle NMR-STAR files. 
- [PyNMRSTAR](https://github.com/uwbmrb/PyNMRSTAR) is one such tool to help read, write and parse
- NMR-STAR files. [PyBMRB](https://github.com/uwbmrb/PyBMRB) has been developed to facilitate easy data access and visualization
- of chemical shift data from BMRB. 
+ [PyNMRSTAR](https://github.com/uwbmrb/PyNMRSTAR) is one such tool to facilitate read, write and parse
+ NMR-STAR files. [PyBMRB](https://github.com/uwbmrb/PyBMRB) enhances the usability of BMRB data 
+ and data access and visualization of chemical shift data from BMRB. 
  
  ## Data visualization
  
 PyBMRB uses modern python visualization tool [plotly](https://plot.ly/python/) for 
-its visualization. Current version (version 1.1) features chemical shift histograms of 
+its visualization. It features chemical shift histograms of 
 standard amino acids from BMRB data base and N<sup>15</sup>-HSQC peak position simulation
 for any given BMRB entry (or) list of BMRB entries (or) from a local assigned chemical 
-shift list in NMR-STAR format. Random coil N<sup>15</sup>-HSQC using BMRB statistics has 
-been implemented as a pilot project. 
+shift list in NMR-STAR format. Random coil N<sup>15</sup>-HSQC simulation based on BMRB 
+database statistics is also included.  
 
 This library can produce stand alone interactive visualizations as an html file or it can 
 be used in a [Jupyter Notebook](https://jupyter.org/). Example notebooks can be found 
@@ -29,13 +29,13 @@ be used in a [Jupyter Notebook](https://jupyter.org/). Example notebooks can be 
 
 
 ### Chemical shift Histogram
-BMRB servers Nuclear Magnetic Resonance(NMR) community by providing 
+BMRB serves Nuclear Magnetic Resonance(NMR) community by providing 
 high quality curated chemical shift data of various biologically important 
 macro molecules like proteins and nucleic acids and small molecules like ligands , co-factors,
 small peptides and metabolites. Chemical shift distribution of an atom in an amino acid or 
-nucleic acid helps us to understand the presence in a diverse  chemical environment.
+nucleic acid helps us to understand its diverse chemical environment.
 Chemical shift histograms from a database like BMRB will help
-us to understand the biological nature and provides a priory 
+us to understand the biophysical nature bio-molecules and provides a priory 
 probabilities for resonance assignments.
 
 #### Conditional Histogram
