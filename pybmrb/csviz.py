@@ -24,6 +24,7 @@ else:
 
 _API_URL = "http://webapi.bmrb.wisc.edu/v2"
 NOTEBOOK = False
+_OPACITY = 0.5
 _AUTOOPEN = False
 __version__ = "1.2.2"
 
@@ -484,7 +485,7 @@ class Spectra(object):
         return outdata
 
     def n15hsqc(self, bmrbid=None, filename=None, seq=None, nn=3, colorby=None, groupbyres=False,
-                outfilename='n15hsqc', file_type ='html'):
+                outfilename='n15hsqc.html', file_type ='html'):
         """
         Plots hsqc peak positions for a given list of BMRB ids
         :param bmrbid: entry id or list of entry ids
@@ -571,7 +572,7 @@ class Spectra(object):
                                                       text=data_sets[k][3],
                                                       textposition='bottom center',
                                                       mode='markers+text',
-                                                      opacity=0.75,
+                                                      opacity=_OPACITY,
                                                       #showlegend=False,
                                                       name=k))
             else:
@@ -579,7 +580,7 @@ class Spectra(object):
                                                       y=data_sets[k][1],
                                                       text=data_sets[k][2],
                                                       mode='markers',
-                                                      opacity=0.75,
+                                                      opacity=_OPACITY,
                                                       name=k))
 
         if groupbyres:
@@ -589,7 +590,7 @@ class Spectra(object):
                                                       text=data_sets2[k][2],
                                                       mode='lines',
                                                       name=k,
-                                                      opacity=0.75,
+                                                      opacity=_OPACITY,
                                                       showlegend=False)
                             )
 
@@ -688,10 +689,10 @@ class Histogram(object):
                     print ('{} has no data at BMRB. Please check the atom nomenclature.'.format(atm))
                 if normalized:
                     data.append(plotly.graph_objs.Histogram(x=x, name=atm,
-                                                            histnorm='probability', opacity=0.75))
+                                                            histnorm='probability', opacity=_OPACITY))
 
                 else:
-                    data.append(plotly.graph_objs.Histogram(x=x, name=atm, opacity=0.75))
+                    data.append(plotly.graph_objs.Histogram(x=x, name=atm, opacity=_OPACITY))
 
         else:
             x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d]
@@ -707,9 +708,9 @@ class Histogram(object):
             if normalized:
 
                 data = [plotly.graph_objs.Histogram(x=x, name="{}-{}".format(residue, atom),
-                                                    histnorm='probability', opacity=0.75)]
+                                                    histnorm='probability', opacity=_OPACITY)]
             else:
-                data = [plotly.graph_objs.Histogram(x=x, name="{}-{}".format(residue, atom), opacity=0.75)]
+                data = [plotly.graph_objs.Histogram(x=x, name="{}-{}".format(residue, atom), opacity=_OPACITY)]
         return data
 
     @staticmethod
@@ -772,9 +773,9 @@ class Histogram(object):
                 filter_values += '{}:{},'.format(atomlist[i], cslist[i])
         if normalized:
             data = plotly.graph_objs.Histogram(x=x, name="{}-{}({})".format(residue, atom, filter_values),
-                                               histnorm='probability', opacity=0.75)
+                                               histnorm='probability', opacity=_OPACITY)
         else:
-            data = plotly.graph_objs.Histogram(x=x, name="{}-{}({})".format(residue, atom, filter_values, opacity=0.75))
+            data = plotly.graph_objs.Histogram(x=x, name="{}-{}({})".format(residue, atom, filter_values, opacity=_OPACITY))
         return data
 
     @staticmethod
