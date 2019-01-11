@@ -23,9 +23,9 @@ else:
     from urllib2 import urlopen, Request
 
 _API_URL = "http://webapi.bmrb.wisc.edu/v2"
-_NOTEBOOK = False
+NOTEBOOK = False
 _AUTOOPEN = False
-__version__ = "1.1.6"
+__version__ = "1.2"
 
 __all__ = ['Spectra','Histogram']
 
@@ -44,7 +44,7 @@ class Spectra(object):
         self.threeTOone = {}
         for kk in self.oneTOthree.keys():
             self.threeTOone[self.oneTOthree[kk]] = kk
-        if _NOTEBOOK:
+        if NOTEBOOK:
             plotly.offline.init_notebook_mode(connected=True)
 
     def get_entry(self, bmrbid=None, filename=None, seq=None, tag='User', nn=3):
@@ -555,12 +555,11 @@ class Spectra(object):
                         data_sets2[gid][1].append(hsqcdata[2][i])
                         data_sets2[gid][2].append(hsqcdata[0][i])
                         try:
-                            data_sets[gid][3].append(
-                                '{}{}'.format(hsqcdata[0][i].split("-")[1], self.threeTOone[hsqcdata[0][i].split("-")[2]]))
+                            one_letter_code = self.threeTOone[hsqcdata[0][i].split("-")[2]]
                         except KeyError:
-                            data_sets[gid][3].append(
-                                '{}{}'.format(hsqcdata[0][i].split("-")[1],
-                                              hsqcdata[0][i].split("-")[2]))
+                            one_letter_code = hsqcdata[0][i].split("-")[2]
+                        seq_id = hsqcdata[0][i].split("-")[1]
+                        data_sets2[gid][3].append('{}{}'.format(seq_id,one_letter_code))
 
         data = []
         for k in data_sets.keys():
@@ -604,7 +603,7 @@ class Spectra(object):
             title=title)
         fig = plotly.graph_objs.Figure(data=data, layout=layout)
         if len(data):
-            if _NOTEBOOK:
+            if NOTEBOOK:
                 plotly.offline.iplot(fig)
             else:
                 if file_type == 'html':
@@ -631,8 +630,7 @@ class Histogram(object):
     """
 
     def __init__(self):
-        self.data_dir = '/home/kumaran/bmrbvis'
-        if _NOTEBOOK:
+        if NOTEBOOK:
             plotly.offline.init_notebook_mode(connected=True)
 
     @staticmethod
@@ -664,7 +662,11 @@ class Histogram(object):
         url.add_header('Application', 'BMRBiViz')
         r = urlopen(url)
         dump = json.loads(r.read())
-        d = [i for i in dump['data'] if i[dump['columns'].index('Atom_chem_shift.Comp_ID')] in standard]
+        if residue == "*":
+            d = [i for i in dump['data'] if i[dump['columns'].index('Atom_chem_shift.Comp_ID')] in standard]
+        else:
+            d = [i for i in dump['data']]
+
 
         alist = set(['{}-{}'.format(i[dump['columns'].index('Atom_chem_shift.Comp_ID')],
                                     i[dump['columns'].index('Atom_chem_shift.Atom_ID')]) for i in d])
@@ -682,7 +684,8 @@ class Histogram(object):
                     lb = mean - (sd_limit * sd)
                     ub = mean + (sd_limit * sd)
                     x = [i for i in x if lb < i < ub]
-
+                if len(x)==0:
+                    print ('{} has no data at BMRB. Please check the atom nomenclature.'.format(atm))
                 if normalized:
                     data.append(plotly.graph_objs.Histogram(x=x, name=atm,
                                                             histnorm='probability', opacity=0.75))
@@ -692,6 +695,8 @@ class Histogram(object):
 
         else:
             x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d]
+            if len(x) == 0:
+                print('{}-{} has no data at BMRB. Please check the atom nomenclature.'.format(residue,atom))
             if filtered:
                 mean = np.mean(x)
                 sd = np.std(x)
@@ -810,6 +815,14 @@ class Histogram(object):
             except KeyError:
                 pass
 
+        if len(x)==0:
+            print ("No data found for {}".format(atom2))
+            sys.exit("No data found for {}".format(atom2))
+        if len(y)==0:
+            print("No data found for {}".format(atom1))
+            sys.exit("No data found for {}".format(atom1))
+
+
         # y = [i[d2['columns'].index('Atom_chem_shift.Val')] for i in d2['data']]
         if filtered:
             meanx = np.mean(x)
@@ -833,10 +846,11 @@ class Histogram(object):
             binsizex = 0.05
         else:
             binsizex = 0.25
-        nbinsx = round((max(x) - min(x)) / binsizex)
-        nbinsy = round((max(y) - min(y)) / binsizey)
+        nbinsx = int(round((max(x) - min(x)) / binsizex))
+        nbinsy = int(round((max(y) - min(y)) / binsizey))
         if normalized:
-            data = [plotly.graph_objs.Histogram2dContour(x=x, y=y, histnorm='probability', colorscale='Jet'),
+            data = [plotly.graph_objs.Histogram2dContour(x=x, y=y, nbinsy=nbinsy,nbinsx=nbinsx,
+                                                         histnorm='probability', colorscale='Jet'),
                     plotly.graph_objs.Histogram(
                         y=y,
                         xaxis='x2',
@@ -914,7 +928,7 @@ class Histogram(object):
                 out_file = 'Multiple_atom_histogram.html'
             else:
                 out_file = outfilename
-            if _NOTEBOOK:
+            if NOTEBOOK:
                 plotly.offline.iplot(fig)
             else:
                 plotly.offline.plot(fig, filename=out_file, auto_open=_AUTOOPEN)
@@ -980,7 +994,7 @@ class Histogram(object):
             out_file = 'histogram2d.html'
         else:
             out_file = outfilename
-        if _NOTEBOOK:
+        if NOTEBOOK:
             plotly.offline.iplot(fig)
         else:
             if file_type == 'html':
@@ -1019,7 +1033,7 @@ class Histogram(object):
             out_file = '{}_{}.html'.format(residue, atom)
         else:
             out_file = outfilename
-        if _NOTEBOOK:
+        if NOTEBOOK:
             plotly.offline.iplot(fig)
         else:
             if file_type == 'html':
@@ -1062,7 +1076,7 @@ class Histogram(object):
             out_file = 'Multiple_atom_histogram.html'
         else:
             out_file = outfilename
-        if _NOTEBOOK:
+        if NOTEBOOK:
             plotly.offline.iplot(fig)
         else:
             if file_type == 'html':
@@ -1107,7 +1121,7 @@ class Histogram(object):
             out_file = '{}_{}.html'.format(residue, atom)
         else:
             out_file = outfilename
-        if _NOTEBOOK:
+        if NOTEBOOK:
             plotly.offline.iplot(fig)
         else:
             if file_type == 'html':

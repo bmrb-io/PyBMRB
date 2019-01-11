@@ -26,3 +26,54 @@ been implemented as a pilot project.
 This library can produce stand alone interactive visualizations as an html file or it can 
 be used in a [Jupyter Notebook](https://jupyter.org/). Example notebooks can be found 
 [here](https://github.com/uwbmrb/PyBMRB/tree/master/pybmrb/examples)
+
+
+### Chemical shift Histogram
+BMRB servers Nuclear Magnetic Resonance(NMR) community by providing 
+high quality curated chemical shift data of various biologically important 
+macro molecules like proteins and nucleic acids and small molecules like ligands , co-factors,
+small peptides and metabolites. Chemical shift distribution of an atom in an amino acid or 
+nucleic acid helps us to understand the presence in a diverse  chemical environment.
+Chemical shift histograms from a database like BMRB will help
+us to understand the biological nature and provides a priory 
+probabilities for resonance assignments.
+
+#### Conditional Histogram
+Chemical shift assignment in a multi-dimensional NMR experiment is 
+a biggest challenge. PyBMRB could help the process by generating 
+conditional histogram. If partial assignments of a particular 
+amnio acid is available, then PyBMRB could estimate the chemical shift
+distribution of an unassigned atom in that amino acid only from those entries
+ whose chemical shifts are similar to the given list for that 
+ particular amino acid. 
+
+
+#### Examples in Notebook
+Chemical shift histogram [examples notebook](https://github.com/uwbmrb/PyBMRB/tree/master/pybmrb/examples/histogram.ipynb) 
+can be found [here](https://github.com/uwbmrb/PyBMRB/tree/master/pybmrb/examples/histogram.ipynb). 
+The output might look like [this](https://htmlpreview.github.io/?https://github.com/uwbmrb/PyBMRB/blob/master/pybmrb/examples/histogram.html)  
+
+### N<sup>15</sup>-HSQC Simulation.
+
+N<sup>15</sup>-HSQC is one of the most common and useful NMR experiment.
+It carries signatures of folded state, ligand interaction and experimental environments 
+like pH and temperature. BMRB contains thousands of assigned chemical shifts
+of various bio-molecules. PyBMRB make use of this data to simulate N<sup>15</sup>-HSQC 
+peak positions for any BMRB entry. Its also possible to compare N<sup>15</sup>-HSQC 
+spectra of different entries or BMRB entries with user generated
+ chemical shift information in NMR-STAR format. 
+ 
+ #### N<sup>15</sup>-HSQC spectrum from sequence. 
+ As an experiment, BMRB developed tools to simulate random coil
+ N<sup>15</sup>-HSQC spectrum for a given protein sequence using 
+ database statistics. Assuming the fact that in BMRB, small segments 
+ of given sequence might exists in all possible confirmations, 
+ one could calculate the chemical shift of an atom in random 
+ confirmation by averaging the chemical shifts of small segments
+ over the entire database. 
+ 
+ #### Examples in Notebook
+ N<sup>15</sup>-HSQC [examples notebook](https://github.com/uwbmrb/PyBMRB/tree/master/pybmrb/examples/n15hsqc.ipynb) 
+ can be found [here](https://github.com/uwbmrb/PyBMRB/tree/master/pybmrb/examples/n15hsqc.ipynb)
+ The output of the notebook looks like [this](https://htmlpreview.github.io/?https://github.com/uwbmrb/PyBMRB/blob/master/pybmrb/examples/n15hsqc.html)
+ 
