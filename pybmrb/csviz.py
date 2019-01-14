@@ -1057,7 +1057,7 @@ class Histogram(object):
         :param outfilename: output file name
         :return: writes output in a html file
         """
-        pprint("This may take time to gather data from entire BMRB database!")
+        print("This may take time to gather data from entire BMRB database!")
         if normalized:
             count = 'Density'
         else:
