@@ -25,8 +25,8 @@ else:
 _API_URL = "http://webapi.bmrb.wisc.edu/v2"
 NOTEBOOK = False
 _OPACITY = 0.5
-_AUTOOPEN = False
-__version__ = "1.2.4"
+_AUTOOPEN = True
+__version__ = "1.2.5"
 
 __all__ = ['Spectra', 'Histogram']
 
