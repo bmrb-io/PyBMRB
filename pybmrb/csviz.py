@@ -25,8 +25,8 @@ else:
 _API_URL = "http://webapi.bmrb.wisc.edu/v2"
 NOTEBOOK = False
 _OPACITY = 0.5
-_AUTOOPEN = False
-__version__ = "1.2.3"
+_AUTOOPEN = True
+__version__ = "1.2.5"
 
 __all__ = ['Spectra', 'Histogram']
 
@@ -648,7 +648,7 @@ class Histogram(object):
             url = Request(_API_URL + "/search/chemical_shifts?comp_id={}".format(residue))
         else:
             url = Request(_API_URL + "/search/chemical_shifts?comp_id={}&atom_id={}".format(residue, atom))
-        url.add_header('Application', 'BMRBiViz')
+        url.add_header('Application', 'PyBMRB')
         r = urlopen(url)
         dump = json.loads(r.read())
         if residue == "*":
@@ -716,7 +716,7 @@ class Histogram(object):
         :return: Plotly object
         """
         url = Request(_API_URL + "/search/chemical_shifts?comp_id={}".format(residue))
-        url.add_header('Application', 'BMRBiViz')
+        url.add_header('Application', 'PyBMRB')
         r = urlopen(url)
         d1 = json.loads(r.read())
         d = {}
@@ -780,8 +780,8 @@ class Histogram(object):
         """
         url1 = Request(_API_URL + "/search/chemical_shifts?comp_id={}&atom_id={}".format(residue, atom1))
         url2 = Request(_API_URL + "/search/chemical_shifts?comp_id={}&atom_id={}".format(residue, atom2))
-        url1.add_header('Application', 'BMRBiViz')
-        url2.add_header('Application', 'BMRBiViz')
+        url1.add_header('Application', 'PyBMRB')
+        url2.add_header('Application', 'PyBMRB')
         r1 = urlopen(url1)
         r2 = urlopen(url2)
         d1 = json.loads(r1.read())
