@@ -79,7 +79,7 @@ spectra of different entries or BMRB entries with user generated
  of given sequence might exists in all possible confirmations, 
  one could calculate the chemical shift of an atom in random 
  confirmation by averaging the chemical shifts of small segments
- over the entire database. 
+ over the entire database
  
  #### Examples in Notebook
  N<sup>15</sup>-HSQC [examples notebook](https://github.com/uwbmrb/PyBMRB/tree/master/pybmrb/examples/n15hsqc.ipynb) 
