@@ -27,7 +27,16 @@ This library can produce stand alone interactive visualizations as an html file 
 be used in a [Jupyter Notebook](https://jupyter.org/). Example notebooks can be found 
 [here](https://github.com/uwbmrb/PyBMRB/tree/master/pybmrb/examples)
 
+### Installation
+PyBMRB is available in [Python Package Index (PIP)](https://pypi.org/project/pybmrb/). It can be easily 
+installed with the following command
+>pip install pybmrb
 
+To install from the source, clone or download the source and go to the folder which contains 'setup.py' 
+and run the following command
+>pip install .
+
+If necessary use 'sudo'. 
 ### Chemical shift Histogram
 BMRB serves Nuclear Magnetic Resonance(NMR) community by providing 
 high quality curated chemical shift data of various biologically important 
