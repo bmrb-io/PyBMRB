@@ -3,10 +3,10 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-from pybmrb.csviz import __version__
+
 
 setup(name='pybmrb',
-      version=__version__,
+      version='1.2.6',
       packages = ['pybmrb'],
       author='Kumaran Baskaran',
       author_email='kbaskaran@bmrb.wisc.edu',
