@@ -1,5 +1,5 @@
 # PyBMRB
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kumar-physics/PyBMRB/dev?filepath=https%3A%2F%2Fgithub.com%2Fkumar-physics%2FPyBMRB%2Ftree%2Fdev%2Fpybmrb%2Fexamples)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kumar-physics/PyBMRB/dev)
 ## Biological Magnetic Resonance data Bank (BMRB)
 [BMRB](http://www.bmrb.wisc.edu/) collects, annotates, archives, and disseminates (worldwide in the public domain)
  the important spectral and quantitative data derived from NMR spectroscopic 
