@@ -1,4 +1,5 @@
 # PyBMRB
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/kumar-physics/PyBMRB/dev)
 
 ## Biological Magnetic Resonance data Bank (BMRB)
 [BMRB](http://www.bmrb.wisc.edu/) collects, annotates, archives, and disseminates (worldwide in the public domain)
