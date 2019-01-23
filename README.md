@@ -1,5 +1,5 @@
 # PyBMRB
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/uwbmrb/PyBMRB/master)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/uwbmrb/PyBMRB/master) Click the launcher to try PyBMRB on a live Jupyter Notebook.
 ## Biological Magnetic Resonance data Bank (BMRB)
 [BMRB](http://www.bmrb.wisc.edu/) collects, annotates, archives, and disseminates (worldwide in the public domain)
  the important spectral and quantitative data derived from NMR spectroscopic 
