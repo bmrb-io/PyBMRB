@@ -1,0 +1,5 @@
+numpy
+pynmrstar
+plotly
+numpy
+pybmrb
