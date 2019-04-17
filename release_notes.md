@@ -1,6 +1,4 @@
-## 1.2
+## 1.2.6
 
-All previous versions were beta versions. 
-This release is ready for user testing.
-    - Jupyter notebook feature working well
+Ambiguity code based filter added. Chemical shift histograms can now be filtered for only unambiguously assigned chemical shifts.
     
