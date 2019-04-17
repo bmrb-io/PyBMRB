@@ -623,7 +623,7 @@ class Histogram(object):
             plotly.offline.init_notebook_mode(connected=True)
 
     @staticmethod
-    def get_histogram_api(residue, atom, filtered=True, sd_limit=10, normalized=False):
+    def get_histogram_api(residue, atom, filtered=True, sd_limit=10, normalized=False, ambiguity = '*'):
         """
         Downloads chemical shift data for a given atom in a residue using BMRB API
         :param residue: Residue name in standard 3 letter code
@@ -631,6 +631,7 @@ class Histogram(object):
         :param filtered: True/False Filters based on standard deviation cutoff Default:True
         :param sd_limit: Number of time Standard deviation for filtering default: 10
         :param normalized: True/False Plots either Count/Density default: False
+        :param ambiguity: NMR-STAR Ambiguity code default:'*'
         :return: Plotly object
         """
         standard = ['ILE', 'GLN', 'GLY', 'GLU', 'CYS',
@@ -663,9 +664,16 @@ class Histogram(object):
             for atm in alist:
                 res = atm.split("-")[0]
                 at = atm.split("-")[1]
-                x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d
-                     if i[dump['columns'].index('Atom_chem_shift.Comp_ID')] == res and
-                     i[dump['columns'].index('Atom_chem_shift.Atom_ID')] == at]
+                if ambiguity == '*':
+                    x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d
+                         if i[dump['columns'].index('Atom_chem_shift.Comp_ID')] == res and
+                         i[dump['columns'].index('Atom_chem_shift.Atom_ID')] == at]
+                else:
+                    x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d
+                         if i[dump['columns'].index('Atom_chem_shift.Comp_ID')] == res and
+                         i[dump['columns'].index('Atom_chem_shift.Atom_ID')] == at and
+                         i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity)]
+
                 if filtered:
                     mean = np.mean(x)
                     sd = np.std(x)
@@ -682,7 +690,11 @@ class Histogram(object):
                     data.append(plotly.graph_objs.Histogram(x=x, name=atm, opacity=_OPACITY))
 
         else:
-            x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d]
+            if ambiguity == '*':
+                x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d]
+            else:
+                x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d
+                     if i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity)]
             if len(x) == 0:
                 print('{}-{} has no data at BMRB. Please check the atom nomenclature.'.format(residue, atom))
             if filtered:
@@ -702,7 +714,7 @@ class Histogram(object):
 
     @staticmethod
     def get_conditional_histogram_api(residue, atom, atomlist, cslist, filtered=True,
-                                      sd_limit=10, normalized=False):
+                                      sd_limit=10, normalized=False, ambiguity='*'):
         """
         Downloads the chemical shift data for a given atom in a residue and filters based on a other atom chemical
         shifts in the same residue
@@ -713,12 +725,19 @@ class Histogram(object):
         :param filtered: True/False Filters based on standard deviation cutoff Default:True
         :param sd_limit:  Number of time Standard deviation for filtering default: 10
         :param normalized: True/False Plots either Count/Density default: False
+        :param ambiguity: NMR-STAR Ambiguity code default:'*'
         :return: Plotly object
         """
         url = Request(_API_URL + "/search/chemical_shifts?comp_id={}".format(residue))
         url.add_header('Application', 'PyBMRB')
         r = urlopen(url)
-        d1 = json.loads(r.read())
+        dump = json.loads(r.read())
+        if ambiguity == '*':
+            d1=dump
+        else:
+            d1={}
+            d1['columns']=dump['columns']
+            d1['data'] = [i for i in dump['data'] if i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity)]
         d = {}
         entry_id_index = d1['columns'].index('Atom_chem_shift.Entry_ID')
         seq_id_index = d1['columns'].index('Atom_chem_shift.Comp_index_ID')
@@ -767,7 +786,8 @@ class Histogram(object):
         return data
 
     @staticmethod
-    def get_histogram2d_api(residue, atom1, atom2, filtered=True, sd_limit=10, normalized=False):
+    def get_histogram2d_api(residue, atom1, atom2, filtered=True, sd_limit=10, normalized=False,
+                            ambiguity1='*', ambiguity2='*'):
         """
         Calculates the correlation between two atoms in the same residue
         :param residue: Residue name in standard 3 letter code
@@ -776,6 +796,8 @@ class Histogram(object):
         :param filtered:  True/False Filters based on standard deviation cutoff Default:True
         :param sd_limit: Number of time Standard deviation for filtering default: 10
         :param normalized: True/False Plots either Count/Density default: False
+        :param ambiguity1: NMR-STAR Ambiguity for atom1 code default:'*'
+        :param ambiguity2: NMR-STAR Ambiguity for atom2 code default:'*'
         :return: Plotly object
         """
         url1 = Request(_API_URL + "/search/chemical_shifts?comp_id={}&atom_id={}".format(residue, atom1))
@@ -784,14 +806,26 @@ class Histogram(object):
         url2.add_header('Application', 'PyBMRB')
         r1 = urlopen(url1)
         r2 = urlopen(url2)
-        d1 = json.loads(r1.read())
+        dump1 = json.loads(r1.read())
+        if ambiguity1 == '*':
+            d1=dump1
+        else:
+            d1={}
+            d1['columns']=dump1['columns']
+            d1['data'] = [i for i in dump1['data'] if i[dump1['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity1)]
         d = {}
         for i in d1['data']:
             entry_id = i[d1['columns'].index('Atom_chem_shift.Entry_ID')]
             seq_id = i[d1['columns'].index('Atom_chem_shift.Comp_index_ID')]
             d["{}-{}".format(entry_id, seq_id)] = i[d1['columns'].index('Atom_chem_shift.Val')]
         # x = [i[d1['columns'].index('Atom_chem_shift.Val')] for i in d1['data']]
-        d2 = json.loads(r2.read())
+        dump2 = json.loads(r2.read())
+        if ambiguity2 == '*':
+            d2=dump2
+        else:
+            d2={}
+            d2['columns'] = dump2['columns']
+            d2['data'] = [i for i in dump2['data'] if i[dump2['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity2)]
         x = []
         y = []
         for i in d2['data']:
@@ -871,8 +905,8 @@ class Histogram(object):
                     ]
         return data
 
-    def hist(self, residue=None, atom=None, atom_list=None, filtered=True, sd_limit=10, normalized=False,
-             outfilename='hist.html'):
+    def hist(self, residue=None, atom=None, atom_list=None, filtered=True, sd_limit=10,
+             normalized=False, ambiguity = '*', outfilename='hist.html'):
         """
             Chemical shift histogram from BMRB database
         :param residue: 3 letter amino acid code
@@ -881,6 +915,7 @@ class Histogram(object):
         :param filtered: True/False Filters based on standard deviation cutoff Default:True
         :param sd_limit:  Number of time Standard deviation for filtering default: 10
         :param normalized: True/False Plots either Count/Density default: False
+        :param ambiguity: NMR-STAR Ambiguity code default:'*'
         :param outfilename: output file name
         :return: writes output in a html file
         """
@@ -899,12 +934,12 @@ class Histogram(object):
                 residue = "*"
             if atom is None:
                 atom = "*"
-            d1 = self.get_histogram_api(residue, atom, filtered, sd_limit, normalized)
+            d1 = self.get_histogram_api(residue, atom, filtered, sd_limit, normalized,ambiguity)
             d2 = []
             for atm in atom_list:
                 r = atm.split("-")[0]
                 a = atm.split("-")[1]
-                for d in self.get_histogram_api(r, a, filtered, sd_limit, normalized):
+                for d in self.get_histogram_api(r, a, filtered, sd_limit, normalized,ambiguity):
                     d2.append(d)
             data = d1 + d2
             layout = plotly.graph_objs.Layout(
@@ -918,17 +953,18 @@ class Histogram(object):
                 plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
                 print("Output written on {}".format(outfilename))
         elif residue is None and atom is None and atom_list is not None:
-            self.multiple_atom(atom_list, filtered, sd_limit, normalized, outfilename)
+            self.multiple_atom(atom_list, filtered, sd_limit, normalized,ambiguity,outfilename,)
         elif residue is not None and atom is not None and atom_list is None:
-            self.single_atom(residue, atom, filtered, sd_limit, normalized, outfilename)
+            self.single_atom(residue, atom, filtered, sd_limit, normalized, ambiguity, outfilename)
         elif residue is not None and atom is None and atom_list is None:
-            self.single_atom(residue, '*', filtered, sd_limit, normalized, outfilename)
+            self.single_atom(residue, '*', filtered, sd_limit, normalized, ambiguity, outfilename)
         elif residue is None and atom is not None and atom_list is None:
-            self.single_atom('*', atom, filtered, sd_limit, normalized, outfilename)
+            self.single_atom('*', atom, filtered, sd_limit, normalized, ambiguity, outfilename)
         else:
             print("Not a valid option")
 
-    def hist2d(self, residue, atom1, atom2, filtered=True, sd_limit=10, normalized=False, outfilename='hist2d.html'):
+    def hist2d(self, residue, atom1, atom2, filtered=True, sd_limit=10, normalized=False,
+               ambiguity1='*', ambiguity2='*',outfilename='hist2d.html'):
         """
         Generates chemical shift correlation plots for a given two atoms in a given amino acid
         :param residue: 3 letter amino acid code
@@ -938,6 +974,8 @@ class Histogram(object):
         :param sd_limit: Number of time Standard deviation for filtering default: 10
         :param normalized: True/False Plots either Count/Density default: False
         :param outfilename: output file name
+        :param ambiguity1: NMR-STAR Ambiguity code for atom1 default:'*'
+        :param ambiguity2: NMR-STAR Ambiguity code for atom2 default:'*'
         :return: writes output in a html file
         """
         print("This may take time to gather data from entire BMRB database!")
@@ -973,7 +1011,7 @@ class Histogram(object):
             hovermode='closest',
             showlegend=False
         )
-        data = self.get_histogram2d_api(residue, atom1, atom2, filtered, sd_limit, normalized)
+        data = self.get_histogram2d_api(residue, atom1, atom2, filtered, sd_limit, normalized, ambiguity1, ambiguity2)
         fig = plotly.graph_objs.Figure(data=data, layout=layout)
 
         if NOTEBOOK:
@@ -982,7 +1020,7 @@ class Histogram(object):
             plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
             print("Output written on {}".format(outfilename))
 
-    def single_atom(self, residue, atom, filtered=True, sd_limit=10, normalized=False, outfilename='hist.html'):
+    def single_atom(self, residue, atom, filtered=True, sd_limit=10, normalized=False, ambiguity = '*',outfilename='hist.html'):
         """
         Generates histgram for a given atom in a given amino acid
         :param residue: 3 letter amino acid code
@@ -1001,7 +1039,7 @@ class Histogram(object):
             barmode='overlay',
             xaxis=dict(autorange='reversed', title='Chemical Shift [ppm]'),
             yaxis=dict(title=count))
-        data = self.get_histogram_api(residue, atom, filtered, sd_limit, normalized)
+        data = self.get_histogram_api(residue, atom, filtered, sd_limit, normalized, ambiguity)
         fig = plotly.graph_objs.Figure(data=data, layout=layout)
 
         if NOTEBOOK:
@@ -1010,13 +1048,14 @@ class Histogram(object):
             plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
             print("Output written on {}".format(outfilename))
 
-    def multiple_atom(self, atom_list, filtered=True, sd_limit=10, normalized=False, outfilename='hist.html'):
+    def multiple_atom(self, atom_list, filtered=True, sd_limit=10, normalized=False, ambiguity = '*',outfilename='hist.html'):
         """
         Generates histogram for a given list of atoms from various amino acids
         :param atom_list: atom list example ['ALA:CA','GLY:CA','ALA:HA']
         :param filtered: True/False Filters based on standard deviation cutoff Default:True
         :param sd_limit: Number of time Standard deviation for filtering default: 10
         :param normalized: True/False Plots either Count/Density default: False
+        :param ambiguity: NMR-STAR Ambiguity code default:'*'
         :param outfilename: output file name
         :return: writes output in a html file
         """
@@ -1028,7 +1067,7 @@ class Histogram(object):
         for atm in atom_list:
             residue = atm.split("-")[0]
             atom = atm.split("-")[1]
-            for dd in self.get_histogram_api(residue, atom, filtered, sd_limit, normalized):
+            for dd in self.get_histogram_api(residue, atom, filtered, sd_limit, normalized,ambiguity):
                 data.append(dd)
         layout = plotly.graph_objs.Layout(
             barmode='overlay',
@@ -1043,7 +1082,7 @@ class Histogram(object):
             print("Output written on {}".format(outfilename))
 
     def conditional_hist(self, residue, atom, atomlist, cslist, filtered=True, sd_limit=10, normalized=False,
-                         outfilename='hist.html'):
+                         ambiguity='*', outfilename='hist.html'):
         """
         Generates chemical shift histogram, which depends on the chemical shift values of given list of atoms
         in the same amino acid
@@ -1066,8 +1105,8 @@ class Histogram(object):
             barmode='overlay',
             xaxis=dict(autorange='reversed', title='Chemical Shift [ppm]'),
             yaxis=dict(title=count))
-        data = [self.get_histogram_api(residue, atom, filtered, sd_limit, normalized)[0],
-                self.get_conditional_histogram_api(residue, atom, atomlist, cslist, filtered, sd_limit, normalized)
+        data = [self.get_histogram_api(residue, atom, filtered, sd_limit, normalized,ambiguity)[0],
+                self.get_conditional_histogram_api(residue, atom, atomlist, cslist, filtered, sd_limit, normalized,ambiguity)
                 ]
         fig = plotly.graph_objs.Figure(data=data, layout=layout)
 
