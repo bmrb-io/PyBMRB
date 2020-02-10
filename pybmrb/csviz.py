@@ -23,7 +23,7 @@ else:
     from urllib2 import urlopen, Request
 
 _API_URL = "http://webapi.bmrb.wisc.edu/v2"
-NOTEBOOK = False
+NOTEBOOK = False 
 _OPACITY = 0.5
 _AUTOOPEN = True
 __version__ = "1.2.8"
@@ -76,7 +76,7 @@ class Spectra(object):
                     cs_data = indata.get_tags(
                         ['_Atom_chem_shift.Comp_index_ID', '_Atom_chem_shift.Comp_ID', '_Atom_chem_shift.Atom_ID',
                          '_Atom_chem_shift.Atom_type', '_Atom_chem_shift.Assigned_chem_shift_list_ID',
-                         '_Atom_chem_shift.Val'])
+                         '_Atom_chem_shift.Val','_Atom_chem_shift.Entity_assembly_ID'])
                     eids = [fid] * len(cs_data['_Atom_chem_shift.Comp_index_ID'])
                     # eids = [fid for i in range(len(cs_data['_Atom_chem_shift.Comp_index_ID']))]
                     eid_cs_data = [eids, cs_data['_Atom_chem_shift.Comp_index_ID'],
@@ -84,7 +84,8 @@ class Spectra(object):
                                    cs_data['_Atom_chem_shift.Atom_ID'],
                                    cs_data['_Atom_chem_shift.Atom_type'],
                                    cs_data['_Atom_chem_shift.Assigned_chem_shift_list_ID'],
-                                   cs_data['_Atom_chem_shift.Val']]
+                                   cs_data['_Atom_chem_shift.Val'],
+                                   cs_data['_Atom_chem_shift.Entity_assembly_ID']]
                     if len(outdata):
                         for i in range(len(eid_cs_data)):
                             outdata[i] = outdata[i] + eid_cs_data[i]
@@ -101,7 +102,7 @@ class Spectra(object):
                                 ['_Atom_chem_shift.Comp_index_ID', '_Atom_chem_shift.Comp_ID',
                                  '_Atom_chem_shift.Atom_ID',
                                  '_Atom_chem_shift.Atom_type', '_Atom_chem_shift.Assigned_chem_shift_list_ID',
-                                 '_Atom_chem_shift.Val'])
+                                 '_Atom_chem_shift.Val','_Atom_chem_shift.Entity_assembly_ID'])
                             eids = [eid] * len(cs_data['_Atom_chem_shift.Comp_index_ID'])
                             # eids = [eid for i in range(len(cs_data['_Atom_chem_shift.Comp_index_ID']))]
                             eid_cs_data = [eids, cs_data['_Atom_chem_shift.Comp_index_ID'],
@@ -109,7 +110,8 @@ class Spectra(object):
                                            cs_data['_Atom_chem_shift.Atom_ID'],
                                            cs_data['_Atom_chem_shift.Atom_type'],
                                            cs_data['_Atom_chem_shift.Assigned_chem_shift_list_ID'],
-                                           cs_data['_Atom_chem_shift.Val']]
+                                           cs_data['_Atom_chem_shift.Val'],
+                                           cs_data['_Atom_chem_shift.Entity_assembly_ID']]
                         except (OSError, IOError) as e:
                             print(e)
                         if len(outdata):
@@ -123,7 +125,7 @@ class Spectra(object):
                         cs_data = indata.get_tags(
                             ['_Atom_chem_shift.Comp_index_ID', '_Atom_chem_shift.Comp_ID', '_Atom_chem_shift.Atom_ID',
                              '_Atom_chem_shift.Atom_type', '_Atom_chem_shift.Assigned_chem_shift_list_ID',
-                             '_Atom_chem_shift.Val'])
+                             '_Atom_chem_shift.Val','_Atom_chem_shift.Entity_assembly_ID'])
                         eids = [bmrbid] * len(cs_data['_Atom_chem_shift.Comp_index_ID'])
                         # eids = [bmrbid for i in range(len(cs_data['_Atom_chem_shift.Comp_index_ID']))]
                         eid_cs_data = [eids, cs_data['_Atom_chem_shift.Comp_index_ID'],
@@ -131,7 +133,8 @@ class Spectra(object):
                                        cs_data['_Atom_chem_shift.Atom_ID'],
                                        cs_data['_Atom_chem_shift.Atom_type'],
                                        cs_data['_Atom_chem_shift.Assigned_chem_shift_list_ID'],
-                                       cs_data['_Atom_chem_shift.Val']]
+                                       cs_data['_Atom_chem_shift.Val'],
+                                       cs_data['_Atom_chem_shift.Entity_assembly_ID']]
                         if len(outdata):
                             for i in range(len(eid_cs_data)):
                                 outdata[i] = outdata[i] + eid_cs_data[i]
@@ -450,7 +453,7 @@ class Spectra(object):
         }
         outdata = [[], [], [], [], []]
         for i in range(len(csdata[0])):
-            atomid = '{}-{}-{}-{}'.format(csdata[0][i], csdata[1][i], csdata[2][i], csdata[5][i])
+            atomid = '{}-{}-{}-{}-{}'.format(csdata[0][i], csdata[1][i],  csdata[2][i], csdata[5][i], csdata[7][i])
             if csdata[3][i] == "H":
                 if atomid not in outdata[0]:
                     outdata[0].append(atomid)
@@ -474,7 +477,7 @@ class Spectra(object):
             if csdata[2][i] in sidechainres:
                 for k in sidechains.keys():
                     if k.split("-")[0] == csdata[2][i]:
-                        atomid = '{}-{}-{}-{}'.format(csdata[0][i], csdata[1][i], k, csdata[5][i])
+                        atomid = '{}-{}-{}-{}-{}'.format(csdata[0][i], csdata[1][i], k, csdata[5][i],csdata[7][i])
                         if csdata[3][i] in sidechains[k] and csdata[4][i] == "H":
                             if atomid not in outdata[0]:
                                 outdata[0].append(atomid)
@@ -668,6 +671,11 @@ class Histogram(object):
                     x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d
                          if i[dump['columns'].index('Atom_chem_shift.Comp_ID')] == res and
                          i[dump['columns'].index('Atom_chem_shift.Atom_ID')] == at]
+                    # txt = ['{}-{}-{}'.format(i[dump['columns'].index('Atom_chem_shift.Entry_ID')],
+                    #                            i[dump['columns'].index('Atom_chem_shift.Comp_ID')],
+                    #                              i[dump['columns'].index('Atom_chem_shift.Comp_index_ID')]) for i in d
+                    #      if i[dump['columns'].index('Atom_chem_shift.Comp_ID')] == res and
+                    #      i[dump['columns'].index('Atom_chem_shift.Atom_ID')] == a]
                 else:
                     x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d
                          if i[dump['columns'].index('Atom_chem_shift.Comp_ID')] == res and
@@ -683,11 +691,12 @@ class Histogram(object):
                 if len(x) == 0:
                     print('{} has no data at BMRB. Please check the atom nomenclature.'.format(atm))
                 if normalized:
-                    data.append(plotly.graph_objs.Histogram(x=x, name=atm,
+                    data.append(plotly.graph_objs.Histogram(x=x, name=atm, #hovertext = txt, hoverinfo='text',
                                                             histnorm='probability', opacity=_OPACITY))
 
                 else:
-                    data.append(plotly.graph_objs.Histogram(x=x, name=atm, opacity=_OPACITY))
+                    data.append(plotly.graph_objs.Histogram(x=x, name=atm, #hovertext = txt, hoverinfo='text',
+                                                            opacity=_OPACITY))
 
         else:
             if ambiguity == '*':
