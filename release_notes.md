@@ -1,4 +1,3 @@
-## 1.2.6
+## 1.2.9
 
-Ambiguity code based filter added. Chemical shift histograms can now be filtered for only unambiguously assigned chemical shifts.
-    
+Entity_assembly_ID added to peak label to handle multiple chain entries
