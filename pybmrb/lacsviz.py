@@ -126,8 +126,6 @@ class LACS_Viz(object):
             fig = plotly.graph_objs.Figure(data=data, layout=layout)
             plotly.offline.plot(fig, filename='LACS{}.html'.format(dat['atom']), auto_open=_AUTOOPEN)
 
-
-
 if __name__ == "__main__":
     p = LACS_Viz()
     # p.read_lacs_output('data/2m07_1_A.lacs_out')
