@@ -1,3 +1,3 @@
-## 1.2.9
+## 1.2.91
 
-Entity_assembly_ID added to peak label to handle multiple chain entries
+HSQC plot title and axis labels updated. HSQC peaks validated before ploting
