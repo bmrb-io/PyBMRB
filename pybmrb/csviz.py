@@ -26,7 +26,7 @@ _API_URL = "http://webapi.bmrb.wisc.edu/v2"
 NOTEBOOK = False
 _OPACITY = 0.5
 _AUTOOPEN = True
-__version__ = "1.2.9"
+__version__ = "1.2.91"
 
 __all__ = ['Spectra', 'Histogram']
 
@@ -425,6 +425,23 @@ class Spectra(object):
         return out_data
 
     @staticmethod
+    def check_hsqc_peaks(hsqcdata):
+        hsqcnew = [[],[],[],[],[]]
+        for i in range(len(hsqcdata[0])):
+            try:
+                hcs = float(hsqcdata[1][i])
+                ncs = float(hsqcdata[2][i])
+                hsqcnew[0].append(hsqcdata[0][i])
+                hsqcnew[1].append(hsqcdata[1][i])
+                hsqcnew[2].append(hsqcdata[2][i])
+                hsqcnew[3].append(hsqcdata[3][i])
+                hsqcnew[4].append(hsqcdata[4][i])
+            except TypeError:
+                pass
+        return hsqcnew
+
+
+    @staticmethod
     def convert_to_n15hsqc_peaks(csdata):
         """
         Converts the output from get_entry into hsqc peak positions
@@ -499,7 +516,6 @@ class Spectra(object):
                             else:
                                 outdata[2][outdata[0].index(atomid)] = csdata[6][i]
                                 outdata[4][outdata[0].index(atomid)] = (csdata[3][i])
-
         return outdata
 
     def n15hsqc(self, bmrbid=None, filename=None, seq=None, nn=3, colorby=None, groupbyres=False,
@@ -523,12 +539,13 @@ class Spectra(object):
             tag = "HeptaPeptide"
         else:
             tag = "Not a valid model"
-        title = 'Simulated N15-HSQC peak positions'
+        title = 'Simulated <sup>1</sup>H-<sup>15</sup>N  HSQC peak positions'
 
         csdata = self.get_entry(bmrbid, filename, seq, tag, nn)
 
         if len(csdata):
-            hsqcdata = self.convert_to_n15hsqc_peaks(csdata)
+            hsqcdata = self.check_hsqc_peaks(self.convert_to_n15hsqc_peaks(csdata))
+            print (hsqcdata)
         else:
             hsqcdata = []
 
@@ -601,9 +618,9 @@ class Spectra(object):
 
         layout = plotly.graph_objs.Layout(
             xaxis=dict(autorange='reversed',
-                       title='H (ppm)'),
+                       title='<sup>1</sup>H (ppm)'),
             yaxis=dict(autorange='reversed',
-                       title='N (ppm)'),
+                       title='<sup>15</sup>N (ppm)'),
             showlegend=True,
             hovermode='closest',
             title=title)
@@ -614,6 +631,10 @@ class Spectra(object):
             else:
                 plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
                 print ("Output written on {}".format(outfilename))
+            return True
+        else:
+            print ("No amide proton nitrogen chemical shifts found")
+            return False
 
 
 class Histogram(object):
