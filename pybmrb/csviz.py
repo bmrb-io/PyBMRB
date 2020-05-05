@@ -425,6 +425,40 @@ class Spectra(object):
         return out_data
 
     @staticmethod
+    def convert_to_2d_peaks(csdata,atom1,atom2):
+        """
+        Converts the output from get_entry into hsqc peak positions
+        :param csdata: output from get_entry
+        :param atom1: IUPAC atom name
+        :param atom2: IUPAC atom name
+        :return: easy to plot hsqc peak positions
+        """
+        outdata = [[], [], [], [], []]
+        for i in range(len(csdata[0])):
+            atomid = '{}-{}-{}-{}-{}'.format(csdata[0][i], csdata[1][i], csdata[2][i], csdata[5][i], csdata[7][i])
+            if csdata[3][i] == atom1:
+                if atomid not in outdata[0]:
+                    outdata[0].append(atomid)
+                    outdata[1].append(csdata[6][i])
+                    outdata[2].append(None)
+                    outdata[3].append(csdata[3][i])
+                    outdata[4].append(None)
+                else:
+                    outdata[1][outdata[0].index(atomid)] = csdata[6][i]
+                    outdata[3][outdata[0].index(atomid)] = csdata[3][i]
+            if csdata[3][i] == atom2:
+                if atomid not in outdata[0]:
+                    outdata[0].append(atomid)
+                    outdata[2].append(csdata[6][i])
+                    outdata[1].append(None)
+                    outdata[4].append(csdata[3][i])
+                    outdata[3].append(None)
+                else:
+                    outdata[2][outdata[0].index(atomid)] = csdata[6][i]
+                    outdata[4][outdata[0].index(atomid)] = (csdata[3][i])
+        return outdata
+
+    @staticmethod
     def check_hsqc_peaks(hsqcdata):
         hsqcnew = [[],[],[],[],[]]
         for i in range(len(hsqcdata[0])):
@@ -518,6 +552,130 @@ class Spectra(object):
                                 outdata[4][outdata[0].index(atomid)] = (csdata[3][i])
         return outdata
 
+    def peaks2d(self, bmrbid=None, filename=None, atom1=None, atom2= None, colorby=None, groupbyres=False,
+                outfilename='peaks2d.html'):
+        """
+        Plots hsqc peak positions for a given list of BMRB ids
+        :param bmrbid: entry id or list of entry ids
+        :param seq: sequence in one letter code
+        :param filename: local NMR-STAR filename
+        :param nn: 3/5/7 for Tri or Penta or Hepta peptide model prediction
+        :param colorby: Color by res/entry (default res for single entry/ entry for multiple entries)
+        :param groupbyres: if TRUE connects the same seq ids by line; default False
+        :param outfilename: Output filename
+        :return: plotly plot object or html file
+        """
+        if atom1 is None or atom2 is None:
+            print ('atom1 or atom2 not specified')
+            exit(1)
+
+        seq = None
+        nn = 3
+        if nn == 3:
+            tag = "TriPeptide"
+        elif nn == 5:
+            tag = "PentaPeptide"
+        elif nn == 7:
+            tag = "HeptaPeptide"
+        else:
+            tag = "Not a valid model"
+        title = 'Simulated  peak positions'
+
+        csdata = self.get_entry(bmrbid, filename, seq, tag, nn)
+
+        if len(csdata):
+            hsqcdata = self.check_hsqc_peaks(self.convert_to_2d_peaks(csdata,atom1,atom2))
+            #print (hsqcdata)
+        else:
+            hsqcdata = []
+
+        if colorby == 'entry':
+            idx = 0
+        elif colorby == 'res':
+            idx = 2
+        elif type(bmrbid) is list and len(bmrbid) > 1:
+            idx = 0
+        elif sum(1 for i in [bmrbid, filename, seq] if i is not None) > 1:
+            idx = 0
+        else:
+            idx = 2
+
+        if len(hsqcdata):
+            groups = set([k.split("-")[idx] for k in hsqcdata[0]])
+        else:
+            groups = []
+        data_sets = {}
+        for gid in groups:
+            data_sets[gid] = [[], [], [], []]
+            for i in range(len(hsqcdata[0])):
+                if hsqcdata[0][i].split("-")[idx] == gid:
+                    data_sets[gid][0].append(hsqcdata[1][i])
+                    data_sets[gid][1].append(hsqcdata[2][i])
+                    data_sets[gid][2].append(hsqcdata[0][i])
+                    try:
+                        data_sets[gid][3].append(
+                            '{}{}'.format(hsqcdata[0][i].split("-")[1], self.threeTOone[hsqcdata[0][i].split("-")[2]]))
+                    except KeyError:
+                        data_sets[gid][3].append(
+                            '{}{}'.format(hsqcdata[0][i].split("-")[1], hsqcdata[0][i].split("-")[2]))
+
+        if groupbyres:
+            groups2 = set(["-".join(k.split("-")[1:4]) for k in hsqcdata[0]])
+            data_sets2 = {}
+            for gid in groups2:
+                data_sets2[gid] = [[], [], [], []]
+                for i in range(len(hsqcdata[0])):
+                    if "-".join(hsqcdata[0][i].split("-")[1:4]) == gid:
+                        data_sets2[gid][0].append(hsqcdata[1][i])
+                        data_sets2[gid][1].append(hsqcdata[2][i])
+                        data_sets2[gid][2].append(hsqcdata[0][i])
+                        try:
+                            one_letter_code = self.threeTOone[hsqcdata[0][i].split("-")[2]]
+                        except KeyError:
+                            one_letter_code = hsqcdata[0][i].split("-")[2]
+                        seq_id = hsqcdata[0][i].split("-")[1]
+                        data_sets2[gid][3].append('{}{}'.format(seq_id, one_letter_code))
+
+        data = []
+        for k in data_sets.keys():
+            data.append(plotly.graph_objs.Scatter(x=data_sets[k][0],
+                                                  y=data_sets[k][1],
+                                                  text=data_sets[k][2],
+                                                  mode='markers',
+                                                  opacity=_OPACITY,
+                                                  name=k))
+
+        if groupbyres:
+            for k in data_sets2.keys():
+                data.append(plotly.graph_objs.Scatter(x=data_sets2[k][0],
+                                                      y=data_sets2[k][1],
+                                                      text=data_sets2[k][2],
+                                                      mode='lines',
+                                                      name=k,
+                                                      opacity=_OPACITY,
+                                                      showlegend=False)
+                            )
+
+        layout = plotly.graph_objs.Layout(
+            xaxis=dict(autorange='reversed',
+                       title='{} (ppm)'.format(atom1)),
+            yaxis=dict(autorange='reversed',
+                       title='{} (ppm)'.format(atom2)),
+            showlegend=True,
+            hovermode='closest',
+            title=title)
+        fig = plotly.graph_objs.Figure(data=data, layout=layout)
+        if len(data):
+            if NOTEBOOK:
+                plotly.offline.iplot(fig)
+            else:
+                plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
+                print ("Output written on {}".format(outfilename))
+            return True
+        else:
+            print ("No chemical information found for atoms {} {}".format(atom1,atom2))
+            return False
+
     def n15hsqc(self, bmrbid=None, filename=None, seq=None, nn=3, colorby=None, groupbyres=False,
                 outfilename='n15hsqc.html'):
         """
@@ -545,7 +703,7 @@ class Spectra(object):
 
         if len(csdata):
             hsqcdata = self.check_hsqc_peaks(self.convert_to_n15hsqc_peaks(csdata))
-            print (hsqcdata)
+            #print (hsqcdata)
         else:
             hsqcdata = []
 
@@ -635,6 +793,7 @@ class Spectra(object):
         else:
             print ("No amide proton nitrogen chemical shifts found")
             return False
+
 
 
 class Histogram(object):
