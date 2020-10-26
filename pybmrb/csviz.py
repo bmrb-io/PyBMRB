@@ -434,6 +434,7 @@ class Spectra(object):
         :param atom2: IUPAC atom name
         :return: easy to plot hsqc peak positions
         """
+        print (csdata)
         seq_id = sorted([int(i) for i in list(set(csdata[1]))])
         data = {}
         for i in seq_id:
@@ -507,6 +508,7 @@ class Spectra(object):
     @staticmethod
     def check_hsqc_peaks(hsqcdata):
         hsqcnew = [[],[],[],[],[],[]]
+        print (hsqcdata)
         for i in range(len(hsqcdata[0])):
             try:
                 hcs = float(hsqcdata[1][i])
@@ -644,12 +646,16 @@ class Spectra(object):
 
         csdata = self.get_entry(bmrbid, filename, seq, tag, nn)
 
+
+
         if len(csdata):
-            hsqcdata = self.check_hsqc_peaks(self.convert_to_2d_list(csdata, atom1, atom2))
-            #hsqcdata = self.check_hsqc_peaks(self.convert_to_2d_peaks(csdata,atom1,atom2))
-            #print (hsqcdata)
+            hsqcdata = self.check_hsqc_peaks2(self.convert_to_2d_list(csdata, atom1, atom2))
+            #hsqcdata = self.check_hsqc_peaks2(self.convert_to_2d_peaks(csdata,atom1,atom2))
         else:
             hsqcdata = []
+
+        for kkk in hsqcdata:
+            print (kkk[0])
 
         if colorby == 'entry':
             idx = 0
@@ -663,20 +669,21 @@ class Spectra(object):
             idx = 2
 
         if len(hsqcdata):
-            groups = set([k.split("-")[idx] for k in hsqcdata[0]])
+            groups = set([k.split("-")[idx] for k in hsqcdata[2]])
         else:
             groups = []
+
         data_sets = {}
         for gid in groups:
             data_sets[gid] = [[], [], [], []]
             for i in range(len(hsqcdata[0])):
-                if hsqcdata[0][i].split("-")[idx] == gid:
-                    data_sets[gid][0].append(hsqcdata[1][i])
-                    data_sets[gid][1].append(hsqcdata[2][i])
-                    data_sets[gid][2].append(hsqcdata[0][i])
+                if hsqcdata[2][i].split("-")[idx] == gid:
+                    data_sets[gid][0].append(hsqcdata[0][i])
+                    data_sets[gid][1].append(hsqcdata[1][i])
+                    data_sets[gid][2].append(hsqcdata[2][i])
                     try:
                         data_sets[gid][3].append(
-                            '{}{}'.format(hsqcdata[0][i].split("-")[1], self.threeTOone[hsqcdata[0][i].split("-")[2]]))
+                            '{}{}'.format(hsqcdata[2][i].split("-")[1], self.threeTOone[hsqcdata[2][i].split("-")[2]]))
                     except KeyError:
                         data_sets[gid][3].append(
                             '{}{}'.format(hsqcdata[0][i].split("-")[1], hsqcdata[0][i].split("-")[2]))
@@ -688,9 +695,9 @@ class Spectra(object):
                 data_sets2[gid] = [[], [], [], []]
                 for i in range(len(hsqcdata[0])):
                     if "-".join(hsqcdata[0][i].split("-")[1:4]) == gid:
-                        data_sets2[gid][0].append(hsqcdata[1][i])
-                        data_sets2[gid][1].append(hsqcdata[2][i])
-                        data_sets2[gid][2].append(hsqcdata[0][i])
+                        data_sets2[gid][0].append(hsqcdata[0][i])
+                        data_sets2[gid][1].append(hsqcdata[1][i])
+                        data_sets2[gid][2].append(hsqcdata[2][i])
                         try:
                             one_letter_code = self.threeTOone[hsqcdata[0][i].split("-")[2]]
                         except KeyError:
@@ -1859,5 +1866,5 @@ def _called_directly():
 
 if __name__ == "__main__":
     p = Spectra()
-    p.peaks2dtest()
+    p.peaks2d(bmrbid='15060',atom1='N',atom2='CB', )
     #_called_directly()
