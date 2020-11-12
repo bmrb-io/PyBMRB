@@ -6,7 +6,7 @@ import ntpath
 import optparse
 import os
 import sys
-
+import re
 import numpy as np
 import plotly
 import pynmrstar
@@ -26,7 +26,7 @@ _API_URL = "http://api.bmrb.io/v2"
 NOTEBOOK = False
 _OPACITY = 0.5
 _AUTOOPEN = True
-__version__ = "1.2.8"
+__version__ = "1.2.91"
 
 __all__ = ['Spectra', 'Histogram']
 
@@ -76,7 +76,7 @@ class Spectra(object):
                     cs_data = indata.get_tags(
                         ['_Atom_chem_shift.Comp_index_ID', '_Atom_chem_shift.Comp_ID', '_Atom_chem_shift.Atom_ID',
                          '_Atom_chem_shift.Atom_type', '_Atom_chem_shift.Assigned_chem_shift_list_ID',
-                         '_Atom_chem_shift.Val'])
+                         '_Atom_chem_shift.Val','_Atom_chem_shift.Entity_assembly_ID'])
                     eids = [fid] * len(cs_data['_Atom_chem_shift.Comp_index_ID'])
                     # eids = [fid for i in range(len(cs_data['_Atom_chem_shift.Comp_index_ID']))]
                     eid_cs_data = [eids, cs_data['_Atom_chem_shift.Comp_index_ID'],
@@ -84,7 +84,8 @@ class Spectra(object):
                                    cs_data['_Atom_chem_shift.Atom_ID'],
                                    cs_data['_Atom_chem_shift.Atom_type'],
                                    cs_data['_Atom_chem_shift.Assigned_chem_shift_list_ID'],
-                                   cs_data['_Atom_chem_shift.Val']]
+                                   cs_data['_Atom_chem_shift.Val'],
+                                   cs_data['_Atom_chem_shift.Entity_assembly_ID']]
                     if len(outdata):
                         for i in range(len(eid_cs_data)):
                             outdata[i] = outdata[i] + eid_cs_data[i]
@@ -101,7 +102,7 @@ class Spectra(object):
                                 ['_Atom_chem_shift.Comp_index_ID', '_Atom_chem_shift.Comp_ID',
                                  '_Atom_chem_shift.Atom_ID',
                                  '_Atom_chem_shift.Atom_type', '_Atom_chem_shift.Assigned_chem_shift_list_ID',
-                                 '_Atom_chem_shift.Val'])
+                                 '_Atom_chem_shift.Val','_Atom_chem_shift.Entity_assembly_ID'])
                             eids = [eid] * len(cs_data['_Atom_chem_shift.Comp_index_ID'])
                             # eids = [eid for i in range(len(cs_data['_Atom_chem_shift.Comp_index_ID']))]
                             eid_cs_data = [eids, cs_data['_Atom_chem_shift.Comp_index_ID'],
@@ -109,7 +110,8 @@ class Spectra(object):
                                            cs_data['_Atom_chem_shift.Atom_ID'],
                                            cs_data['_Atom_chem_shift.Atom_type'],
                                            cs_data['_Atom_chem_shift.Assigned_chem_shift_list_ID'],
-                                           cs_data['_Atom_chem_shift.Val']]
+                                           cs_data['_Atom_chem_shift.Val'],
+                                           cs_data['_Atom_chem_shift.Entity_assembly_ID']]
                         except (OSError, IOError) as e:
                             print(e)
                         if len(outdata):
@@ -123,7 +125,7 @@ class Spectra(object):
                         cs_data = indata.get_tags(
                             ['_Atom_chem_shift.Comp_index_ID', '_Atom_chem_shift.Comp_ID', '_Atom_chem_shift.Atom_ID',
                              '_Atom_chem_shift.Atom_type', '_Atom_chem_shift.Assigned_chem_shift_list_ID',
-                             '_Atom_chem_shift.Val'])
+                             '_Atom_chem_shift.Val','_Atom_chem_shift.Entity_assembly_ID'])
                         eids = [bmrbid] * len(cs_data['_Atom_chem_shift.Comp_index_ID'])
                         # eids = [bmrbid for i in range(len(cs_data['_Atom_chem_shift.Comp_index_ID']))]
                         eid_cs_data = [eids, cs_data['_Atom_chem_shift.Comp_index_ID'],
@@ -131,7 +133,8 @@ class Spectra(object):
                                        cs_data['_Atom_chem_shift.Atom_ID'],
                                        cs_data['_Atom_chem_shift.Atom_type'],
                                        cs_data['_Atom_chem_shift.Assigned_chem_shift_list_ID'],
-                                       cs_data['_Atom_chem_shift.Val']]
+                                       cs_data['_Atom_chem_shift.Val'],
+                                       cs_data['_Atom_chem_shift.Entity_assembly_ID']]
                         if len(outdata):
                             for i in range(len(eid_cs_data)):
                                 outdata[i] = outdata[i] + eid_cs_data[i]
@@ -140,6 +143,7 @@ class Spectra(object):
                     except (OSError, IOError) as e:
                         print(e)
         return outdata
+
 
     @staticmethod
     def _load_pp_dict(atom, nn, filtered=True):
@@ -422,6 +426,119 @@ class Spectra(object):
         return out_data
 
     @staticmethod
+    def convert_to_2d_list(csdata, atom1, atom2,n=0):
+        """
+        Converts the output from get_entry into hsqc peak positions
+        :param csdata: output from get_entry
+        :param atom1: IUPAC atom name
+        :param atom2: IUPAC atom name
+        :return: easy to plot hsqc peak positions
+        """
+        print (csdata)
+        seq_id = sorted([int(i) for i in list(set(csdata[1]))])
+        data = {}
+        for i in seq_id:
+                data[i]={}
+        for i in range(len(csdata[0])):
+            if 'res' not in data[int(csdata[1][i])].keys():
+                data[int(csdata[1][i])]['res']=csdata[2][i]
+            if csdata[3][i] not in data[int(csdata[1][i])].keys():
+                data[int(csdata[1][i])][csdata[3][i]]=float(csdata[6][i])
+
+        peak_list = []
+        for i in seq_id:
+            a1=[]
+            a2=[]
+            for j in data[i]:
+                if ('+' in atom1 and re.search(atom1,j)) or atom1==j:
+                    a1.append(j)
+            try:
+                for j in data[i+n]:
+                    if ('+' in atom2 and re.search(atom2,j)) or atom2==j:
+                        a2.append(j)
+            except KeyError:
+                pass
+            for aa1 in a1:
+                for aa2 in a2:
+                    peak_list.append('{}-{}-{}-{}'.format(i,aa1,i+n,aa2))
+
+        outdata = [[],[],[],[]]
+        for k in peak_list:
+            y=k.split("-")
+            x=[int(y[0]),y[1],int(y[2]),y[3]]
+            outdata[0].append(data[x[0]][x[1]])
+            outdata[1].append(data[x[2]][x[3]])
+            outdata[2].append('{}-{}-{}-{}-{}-{}'.format(x[0],x[1],data[x[0]]['res'],x[2],x[3],data[x[2]]['res']))
+        return outdata
+
+    @staticmethod
+    def convert_to_2d_peaks(csdata,atom1,atom2):
+        """
+        Converts the output from get_entry into hsqc peak positions
+        :param csdata: output from get_entry
+        :param atom1: IUPAC atom name
+        :param atom2: IUPAC atom name
+        :return: easy to plot hsqc peak positions
+        """
+        outdata = [[], [], [], [], []]
+        for i in range(len(csdata[0])):
+            atomid = '{}-{}-{}-{}-{}'.format(csdata[0][i], csdata[1][i], csdata[2][i], csdata[5][i], csdata[7][i])
+            if csdata[3][i] == atom1:
+                if atomid not in outdata[0]:
+                    outdata[0].append(atomid)
+                    outdata[1].append(csdata[6][i])
+                    outdata[2].append(None)
+                    outdata[3].append(csdata[3][i])
+                    outdata[4].append(None)
+                else:
+                    outdata[1][outdata[0].index(atomid)] = csdata[6][i]
+                    outdata[3][outdata[0].index(atomid)] = csdata[3][i]
+            if csdata[3][i] == atom2:
+                if atomid not in outdata[0]:
+                    outdata[0].append(atomid)
+                    outdata[2].append(csdata[6][i])
+                    outdata[1].append(None)
+                    outdata[4].append(csdata[3][i])
+                    outdata[3].append(None)
+                else:
+                    outdata[2][outdata[0].index(atomid)] = csdata[6][i]
+                    outdata[4][outdata[0].index(atomid)] = (csdata[3][i])
+        return outdata
+
+    @staticmethod
+    def check_hsqc_peaks(hsqcdata):
+        hsqcnew = [[],[],[],[],[],[]]
+        print (hsqcdata)
+        for i in range(len(hsqcdata[0])):
+            try:
+                hcs = float(hsqcdata[1][i])
+                ncs = float(hsqcdata[2][i])
+                hsqcnew[0].append(hsqcdata[0][i])
+                hsqcnew[1].append(hsqcdata[1][i])
+                hsqcnew[2].append(hsqcdata[2][i])
+                hsqcnew[3].append(hsqcdata[3][i])
+                hsqcnew[4].append(hsqcdata[4][i])
+                hsqcnew[5].append(hsqcdata[5][i])
+            except TypeError:
+                pass
+        return hsqcnew
+
+    @staticmethod
+    def check_hsqc_peaks2(hsqcdata):
+        hsqcnew = [[], [], []]
+        for i in range(len(hsqcdata[0])):
+            try:
+                hcs = float(hsqcdata[0][i])
+                ncs = float(hsqcdata[1][i])
+                hsqcnew[0].append(hsqcdata[0][i])
+                hsqcnew[1].append(hsqcdata[1][i])
+                hsqcnew[2].append(hsqcdata[2][i])
+            except TypeError:
+                pass
+        return hsqcnew
+
+
+    @staticmethod
     def convert_to_n15hsqc_peaks(csdata):
         """
         Converts the output from get_entry into hsqc peak positions
@@ -450,7 +567,7 @@ class Spectra(object):
         }
         outdata = [[], [], [], [], []]
         for i in range(len(csdata[0])):
-            atomid = '{}-{}-{}-{}'.format(csdata[0][i], csdata[1][i], csdata[2][i], csdata[5][i])
+            atomid = '{}-{}-{}-{}-{}'.format(csdata[0][i], csdata[1][i],  csdata[2][i], csdata[5][i], csdata[7][i])
             if csdata[3][i] == "H":
                 if atomid not in outdata[0]:
                     outdata[0].append(atomid)
@@ -474,7 +591,7 @@ class Spectra(object):
             if csdata[2][i] in sidechainres:
                 for k in sidechains.keys():
                     if k.split("-")[0] == csdata[2][i]:
-                        atomid = '{}-{}-{}-{}'.format(csdata[0][i], csdata[1][i], k, csdata[5][i])
+                        atomid = '{}-{}-{}-{}-{}'.format(csdata[0][i], csdata[1][i], k, csdata[5][i],csdata[7][i])
                         if csdata[3][i] in sidechains[k] and csdata[4][i] == "H":
                             if atomid not in outdata[0]:
                                 outdata[0].append(atomid)
@@ -496,11 +613,10 @@ class Spectra(object):
                             else:
                                 outdata[2][outdata[0].index(atomid)] = csdata[6][i]
                                 outdata[4][outdata[0].index(atomid)] = (csdata[3][i])
-
         return outdata
 
-    def n15hsqc(self, bmrbid=None, filename=None, seq=None, nn=3, colorby=None, groupbyres=False,
-                outfilename='n15hsqc.html'):
+    def peaks2d(self, bmrbid=None, filename=None, atom1=None, atom2= None, colorby=None, groupbyres=False,
+                outfilename='peaks2d.html'):
         """
         Plots hsqc peak positions for a given list of BMRB ids
         :param bmrbid: entry id or list of entry ids
@@ -512,6 +628,12 @@ class Spectra(object):
         :param outfilename: Output filename
         :return: plotly plot object or html file
         """
+        if atom1 is None or atom2 is None:
+            print ('atom1 or atom2 not specified')
+            exit(1)
+
+        seq = None
+        nn = 3
         if nn == 3:
             tag = "TriPeptide"
         elif nn == 5:
@@ -520,12 +642,460 @@ class Spectra(object):
             tag = "HeptaPeptide"
         else:
             tag = "Not a valid model"
-        title = 'Simulated N15-HSQC peak positions'
+        title = 'Simulated  peak positions'
 
         csdata = self.get_entry(bmrbid, filename, seq, tag, nn)
 
+
+
         if len(csdata):
-            hsqcdata = self.convert_to_n15hsqc_peaks(csdata)
+            hsqcdata = self.check_hsqc_peaks2(self.convert_to_2d_list(csdata, atom1, atom2))
+            #hsqcdata = self.check_hsqc_peaks2(self.convert_to_2d_peaks(csdata,atom1,atom2))
+        else:
+            hsqcdata = []
+
+        for kkk in hsqcdata:
+            print (kkk[0])
+
+        if colorby == 'entry':
+            idx = 0
+        elif colorby == 'res':
+            idx = 2
+        elif type(bmrbid) is list and len(bmrbid) > 1:
+            idx = 0
+        elif sum(1 for i in [bmrbid, filename, seq] if i is not None) > 1:
+            idx = 0
+        else:
+            idx = 2
+
+        if len(hsqcdata):
+            groups = set([k.split("-")[idx] for k in hsqcdata[2]])
+        else:
+            groups = []
+
+        data_sets = {}
+        for gid in groups:
+            data_sets[gid] = [[], [], [], []]
+            for i in range(len(hsqcdata[0])):
+                if hsqcdata[2][i].split("-")[idx] == gid:
+                    data_sets[gid][0].append(hsqcdata[0][i])
+                    data_sets[gid][1].append(hsqcdata[1][i])
+                    data_sets[gid][2].append(hsqcdata[2][i])
+                    try:
+                        data_sets[gid][3].append(
+                            '{}{}'.format(hsqcdata[2][i].split("-")[1], self.threeTOone[hsqcdata[2][i].split("-")[2]]))
+                    except KeyError:
+                        data_sets[gid][3].append(
+                            '{}{}'.format(hsqcdata[0][i].split("-")[1], hsqcdata[0][i].split("-")[2]))
+
+        if groupbyres:
+            groups2 = set(["-".join(k.split("-")[1:4]) for k in hsqcdata[0]])
+            data_sets2 = {}
+            for gid in groups2:
+                data_sets2[gid] = [[], [], [], []]
+                for i in range(len(hsqcdata[0])):
+                    if "-".join(hsqcdata[0][i].split("-")[1:4]) == gid:
+                        data_sets2[gid][0].append(hsqcdata[0][i])
+                        data_sets2[gid][1].append(hsqcdata[1][i])
+                        data_sets2[gid][2].append(hsqcdata[2][i])
+                        try:
+                            one_letter_code = self.threeTOone[hsqcdata[0][i].split("-")[2]]
+                        except KeyError:
+                            one_letter_code = hsqcdata[0][i].split("-")[2]
+                        seq_id = hsqcdata[0][i].split("-")[1]
+                        data_sets2[gid][3].append('{}{}'.format(seq_id, one_letter_code))
+
+        data = []
+        for k in data_sets.keys():
+            data.append(plotly.graph_objs.Scatter(x=data_sets[k][0],
+                                                  y=data_sets[k][1],
+                                                  text=data_sets[k][2],
+                                                  mode='markers',
+                                                  opacity=_OPACITY,
+                                                  name=k))
+
+        if groupbyres:
+            for k in data_sets2.keys():
+                data.append(plotly.graph_objs.Scatter(x=data_sets2[k][0],
+                                                      y=data_sets2[k][1],
+                                                      text=data_sets2[k][2],
+                                                      mode='lines',
+                                                      name=k,
+                                                      opacity=_OPACITY,
+                                                      showlegend=False)
+                            )
+
+        layout = plotly.graph_objs.Layout(
+            xaxis=dict(autorange='reversed',
+                       title='{} (ppm)'.format(atom1)),
+            yaxis=dict(autorange='reversed',
+                       title='{} (ppm)'.format(atom2)),
+            showlegend=True,
+            hovermode='closest',
+            title=title)
+        fig = plotly.graph_objs.Figure(data=data, layout=layout)
+        if len(data):
+            if NOTEBOOK:
+                plotly.offline.iplot(fig)
+            else:
+                plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
+                print ("Output written on {}".format(outfilename))
+            return True
+        else:
+            print ("No chemical information found for atoms {} {}".format(atom1,atom2))
+            return False
+
+    def peaks2dtest(self,bmrbid=None,atom1=None,atom2=None,filename = 'test.html'):
+        xatom = 'H'
+        yatom = 'N'
+        csdata = self.get_entry(15060)
+        data1 = self.check_hsqc_peaks2(self.convert_to_2d_list(csdata, xatom, yatom,0))
+        data2 = self.check_hsqc_peaks2(self.convert_to_2d_list(csdata, xatom, yatom, -1))
+        data3 = self.check_hsqc_peaks2(self.convert_to_2d_list(csdata, xatom, yatom, 1))
+        c=0
+        def get_data(atom1,atom2,n):
+            print (atom1,atom2,n,xvisible,yvisible)
+            xatom = atom1
+            yatom = atom2
+            c=n
+            data = self.check_hsqc_peaks2(self.convert_to_2d_list(csdata,xatom,yatom,c))
+            return data
+
+        fig = plotly.graph_objs.Figure()
+        fig.layout.update(
+            xaxis=dict(autorange='reversed', title='H (ppm)'),
+            yaxis=dict(autorange='reversed', title='N (ppm)'),
+        )
+        xvisible = False
+        yvisible = False
+        atom_list = ['H','N','C']
+
+        fig.add_trace(plotly.graph_objs.Scatter(x=get_data('H', 'H', 0)[0], y=get_data('H', 'H', 0)[1],
+                                                text=get_data('H', 'H', 0)[2], mode='markers',
+                                                visible=xvisible and yvisible))
+        fig.add_trace(plotly.graph_objs.Scatter(x=get_data('H', 'N', 0)[0], y=get_data('H', 'N', 0)[1],
+                                                text=get_data('N', 'N', 0)[2], mode='markers',
+                                                visible=xvisible and yvisible))
+        fig.add_trace(plotly.graph_objs.Scatter(x=get_data('H', 'C', 0)[0], y=get_data('H', 'C', 0)[1],
+                                                text=get_data('C', 'C', 0)[2], mode='markers',
+                                                visible=xvisible and yvisible))
+        fig.add_trace(plotly.graph_objs.Scatter(x=get_data('N', 'H', 0)[0], y=get_data('N', 'H', 0)[1],
+                                                text=get_data('H', 'H', 0)[2], mode='markers',
+                                                visible=xvisible and yvisible))
+        fig.add_trace(plotly.graph_objs.Scatter(x=get_data('N', 'N', 0)[0], y=get_data('N', 'N', 0)[1],
+                                                text=get_data('N', 'N', 0)[2], mode='markers',
+                                                visible=xvisible and yvisible))
+        fig.add_trace(plotly.graph_objs.Scatter(x=get_data('N', 'C', 0)[0], y=get_data('N', 'C', 0)[1],
+                                                text=get_data('C', 'C', 0)[2], mode='markers',
+                                                visible=xvisible and yvisible))
+        fig.add_trace(plotly.graph_objs.Scatter(x=get_data('C', 'H', 0)[0], y=get_data('C', 'H', 0)[1],
+                                                text=get_data('H', 'H', 0)[2], mode='markers',
+                                                visible=xvisible and yvisible))
+        fig.add_trace(plotly.graph_objs.Scatter(x=get_data('C', 'N', 0)[0], y=get_data('C', 'N', 0)[1],
+                                                text=get_data('N', 'N', 0)[2], mode='markers',
+                                                visible=xvisible and yvisible))
+        fig.add_trace(plotly.graph_objs.Scatter(x=get_data('C', 'C', 0)[0], y=get_data('C', 'C', 0)[1],
+                                                text=get_data('C', 'C', 0)[2], mode='markers',
+                                                visible=xvisible and yvisible))
+        # fig.add_trace(plotly.graph_objs.Scatter(x=data1[0], y=data1[1], mode='markers',
+        #                                         text=data1[2],name = 'i',visible= xvisible and yvisible))
+        # fig.add_trace(plotly.graph_objs.Scatter(x=data2[0], y=data2[1], mode='markers',
+        #                                         text=data2[2], name='i-1',visible = xvisible and yvisible))
+        # fig.add_trace(plotly.graph_objs.Scatter(x=data3[0], y=data3[1], mode='markers',
+        #                                         text=data3[2], name='i+1',visible = xvisible and yvisible))
+
+        fig.layout.update(
+            updatemenus=[
+                dict(
+                    active = 0,
+                    buttons = list(
+                        [dict(
+                            label = 'H',
+                            method = 'update',
+                            args = [
+                                {'xvisible':[True if aa1 == 'H' else False for aa1 in atom_list for aa2 in atom_list]},
+                                {'xaxis':dict(autorange='reversed',title='H (ppm)')},
+                            ]),
+                            dict(
+                                label='N',
+                                method='update',
+                                args=[
+                                    {'xvisible':[True if aa1 == 'N' else False for aa1 in atom_list for aa2 in atom_list]},
+                                    {'xaxis': dict(autorange='reversed',title='N (ppm)')},
+
+                                ]),
+                            dict(
+                                label='C',
+                                method='update',
+                                args=[
+                                    {'xvisible': [True if aa1 == 'C' else False for aa1 in atom_list for aa2 in
+                                                  atom_list]},
+                                    {'xaxis': dict(autorange='reversed',title='C (ppm)')},
+                                ]),
+                        ]),
+                    x= 0.1,
+                    y= 1.11,
+                ),
+                dict(
+                    active=0,
+                    buttons=list(
+                        [dict(
+                            label='N',
+                            method='update',
+                            args=[
+                                {'yvisible': [True if aa2 == 'N' else False for aa1 in atom_list for aa2 in atom_list]},
+                                {'yaxis': dict(autorange='reversed',title='N (ppm)')},
+                            ]),
+                            dict(
+                                label='H',
+                                method='update',
+                                args=[
+                                    {'yvisible': [True if aa2 == 'H' else False for aa1 in atom_list for aa2 in
+                                                  atom_list]},
+                                    {'yaxis': dict(autorange='reversed',title='H (ppm)')},
+
+                                ]),
+                            dict(
+                                label='C',
+                                method='update',
+                                args=[
+                                    {'yvisible': [True if aa2 == 'C' else False for aa1 in atom_list for aa2 in atom_list]},
+                                    {'yaxis': dict(autorange='reversed',title='C (ppm)')},
+
+                                ]),
+                        ]),
+                    x=0.26,
+                    y=1.11,
+                ),
+
+
+            ]
+        )
+        fig.layout.update(
+            annotations=[
+                dict(text="X", x=0.02, xref="paper", y=1.1, yref="paper",
+                     align="left", showarrow=False),
+                dict(text="Y", x=0.18, xref="paper", y=1.1,
+                     yref="paper", showarrow=False),
+
+
+            ])
+        plotly.offline.plot(fig, filename=filename, auto_open=_AUTOOPEN)
+
+
+
+
+    def peaks2dtest2(self,bmrbid=15060,filename='test.html'):
+        csdata = self.get_entry(15060)
+        data1 = self.check_hsqc_peaks2(self.convert_to_2d_list(csdata, 'H', 'N'))
+
+
+        fig = plotly.graph_objs.Figure()
+        fig.layout.update(
+            xaxis= dict(autorange='reversed', title='H (ppm)'),
+            yaxis =dict(autorange='reversed', title='N (ppm)'),
+
+        )
+
+        fig.add_trace(plotly.graph_objs.Scatter(x=data1[0], y=data1[1],mode='markers',
+                                                text=data1[2]))
+        # fig.add_trace(plotly.graph_objs.Scatter(x=data2[1] ,y=data2[2], visible = False))
+        # fig.add_trace(plotly.graph_objs.Scatter(x=data1[1], y=data1[2], visible=False))
+        # fig.add_trace(plotly.graph_objs.Scatter(x=data2[1], y=data2[2], visible=False))
+        atomx='H'
+        atomy='N'
+        xyp=None
+        def get_data(atom,xy,atomx=atomx,atomy=atomy):
+            if xy=='x':
+                atomx=atom
+            if xy=='y':
+                atomy=atom
+            xyp = xy
+            data1=self.check_hsqc_peaks2(self.convert_to_2d_list(csdata, atomx, atomy))
+            if xy == 'x':
+                return data1[1]
+            elif xy == 'y':
+                return data1[2]
+
+        fig.layout.update(
+            updatemenus=[
+                dict(
+                    active = 0,
+                    buttons = list([
+                        dict(label='H',
+                             method = 'update',
+                             args=[{ 'x':[get_data('H','x')]},
+                                   {'xaxis':dict(autorange='reversed',title='H (ppm)')}]),
+                        dict(label='C',
+                             method='update',
+                             args=[{ 'x':[get_data('C','x')]},
+                                   {'xaxis': dict(autorange='reversed', title='C (ppm)')}]),
+                        dict(label='CA',
+                             method='update',
+                             args=[{ 'x':[get_data('CA','x')]},
+                                   {'xaxis': dict(autorange='reversed', title='CA (ppm)')}]),
+                        dict(label='CB',
+                             method='update',
+                             args=[{ 'x':[get_data('CB','x')]},
+                                   {'xaxis': dict(autorange='reversed', title='CB (ppm)')}]),
+                        dict(label='CG*',
+                             method='update',
+                             args=[{ 'x':[get_data('CG+','x')]},
+                                   {'xaxis': dict(autorange='reversed', title='CG* (ppm)')}]),
+                        dict(label='CD*',
+                             method='update',
+                             args=[{ 'x':[get_data('CD+','x')]},
+                                   {'xaxis': dict(autorange='reversed', title='CD* (ppm)')}]),
+                        dict(label='CE*',
+                             method='update',
+                             args=[{ 'x':[get_data('CE+','x')]},
+                                   {'xaxis': dict(autorange='reversed', title='CE* (ppm)')}]),
+                        dict(label='CZ*',
+                             method='update',
+                             args=[{ 'x':[get_data('CZ+','x')]},
+                                   {'xaxis': dict(autorange='reversed', title='CZ* (ppm)')}]),
+                        dict(label='HA*',
+                             method='update',
+                             args=[{ 'x':[get_data('HA+','x')]},
+                                   {'xaxis': dict(autorange='reversed', title='HA* (ppm)')}]),
+                        dict(label='HB*',
+                             method='update',
+                             args=[{ 'x':[get_data('HB+','x')]},
+                                   {'xaxis': dict(autorange='reversed', title='HB* (ppm)')}]),
+                        dict(label='HG*',
+                             method='update',
+                             args=[{ 'x':[get_data('HG+','x')]},
+                                   {'xaxis': dict(autorange='reversed', title='HG* (ppm)')}]),
+                        dict(label='HD*',
+                             method='update',
+                             args=[{ 'x':[get_data('HD+','x')]},
+                                   {'xaxis': dict(autorange='reversed', title='HD* (ppm)')}]),
+                        dict(label='HE*',
+                             method='update',
+                             args=[{ 'x':[get_data('HE+','x')]},
+                                   {'xaxis': dict(autorange='reversed', title='HE* (ppm)')}]),
+                        dict(label='N',
+                             method = 'update',
+                             args=[{ 'x':[get_data('N','x')]},
+                                   {'xaxis':dict(autorange='reversed',title='N (ppm)')}])
+                    ]),
+                    x=0.1,
+                    y=1.11,
+                ),
+                dict(
+                    active=0,
+                    buttons=list([
+                        dict(label='N',
+                             method='update',
+                             args=[{ 'y':[get_data('N','y')]},
+                                   {'yaxis':dict(autorange='reversed',title='N (ppm)')}]),
+                        dict(label='C',
+                             method='update',
+                             args=[{ 'y':[get_data('C','y')]},
+                                   {'yaxis': dict(autorange='reversed', title='C (ppm)')}]),
+                        dict(label='CA',
+                             method='update',
+                             args=[{ 'y':[get_data('CA','y')]},
+                                   {'yaxis': dict(autorange='reversed', title='CA (ppm)')}]),
+                        dict(label='CB',
+                             method='update',
+                             args=[{ 'y':[get_data('CB','y')]},
+                                   {'yaxis': dict(autorange='reversed', title='CB (ppm)')}]),
+                        dict(label='CG*',
+                             method='update',
+                             args=[{ 'y':[get_data('CG+','y')]},
+                                   {'yaxis': dict(autorange='reversed', title='CG* (ppm)')}]),
+                        dict(label='CD*',
+                             method='update',
+                             args=[{ 'y':[get_data('CD+','y')]},
+                                   {'yaxis': dict(autorange='reversed', title='CD* (ppm)')}]),
+                        dict(label='CE*',
+                             method='update',
+                             args=[{ 'y':[get_data('CE+','y')]},
+                                   {'yaxis': dict(autorange='reversed', title='CE* (ppm)')}]),
+                        dict(label='CZ*',
+                             method='update',
+                             args=[{ 'y':[get_data('CZ+','y')]},
+                                   {'yaxis': dict(autorange='reversed', title='CZ* (ppm)')}]),
+                        dict(label='HA*',
+                             method='update',
+                             args=[{ 'y':[get_data('HA+','y')]},
+                                   {'yaxis': dict(autorange='reversed', title='HA* (ppm)')}]),
+                        dict(label='HB*',
+                             method='update',
+                             args=[{ 'y':[get_data('HB+','y')]},
+                                   {'yaxis': dict(autorange='reversed', title='HB* (ppm)')}]),
+                        dict(label='HG*',
+                             method='update',
+                             args=[{ 'y':[get_data('HG+','y')]},
+                                   {'yaxis': dict(autorange='reversed', title='HG* (ppm)')}]),
+                        dict(label='CD*',
+                             method='update',
+                             args=[{ 'y':[get_data('HD+','y')]},
+                                   {'yaxis': dict(autorange='reversed', title='CD* (ppm)')}]),
+                        dict(label='HE*',
+                             method='update',
+                             args=[{ 'y':[get_data('HE+','y')]},
+                                   {'yaxis': dict(autorange='reversed', title='HE* (ppm)')}]),
+                        dict(label='H',
+                             method='update',
+                             args=[{ 'y':[get_data('H','y')]},
+                                   {'yaxis':dict(autorange='reversed',title='H (ppm)')}])
+                    ]),
+                    x=0.26,
+                    y=1.11,
+                )
+            ])
+        fig.layout.update(
+            annotations=[
+                dict(text="X", x=0.02, xref="paper", y=1.1,yref="paper",
+                     align="left", showarrow=False),
+                dict(text="Y", x=0.18, xref="paper",y=1.1,
+                     yref="paper", showarrow=False),
+
+            ])
+        plotly.offline.plot(fig, filename=filename, auto_open=_AUTOOPEN)
+
+
+
+    def peaks2dinteractive(self, bmrbid=None, filename=None, colorby=None, groupbyres=False,
+                outfilename='peaks2d.html'):
+        """
+        Plots hsqc peak positions for a given list of BMRB ids
+        :param bmrbid: entry id or list of entry ids
+        :param seq: sequence in one letter code
+        :param filename: local NMR-STAR filename
+        :param nn: 3/5/7 for Tri or Penta or Hepta peptide model prediction
+        :param colorby: Color by res/entry (default res for single entry/ entry for multiple entries)
+        :param groupbyres: if TRUE connects the same seq ids by line; default False
+        :param outfilename: Output filename
+        :return: plotly plot object or html file
+        """
+        if atom1 is None or atom2 is None:
+            print ('atom1 or atom2 not specified')
+            exit(1)
+
+        seq = None
+        nn = 3
+        if nn == 3:
+            tag = "TriPeptide"
+        elif nn == 5:
+            tag = "PentaPeptide"
+        elif nn == 7:
+            tag = "HeptaPeptide"
+        else:
+            tag = "Not a valid model"
+        title = 'Simulated  peak positions'
+
+        csdata = self.get_entry(bmrbid, filename, seq, tag, nn)
+
+        atom1 = ['C','N','CA*','CB*','CD*']
+        atom2 = atom1 = ['C','N','CA*','CB*','CD*']
+
+        if len(csdata):
+            hsqcdata = self.check_hsqc_peaks(self.convert_to_2d_list(csdata, atom1, atom2))
+            #hsqcdata = self.check_hsqc_peaks(self.convert_to_2d_peaks(csdata,atom1,atom2))
+            #print (hsqcdata)
         else:
             hsqcdata = []
 
@@ -598,9 +1168,9 @@ class Spectra(object):
 
         layout = plotly.graph_objs.Layout(
             xaxis=dict(autorange='reversed',
-                       title='H (ppm)'),
+                       title='{} (ppm)'.format(atom1)),
             yaxis=dict(autorange='reversed',
-                       title='N (ppm)'),
+                       title='{} (ppm)'.format(atom2)),
             showlegend=True,
             hovermode='closest',
             title=title)
@@ -611,6 +1181,129 @@ class Spectra(object):
             else:
                 plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
                 print ("Output written on {}".format(outfilename))
+            return True
+        else:
+            print ("No chemical information found for atoms {} {}".format(atom1,atom2))
+            return False
+
+    def n15hsqc(self, bmrbid=None, filename=None, seq=None, nn=3, colorby=None, groupbyres=False,
+                outfilename='n15hsqc.html'):
+        """
+        Plots hsqc peak positions for a given list of BMRB ids
+        :param bmrbid: entry id or list of entry ids
+        :param seq: sequence in one letter code
+        :param filename: local NMR-STAR filename
+        :param nn: 3/5/7 for Tri or Penta or Hepta peptide model prediction
+        :param colorby: Color by res/entry (default res for single entry/ entry for multiple entries)
+        :param groupbyres: if TRUE connects the same seq ids by line; default False
+        :param outfilename: Output filename
+        :return: plotly plot object or html file
+        """
+        if nn == 3:
+            tag = "TriPeptide"
+        elif nn == 5:
+            tag = "PentaPeptide"
+        elif nn == 7:
+            tag = "HeptaPeptide"
+        else:
+            tag = "Not a valid model"
+        title = 'Simulated <sup>1</sup>H-<sup>15</sup>N  HSQC peak positions'
+
+        csdata = self.get_entry(bmrbid, filename, seq, tag, nn)
+
+        if len(csdata):
+            hsqcdata = self.check_hsqc_peaks(self.convert_to_n15hsqc_peaks(csdata))
+            #print (hsqcdata)
+        else:
+            hsqcdata = []
+
+        if colorby == 'entry':
+            idx = 0
+        elif colorby == 'res':
+            idx = 2
+        elif type(bmrbid) is list and len(bmrbid) > 1:
+            idx = 0
+        elif sum(1 for i in [bmrbid, filename, seq] if i is not None) > 1:
+            idx = 0
+        else:
+            idx = 2
+
+        if len(hsqcdata):
+            groups = set([k.split("-")[idx] for k in hsqcdata[0]])
+        else:
+            groups = []
+        data_sets = {}
+        for gid in groups:
+            data_sets[gid] = [[], [], [], []]
+            for i in range(len(hsqcdata[0])):
+                if hsqcdata[0][i].split("-")[idx] == gid:
+                    data_sets[gid][0].append(hsqcdata[1][i])
+                    data_sets[gid][1].append(hsqcdata[2][i])
+                    data_sets[gid][2].append(hsqcdata[0][i])
+                    try:
+                        data_sets[gid][3].append(
+                            '{}{}'.format(hsqcdata[0][i].split("-")[1], self.threeTOone[hsqcdata[0][i].split("-")[2]]))
+                    except KeyError:
+                        data_sets[gid][3].append(
+                            '{}{}'.format(hsqcdata[0][i].split("-")[1], hsqcdata[0][i].split("-")[2]))
+
+        if groupbyres:
+            groups2 = set(["-".join(k.split("-")[1:4]) for k in hsqcdata[0]])
+            data_sets2 = {}
+            for gid in groups2:
+                data_sets2[gid] = [[], [], [], []]
+                for i in range(len(hsqcdata[0])):
+                    if "-".join(hsqcdata[0][i].split("-")[1:4]) == gid:
+                        data_sets2[gid][0].append(hsqcdata[1][i])
+                        data_sets2[gid][1].append(hsqcdata[2][i])
+                        data_sets2[gid][2].append(hsqcdata[0][i])
+                        try:
+                            one_letter_code = self.threeTOone[hsqcdata[0][i].split("-")[2]]
+                        except KeyError:
+                            one_letter_code = hsqcdata[0][i].split("-")[2]
+                        seq_id = hsqcdata[0][i].split("-")[1]
+                        data_sets2[gid][3].append('{}{}'.format(seq_id, one_letter_code))
+
+        data = []
+        for k in data_sets.keys():
+            data.append(plotly.graph_objs.Scatter(x=data_sets[k][0],
+                                                  y=data_sets[k][1],
+                                                  text=data_sets[k][2],
+                                                  mode='markers',
+                                                  opacity=_OPACITY,
+                                                  name=k))
+
+        if groupbyres:
+            for k in data_sets2.keys():
+                data.append(plotly.graph_objs.Scatter(x=data_sets2[k][0],
+                                                      y=data_sets2[k][1],
+                                                      text=data_sets2[k][2],
+                                                      mode='lines',
+                                                      name=k,
+                                                      opacity=_OPACITY,
+                                                      showlegend=False)
+                            )
+
+        layout = plotly.graph_objs.Layout(
+            xaxis=dict(autorange='reversed',
+                       title='<sup>1</sup>H (ppm)'),
+            yaxis=dict(autorange='reversed',
+                       title='<sup>15</sup>N (ppm)'),
+            showlegend=True,
+            hovermode='closest',
+            title=title)
+        fig = plotly.graph_objs.Figure(data=data, layout=layout)
+        if len(data):
+            if NOTEBOOK:
+                plotly.offline.iplot(fig)
+            else:
+                plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
+                print ("Output written on {}".format(outfilename))
+            return True
+        else:
+            print ("No amide proton nitrogen chemical shifts found")
+            return False
+
 
 
 class Histogram(object):
@@ -1172,4 +1865,6 @@ def _called_directly():
 
 
 if __name__ == "__main__":
-    _called_directly()
+    p = Spectra()
+    p.peaks2d(bmrbid='15060',atom1='N',atom2='CB', )
+    #_called_directly()
