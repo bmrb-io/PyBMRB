@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import json
+import logging
 import ntpath
 import optparse
 import os
@@ -10,6 +11,9 @@ import re
 import numpy as np
 import plotly
 import pynmrstar
+
+# Set the log level to INFO
+logging.getLogger().setLevel(logging.INFO)
 
 # Determine if we are running in python3
 PY3 = (sys.version_info[0] == 3)
@@ -30,8 +34,6 @@ __version__ = "1.2.91"
 
 __all__ = ['Spectra', 'Histogram']
 
-
-# http://webapi.bmrb.wisc.edu/v2/search/chemical_shifts?comp_id=ASP&atom_id=HD2
 
 class Spectra(object):
     """
@@ -61,24 +63,72 @@ class Spectra(object):
         """
         outdata = []
         if bmrbid is None and filename is None and seq is None:
-            print("BMRB ID or filename or sequence must be given")
-        else:
-            if seq is not None:
-                if nn in [3, 5, 7]:
-                    outdata = self.predict_from_seq(seq, tag, nn)
+            raise ValueError("BMRB ID or filename or sequence must be given.")
+
+        if seq is not None:
+            if nn in [3, 5, 7]:
+                outdata = self.predict_from_seq(seq, tag, nn)
+            else:
+                raise ValueError("Invalid nearest neighbor value %s - please select from [3,5,7]." % nn)
+        if filename is not None:
+            if os.path.exists(filename):
+                indata = pynmrstar.Entry.from_file(filename)
+                fid = os.path.splitext(os.path.basename(filename))[0]
+                cs_data = indata.get_tags(
+                    ['_Atom_chem_shift.Comp_index_ID', '_Atom_chem_shift.Comp_ID', '_Atom_chem_shift.Atom_ID',
+                     '_Atom_chem_shift.Atom_type', '_Atom_chem_shift.Assigned_chem_shift_list_ID',
+                     '_Atom_chem_shift.Val','_Atom_chem_shift.Entity_assembly_ID'])
+                eids = [fid] * len(cs_data['_Atom_chem_shift.Comp_index_ID'])
+                # eids = [fid for i in range(len(cs_data['_Atom_chem_shift.Comp_index_ID']))]
+                eid_cs_data = [eids, cs_data['_Atom_chem_shift.Comp_index_ID'],
+                               cs_data['_Atom_chem_shift.Comp_ID'],
+                               cs_data['_Atom_chem_shift.Atom_ID'],
+                               cs_data['_Atom_chem_shift.Atom_type'],
+                               cs_data['_Atom_chem_shift.Assigned_chem_shift_list_ID'],
+                               cs_data['_Atom_chem_shift.Val'],
+                               cs_data['_Atom_chem_shift.Entity_assembly_ID']]
+                if len(outdata):
+                    for i in range(len(eid_cs_data)):
+                        outdata[i] = outdata[i] + eid_cs_data[i]
                 else:
-                    print("Wrong nearest neighbour value nn = 3/5/7")
-                    outdata = []
-            if filename is not None:
-                if os.path.exists(filename):
-                    indata = pynmrstar.Entry.from_file(filename)
-                    fid = os.path.splitext(os.path.basename(filename))[0]
+                    outdata = eid_cs_data
+            else:
+                logging.warning('File not found : {}'.format(filename))
+        if bmrbid is not None:
+            if type(bmrbid) is list:
+                for eid in bmrbid:
+                    try:
+                        indata = pynmrstar.Entry.from_database(eid)
+                        cs_data = indata.get_tags(
+                            ['_Atom_chem_shift.Comp_index_ID', '_Atom_chem_shift.Comp_ID',
+                             '_Atom_chem_shift.Atom_ID',
+                             '_Atom_chem_shift.Atom_type', '_Atom_chem_shift.Assigned_chem_shift_list_ID',
+                             '_Atom_chem_shift.Val','_Atom_chem_shift.Entity_assembly_ID'])
+                        eids = [eid] * len(cs_data['_Atom_chem_shift.Comp_index_ID'])
+                        # eids = [eid for i in range(len(cs_data['_Atom_chem_shift.Comp_index_ID']))]
+                        eid_cs_data = [eids, cs_data['_Atom_chem_shift.Comp_index_ID'],
+                                       cs_data['_Atom_chem_shift.Comp_ID'],
+                                       cs_data['_Atom_chem_shift.Atom_ID'],
+                                       cs_data['_Atom_chem_shift.Atom_type'],
+                                       cs_data['_Atom_chem_shift.Assigned_chem_shift_list_ID'],
+                                       cs_data['_Atom_chem_shift.Val'],
+                                       cs_data['_Atom_chem_shift.Entity_assembly_ID']]
+                    except (OSError, IOError) as e:
+                        logging.exception("Failed to load entry %s from database with exception %s.", eid, e)
+                    if len(outdata):
+                        for i in range(len(eid_cs_data)):
+                            outdata[i] = outdata[i] + eid_cs_data[i]
+                    else:
+                        outdata = eid_cs_data
+            else:
+                try:
+                    indata = pynmrstar.Entry.from_database(bmrbid)
                     cs_data = indata.get_tags(
                         ['_Atom_chem_shift.Comp_index_ID', '_Atom_chem_shift.Comp_ID', '_Atom_chem_shift.Atom_ID',
                          '_Atom_chem_shift.Atom_type', '_Atom_chem_shift.Assigned_chem_shift_list_ID',
                          '_Atom_chem_shift.Val','_Atom_chem_shift.Entity_assembly_ID'])
-                    eids = [fid] * len(cs_data['_Atom_chem_shift.Comp_index_ID'])
-                    # eids = [fid for i in range(len(cs_data['_Atom_chem_shift.Comp_index_ID']))]
+                    eids = [bmrbid] * len(cs_data['_Atom_chem_shift.Comp_index_ID'])
+                    # eids = [bmrbid for i in range(len(cs_data['_Atom_chem_shift.Comp_index_ID']))]
                     eid_cs_data = [eids, cs_data['_Atom_chem_shift.Comp_index_ID'],
                                    cs_data['_Atom_chem_shift.Comp_ID'],
                                    cs_data['_Atom_chem_shift.Atom_ID'],
@@ -91,57 +141,8 @@ class Spectra(object):
                             outdata[i] = outdata[i] + eid_cs_data[i]
                     else:
                         outdata = eid_cs_data
-                else:
-                    print('File not found : {}'.format(filename))
-            if bmrbid is not None:
-                if type(bmrbid) is list:
-                    for eid in bmrbid:
-                        try:
-                            indata = pynmrstar.Entry.from_database(eid)
-                            cs_data = indata.get_tags(
-                                ['_Atom_chem_shift.Comp_index_ID', '_Atom_chem_shift.Comp_ID',
-                                 '_Atom_chem_shift.Atom_ID',
-                                 '_Atom_chem_shift.Atom_type', '_Atom_chem_shift.Assigned_chem_shift_list_ID',
-                                 '_Atom_chem_shift.Val','_Atom_chem_shift.Entity_assembly_ID'])
-                            eids = [eid] * len(cs_data['_Atom_chem_shift.Comp_index_ID'])
-                            # eids = [eid for i in range(len(cs_data['_Atom_chem_shift.Comp_index_ID']))]
-                            eid_cs_data = [eids, cs_data['_Atom_chem_shift.Comp_index_ID'],
-                                           cs_data['_Atom_chem_shift.Comp_ID'],
-                                           cs_data['_Atom_chem_shift.Atom_ID'],
-                                           cs_data['_Atom_chem_shift.Atom_type'],
-                                           cs_data['_Atom_chem_shift.Assigned_chem_shift_list_ID'],
-                                           cs_data['_Atom_chem_shift.Val'],
-                                           cs_data['_Atom_chem_shift.Entity_assembly_ID']]
-                        except (OSError, IOError) as e:
-                            print(e)
-                        if len(outdata):
-                            for i in range(len(eid_cs_data)):
-                                outdata[i] = outdata[i] + eid_cs_data[i]
-                        else:
-                            outdata = eid_cs_data
-                else:
-                    try:
-                        indata = pynmrstar.Entry.from_database(bmrbid)
-                        cs_data = indata.get_tags(
-                            ['_Atom_chem_shift.Comp_index_ID', '_Atom_chem_shift.Comp_ID', '_Atom_chem_shift.Atom_ID',
-                             '_Atom_chem_shift.Atom_type', '_Atom_chem_shift.Assigned_chem_shift_list_ID',
-                             '_Atom_chem_shift.Val','_Atom_chem_shift.Entity_assembly_ID'])
-                        eids = [bmrbid] * len(cs_data['_Atom_chem_shift.Comp_index_ID'])
-                        # eids = [bmrbid for i in range(len(cs_data['_Atom_chem_shift.Comp_index_ID']))]
-                        eid_cs_data = [eids, cs_data['_Atom_chem_shift.Comp_index_ID'],
-                                       cs_data['_Atom_chem_shift.Comp_ID'],
-                                       cs_data['_Atom_chem_shift.Atom_ID'],
-                                       cs_data['_Atom_chem_shift.Atom_type'],
-                                       cs_data['_Atom_chem_shift.Assigned_chem_shift_list_ID'],
-                                       cs_data['_Atom_chem_shift.Val'],
-                                       cs_data['_Atom_chem_shift.Entity_assembly_ID']]
-                        if len(outdata):
-                            for i in range(len(eid_cs_data)):
-                                outdata[i] = outdata[i] + eid_cs_data[i]
-                        else:
-                            outdata = eid_cs_data
-                    except (OSError, IOError) as e:
-                        print(e)
+                except (OSError, IOError) as e:
+                    logging.exception("Failed to load entry %s from database with exception %s.", bmrbid, e)
         return outdata
 
 
@@ -210,7 +211,7 @@ class Spectra(object):
                                 elif atm == 'H':
                                     val.append(dict_h[tp])
                                 else:
-                                    print("Something wrong")
+                                    logging.warning("Something wrong")
                     for i in range(1, len(seq) - 1):
                         if self.oneTOthree[seq[i]] != "PRO":
                             tp3 = '{}-{}-{}'.format(self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]],
@@ -227,7 +228,7 @@ class Spectra(object):
                                 elif atm == 'H':
                                     val.append(dict_h3[tp3])
                                 else:
-                                    print("Something wrong")
+                                    logging.warning("Something wrong")
                 elif nearest_nei == 5:
                     dict_n5 = self._load_pp_dict('N', 2)
                     dict_h5 = self._load_pp_dict('H', 2)
@@ -258,7 +259,7 @@ class Spectra(object):
                                     elif atm == 'H':
                                         val.append(dict_h[tp])
                                     else:
-                                        print("Something wrong")
+                                        logging.warning("Something wrong")
                             else:
                                 tp3 = '{}-{}-{}'.format(self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]],
                                                         self.oneTOthree[seq[i + 1]])
@@ -274,7 +275,7 @@ class Spectra(object):
                                     elif atm == 'H':
                                         val.append(dict_h3[tp3])
                                     else:
-                                        print("Something wrong")
+                                        logging.warning("Something wrong")
                     for i in range(2, len(seq) - 2):
                         if self.oneTOthree[seq[i]] != "PRO":
                             tp5 = '{}-{}-{}-{}-{}'.format(self.oneTOthree[seq[i - 2]], self.oneTOthree[seq[i - 1]],
@@ -300,7 +301,7 @@ class Spectra(object):
                                     except KeyError:
                                         val.append(dict_h3[tp3])
                                 else:
-                                    print("Something wrong")
+                                    logging.warning("Something wrong")
                 else:
                     dict_n7 = self._load_pp_dict('N', 3)
                     dict_h7 = self._load_pp_dict('H', 3)
@@ -333,7 +334,7 @@ class Spectra(object):
                                     elif atm == 'H':
                                         val.append(dict_h[tp])
                                     else:
-                                        print("Something wrong")
+                                        logging.warning("Something wrong")
                             elif i == 1 or i == len(seq) - 2:
                                 tp3 = '{}-{}-{}'.format(self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]],
                                                         self.oneTOthree[seq[i + 1]])
@@ -349,7 +350,7 @@ class Spectra(object):
                                     elif atm == 'H':
                                         val.append(dict_h3[tp3])
                                     else:
-                                        print("Something wrong")
+                                        logging.warning("Something wrong")
                             else:
                                 tp5 = '{}-{}-{}-{}-{}'.format(self.oneTOthree[seq[i - 2]], self.oneTOthree[seq[i - 1]],
                                                               self.oneTOthree[seq[i]],
@@ -374,7 +375,7 @@ class Spectra(object):
                                         except KeyError:
                                             val.append(dict_h3[tp3])
                                     else:
-                                        print("Something wrong")
+                                        logging.warning("Something wrong")
                     for i in range(3, len(seq) - 3):
                         if self.oneTOthree[seq[i]] != "PRO":
                             tp7 = '{}-{}-{}-{}-{}-{}-{}'.format(self.oneTOthree[seq[i - 3]],
@@ -412,12 +413,12 @@ class Spectra(object):
                                         except KeyError:
                                             val.append(dict_h3[tp3])
                                 else:
-                                    print("Something wrong")
+                                    logging.warning("Something wrong")
 
                 out_data = [eid, comp_index_id, comp_id, atom_id, atom_type, cs_list_id, val]
             else:
-                print("Sequence contains nonstandard amino acid code. Random coil prediction is not possible with non "
-                      "standard amino acids")
+                logging.exception("Sequence contains nonstandard amino acid code. Random coil prediction is not "
+                                  "possible with non standard amino acids")
                 out_data = []
         else:
             out_data = []
@@ -426,7 +427,7 @@ class Spectra(object):
         return out_data
 
     @staticmethod
-    def convert_to_2d_list(csdata, atom1, atom2,n=0):
+    def convert_to_2d_list(csdata, atom1, atom2, n=0):
         """
         Converts the output from get_entry into hsqc peak positions
         :param csdata: output from get_entry
@@ -434,7 +435,7 @@ class Spectra(object):
         :param atom2: IUPAC atom name
         :return: easy to plot hsqc peak positions
         """
-        print (csdata)
+        logging.debug(csdata)
         seq_id = sorted([int(i) for i in list(set(csdata[1]))])
         data = {}
         for i in seq_id:
@@ -508,7 +509,7 @@ class Spectra(object):
     @staticmethod
     def check_hsqc_peaks(hsqcdata):
         hsqcnew = [[],[],[],[],[],[]]
-        print (hsqcdata)
+        logging.debug(hsqcdata)
         for i in range(len(hsqcdata[0])):
             try:
                 hcs = float(hsqcdata[1][i])
@@ -626,11 +627,10 @@ class Spectra(object):
         :param colorby: Color by res/entry (default res for single entry/ entry for multiple entries)
         :param groupbyres: if TRUE connects the same seq ids by line; default False
         :param outfilename: Output filename
-        :return: plotly plot object or html file
+        :return: writes output in a html file
         """
         if atom1 is None or atom2 is None:
-            print ('atom1 or atom2 not specified')
-            exit(1)
+            raise ValueError('atom1 or atom2 not specified.')
 
         seq = None
         nn = 3
@@ -655,7 +655,7 @@ class Spectra(object):
             hsqcdata = []
 
         for kkk in hsqcdata:
-            print (kkk[0])
+            logging.debug(kkk[0])
 
         if colorby == 'entry':
             idx = 0
@@ -739,11 +739,9 @@ class Spectra(object):
                 plotly.offline.iplot(fig)
             else:
                 plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-                print ("Output written on {}".format(outfilename))
-            return True
+                logging.info("Output written on {}".format(outfilename))
         else:
-            print ("No chemical information found for atoms {} {}".format(atom1,atom2))
-            return False
+            raise ValueError("No chemical information found for atoms {} {}".format(atom1,atom2))
 
     def peaks2dtest(self,bmrbid=None,atom1=None,atom2=None,filename = 'test.html'):
         xatom = 'H'
@@ -754,7 +752,7 @@ class Spectra(object):
         data3 = self.check_hsqc_peaks2(self.convert_to_2d_list(csdata, xatom, yatom, 1))
         c=0
         def get_data(atom1,atom2,n):
-            print (atom1,atom2,n,xvisible,yvisible)
+            logging.debug(atom1,atom2,n,xvisible,yvisible)
             xatom = atom1
             yatom = atom2
             c=n
@@ -1071,9 +1069,9 @@ class Spectra(object):
         :param outfilename: Output filename
         :return: plotly plot object or html file
         """
-        if atom1 is None or atom2 is None:
-            print ('atom1 or atom2 not specified')
-            exit(1)
+        #if atom1 is None or atom2 is None:
+        #    print ('atom1 or atom2 not specified')
+        #    exit(1)
 
         seq = None
         nn = 3
@@ -1095,7 +1093,6 @@ class Spectra(object):
         if len(csdata):
             hsqcdata = self.check_hsqc_peaks(self.convert_to_2d_list(csdata, atom1, atom2))
             #hsqcdata = self.check_hsqc_peaks(self.convert_to_2d_peaks(csdata,atom1,atom2))
-            #print (hsqcdata)
         else:
             hsqcdata = []
 
@@ -1180,11 +1177,10 @@ class Spectra(object):
                 plotly.offline.iplot(fig)
             else:
                 plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-                print ("Output written on {}".format(outfilename))
+                logging.info("Output written on {}".format(outfilename))
             return True
         else:
-            print ("No chemical information found for atoms {} {}".format(atom1,atom2))
-            return False
+            raise ValueError("No chemical information found for atoms {} {}".format(atom1,atom2))
 
     def n15hsqc(self, bmrbid=None, filename=None, seq=None, nn=3, colorby=None, groupbyres=False,
                 outfilename='n15hsqc.html'):
@@ -1197,7 +1193,7 @@ class Spectra(object):
         :param colorby: Color by res/entry (default res for single entry/ entry for multiple entries)
         :param groupbyres: if TRUE connects the same seq ids by line; default False
         :param outfilename: Output filename
-        :return: plotly plot object or html file
+        :return: writes output in a html file
         """
         if nn == 3:
             tag = "TriPeptide"
@@ -1213,7 +1209,6 @@ class Spectra(object):
 
         if len(csdata):
             hsqcdata = self.check_hsqc_peaks(self.convert_to_n15hsqc_peaks(csdata))
-            #print (hsqcdata)
         else:
             hsqcdata = []
 
@@ -1298,12 +1293,9 @@ class Spectra(object):
                 plotly.offline.iplot(fig)
             else:
                 plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-                print ("Output written on {}".format(outfilename))
-            return True
+                logging.info("Output written on {}".format(outfilename))
         else:
-            print ("No amide proton nitrogen chemical shifts found")
-            return False
-
+            raise ValueError("No amide proton nitrogen chemical shifts found")
 
 
 class Histogram(object):
@@ -1316,7 +1308,7 @@ class Histogram(object):
             plotly.offline.init_notebook_mode(connected=True)
 
     @staticmethod
-    def get_histogram_api(residue, atom, filtered=True, sd_limit=10, normalized=False, ambiguity = '*'):
+    def get_histogram_api(residue, atom, filtered=True, sd_limit=10, normalized=False, ambiguity='*'):
         """
         Downloads chemical shift data for a given atom in a residue using BMRB API
         :param residue: Residue name in standard 3 letter code
@@ -1334,8 +1326,7 @@ class Histogram(object):
                     'A', 'C', 'G', 'U', 'DA', 'DC', 'DG', 'DT']
 
         if residue == "*" and atom == "*":
-            print("ERROR: Getting full database will overload the memory! please chose a residue or atom")
-            sys.exit(1)
+            raise ValueError("Getting full database will overload the memory! Please chose a residue or atom.")
         elif residue == "*":
             url = Request(_API_URL + "/search/chemical_shifts?atom_id={}".format(atom))
         elif atom == "*":
@@ -1374,7 +1365,7 @@ class Histogram(object):
                     ub = mean + (sd_limit * sd)
                     x = [i for i in x if lb < i < ub]
                 if len(x) == 0:
-                    print('{} has no data at BMRB. Please check the atom nomenclature.'.format(atm))
+                    logging.warning('{} has no data at BMRB. Please check the atom nomenclature.'.format(atm))
                 if normalized:
                     data.append(plotly.graph_objs.Histogram(x=x, name=atm,
                                                             histnorm='probability', opacity=_OPACITY))
@@ -1389,7 +1380,7 @@ class Histogram(object):
                 x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d
                      if i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity)]
             if len(x) == 0:
-                print('{}-{} has no data at BMRB. Please check the atom nomenclature.'.format(residue, atom))
+                logging.warning('{}-{} has no data at BMRB. Please check the atom nomenclature.'.format(residue, atom))
             if filtered:
                 mean = np.mean(x)
                 sd = np.std(x)
@@ -1426,11 +1417,12 @@ class Histogram(object):
         r = urlopen(url)
         dump = json.loads(r.read())
         if ambiguity == '*':
-            d1=dump
+            d1 = dump
         else:
-            d1={}
-            d1['columns']=dump['columns']
-            d1['data'] = [i for i in dump['data'] if i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity)]
+            d1 = {}
+            d1['columns'] = dump['columns']
+            d1['data'] = [i for i in dump['data'] if
+                          i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity)]
         d = {}
         entry_id_index = d1['columns'].index('Atom_chem_shift.Entry_ID')
         seq_id_index = d1['columns'].index('Atom_chem_shift.Comp_index_ID')
@@ -1501,11 +1493,12 @@ class Histogram(object):
         r2 = urlopen(url2)
         dump1 = json.loads(r1.read())
         if ambiguity1 == '*':
-            d1=dump1
+            d1 = dump1
         else:
-            d1={}
-            d1['columns']=dump1['columns']
-            d1['data'] = [i for i in dump1['data'] if i[dump1['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity1)]
+            d1 = {}
+            d1['columns'] = dump1['columns']
+            d1['data'] = [i for i in dump1['data'] if
+                          i[dump1['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity1)]
         d = {}
         for i in d1['data']:
             entry_id = i[d1['columns'].index('Atom_chem_shift.Entry_ID')]
@@ -1514,11 +1507,12 @@ class Histogram(object):
         # x = [i[d1['columns'].index('Atom_chem_shift.Val')] for i in d1['data']]
         dump2 = json.loads(r2.read())
         if ambiguity2 == '*':
-            d2=dump2
+            d2 = dump2
         else:
-            d2={}
+            d2 = {}
             d2['columns'] = dump2['columns']
-            d2['data'] = [i for i in dump2['data'] if i[dump2['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity2)]
+            d2['data'] = [i for i in dump2['data'] if
+                          i[dump2['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity2)]
         x = []
         y = []
         for i in d2['data']:
@@ -1532,11 +1526,9 @@ class Histogram(object):
                 pass
 
         if len(x) == 0:
-            print("No data found for {}".format(atom2))
-            sys.exit("No data found for {}".format(atom2))
+            raise ValueError("No data found for {}".format(atom2))
         if len(y) == 0:
-            print("No data found for {}".format(atom1))
-            sys.exit("No data found for {}".format(atom1))
+            raise ValueError("No data found for {}".format(atom1))
 
         # y = [i[d2['columns'].index('Atom_chem_shift.Val')] for i in d2['data']]
         if filtered:
@@ -1599,7 +1591,7 @@ class Histogram(object):
         return data
 
     def hist(self, residue=None, atom=None, atom_list=None, filtered=True, sd_limit=10,
-             normalized=False, ambiguity = '*', outfilename='hist.html'):
+             normalized=False, ambiguity='*', outfilename='hist.html'):
         """
             Chemical shift histogram from BMRB database
         :param residue: 3 letter amino acid code
@@ -1612,14 +1604,15 @@ class Histogram(object):
         :param outfilename: output file name
         :return: writes output in a html file
         """
-        print("This may take time to gather data from entire BMRB database!")
+        if residue is None and atom is None and atom_list is None:
+            raise ValueError('At least one of the three parameters should be given: residue, atom or atomlist')
+
+        logging.info("This may take time to gather data from entire BMRB database!")
         if normalized:
             count = 'Density'
         else:
             count = 'Count'
-        if residue is None and atom is None and atom_list is None:
-            print('Atleast one of the three parameters should be given residue or atom or atomlist')
-        elif (residue is not None and atom is not None and atom_list is not None) or \
+        if (residue is not None and atom is not None and atom_list is not None) or \
                 (residue is None and atom is not None and atom_list is not None) or \
                 (residue is not None and atom is None and atom_list is not None):
 
@@ -1644,9 +1637,9 @@ class Histogram(object):
                 plotly.offline.iplot(fig)
             else:
                 plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-                print("Output written on {}".format(outfilename))
+                logging.info("Output written on {}".format(outfilename))
         elif residue is None and atom is None and atom_list is not None:
-            self.multiple_atom(atom_list, filtered, sd_limit, normalized,ambiguity,outfilename,)
+            self.multiple_atom(atom_list, filtered, sd_limit, normalized, ambiguity, outfilename)
         elif residue is not None and atom is not None and atom_list is None:
             self.single_atom(residue, atom, filtered, sd_limit, normalized, ambiguity, outfilename)
         elif residue is not None and atom is None and atom_list is None:
@@ -1654,10 +1647,10 @@ class Histogram(object):
         elif residue is None and atom is not None and atom_list is None:
             self.single_atom('*', atom, filtered, sd_limit, normalized, ambiguity, outfilename)
         else:
-            print("Not a valid option")
+            raise ValueError("Not a valid option")
 
     def hist2d(self, residue, atom1, atom2, filtered=True, sd_limit=10, normalized=False,
-               ambiguity1='*', ambiguity2='*',outfilename='hist2d.html'):
+               ambiguity1='*', ambiguity2='*', outfilename='hist2d.html'):
         """
         Generates chemical shift correlation plots for a given two atoms in a given amino acid
         :param residue: 3 letter amino acid code
@@ -1671,7 +1664,7 @@ class Histogram(object):
         :param ambiguity2: NMR-STAR Ambiguity code for atom2 default:'*'
         :return: writes output in a html file
         """
-        print("This may take time to gather data from entire BMRB database!")
+        logging.info("This may take time to gather data from entire BMRB database!")
         layout = plotly.graph_objs.Layout(
             autosize=True,
             xaxis=dict(
@@ -1711,9 +1704,10 @@ class Histogram(object):
             plotly.offline.iplot(fig)
         else:
             plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-            print("Output written on {}".format(outfilename))
+            logging.info("Output written on {}".format(outfilename))
 
-    def single_atom(self, residue, atom, filtered=True, sd_limit=10, normalized=False, ambiguity = '*',outfilename='hist.html'):
+    def single_atom(self, residue, atom, filtered=True, sd_limit=10, normalized=False, ambiguity='*',
+                    outfilename='hist.html'):
         """
         Generates histgram for a given atom in a given amino acid
         :param residue: 3 letter amino acid code
@@ -1739,9 +1733,10 @@ class Histogram(object):
             plotly.offline.iplot(fig)
         else:
             plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-            print("Output written on {}".format(outfilename))
+            logging.info("Output written on {}".format(outfilename))
 
-    def multiple_atom(self, atom_list, filtered=True, sd_limit=10, normalized=False, ambiguity = '*',outfilename='hist.html'):
+    def multiple_atom(self, atom_list, filtered=True, sd_limit=10, normalized=False, ambiguity='*',
+                      outfilename='hist.html'):
         """
         Generates histogram for a given list of atoms from various amino acids
         :param atom_list: atom list example ['ALA:CA','GLY:CA','ALA:HA']
@@ -1760,7 +1755,7 @@ class Histogram(object):
         for atm in atom_list:
             residue = atm.split("-")[0]
             atom = atm.split("-")[1]
-            for dd in self.get_histogram_api(residue, atom, filtered, sd_limit, normalized,ambiguity):
+            for dd in self.get_histogram_api(residue, atom, filtered, sd_limit, normalized, ambiguity):
                 data.append(dd)
         layout = plotly.graph_objs.Layout(
             barmode='overlay',
@@ -1772,7 +1767,7 @@ class Histogram(object):
             plotly.offline.iplot(fig)
         else:
             plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-            print("Output written on {}".format(outfilename))
+            logging.info("Output written on {}".format(outfilename))
 
     def conditional_hist(self, residue, atom, atomlist, cslist, filtered=True, sd_limit=10, normalized=False,
                          ambiguity='*', outfilename='hist.html'):
@@ -1789,7 +1784,7 @@ class Histogram(object):
         :param outfilename: output file name
         :return: writes output in a html file
         """
-        print("This may take time to gather data from entire BMRB database!")
+        logging.info("This may take time to gather data from entire BMRB database!")
         if normalized:
             count = 'Density'
         else:
@@ -1798,8 +1793,9 @@ class Histogram(object):
             barmode='overlay',
             xaxis=dict(autorange='reversed', title='Chemical Shift [ppm]'),
             yaxis=dict(title=count))
-        data = [self.get_histogram_api(residue, atom, filtered, sd_limit, normalized,ambiguity)[0],
-                self.get_conditional_histogram_api(residue, atom, atomlist, cslist, filtered, sd_limit, normalized,ambiguity)
+        data = [self.get_histogram_api(residue, atom, filtered, sd_limit, normalized, ambiguity)[0],
+                self.get_conditional_histogram_api(residue, atom, atomlist, cslist, filtered, sd_limit, normalized,
+                                                   ambiguity)
                 ]
         fig = plotly.graph_objs.Figure(data=data, layout=layout)
 
@@ -1807,7 +1803,7 @@ class Histogram(object):
             plotly.offline.iplot(fig)
         else:
             plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-            print("Output written on {}".format(outfilename))
+            logging.info("Output written on {}".format(outfilename))
 
 
 def _called_directly():
