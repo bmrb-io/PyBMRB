@@ -22,7 +22,7 @@ if PY3:
 else:
     from urllib2 import urlopen, Request
 
-_API_URL = "http://webapi.bmrb.wisc.edu/v2"
+_API_URL = "http://api.bmrb.io/v2"
 NOTEBOOK = False
 _OPACITY = 0.5
 _AUTOOPEN = True
