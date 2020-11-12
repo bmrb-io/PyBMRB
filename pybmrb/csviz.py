@@ -93,7 +93,7 @@ class Spectra(object):
                 else:
                     outdata = eid_cs_data
             else:
-                logging.warning('File not found : {}'.format(filename))
+                raise IOError('File not found : {}'.format(filename))
         if bmrbid is not None:
             if type(bmrbid) is list:
                 for eid in bmrbid:
