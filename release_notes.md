@@ -1,3 +1,3 @@
-## 1.2.96
+## 1.2.97
 
-Bug fix: Accidentally removed n15hsqc method added 
+Bug fix: n15hsqc simulation bug fixed
