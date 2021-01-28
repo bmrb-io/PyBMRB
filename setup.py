@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='pybmrb',
-      version='1.2.92',
+      version='1.2.94',
       packages=['pybmrb'],
       author='Kumaran Baskaran',
       author_email='baskaran@uchc.edu',

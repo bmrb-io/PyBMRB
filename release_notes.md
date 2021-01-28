@@ -1,3 +1,3 @@
-## 1.2.91
+## 1.2.94
 
-HSQC plot title and axis labels updated. HSQC peaks validated before ploting
+Code clean up and minor bug fixes. 
