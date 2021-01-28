@@ -1,3 +1,3 @@
-## 1.2.94
+## 1.2.96
 
-Code clean up and minor bug fixes. 
+Bug fix: Accidentally removed n15hsqc method added 
