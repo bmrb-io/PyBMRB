@@ -519,7 +519,6 @@ class Spectra(object):
                 hsqcnew[2].append(hsqcdata[2][i])
                 hsqcnew[3].append(hsqcdata[3][i])
                 hsqcnew[4].append(hsqcdata[4][i])
-                hsqcnew[5].append(hsqcdata[5][i])
             except TypeError:
                 pass
         return hsqcnew
@@ -1297,6 +1296,4 @@ def _called_directly():
 
 
 if __name__ == "__main__":
-    p=Spectra()
-    p.n15hsqc(15060)
     _called_directly()
