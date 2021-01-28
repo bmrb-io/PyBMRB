@@ -1297,4 +1297,6 @@ def _called_directly():
 
 
 if __name__ == "__main__":
+    p=Spectra()
+    p.n15hsqc(15060)
     _called_directly()
