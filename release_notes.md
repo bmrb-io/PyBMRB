@@ -1,3 +1,3 @@
-## 1.2.97
+## 1.2.98
 
-Bug fix: n15hsqc simulation bug fixed
+Return value added to n15hsqc function
