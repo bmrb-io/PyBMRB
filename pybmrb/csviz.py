@@ -2,6 +2,7 @@
 from __future__ import print_function
 
 import json
+import logging
 import ntpath
 import optparse
 import os
@@ -10,6 +11,9 @@ import re
 import numpy as np
 import plotly
 import pynmrstar
+
+# Set the log level to INFO
+logging.getLogger().setLevel(logging.INFO)
 
 # Determine if we are running in python3
 PY3 = (sys.version_info[0] == 3)
@@ -429,6 +433,7 @@ class Spectra(object):
     @staticmethod
     def check_hsqc_peaks(hsqcdata):
         hsqcnew = [[],[],[],[],[],[]]
+        logging.debug(hsqcdata)
         for i in range(len(hsqcdata[0])):
             try:
                 hcs = float(hsqcdata[1][i])
