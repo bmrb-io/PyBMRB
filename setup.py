@@ -6,10 +6,10 @@ with open("README.md", "r") as fh:
 
 
 setup(name='pybmrb',
-      version='1.2.91',
+      version='1.2.98',
       packages = ['pybmrb'],
       author='Kumaran Baskaran',
-      author_email='kbaskaran@bmrb.wisc.edu',
+      author_email='baskaran@uchc.edu',
       description='PyBMRB provides tools to visualize chemical shift data in BMRB',
       long_description=long_description,
       long_description_content_type = 'text/markdown',

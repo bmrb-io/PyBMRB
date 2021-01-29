@@ -1,3 +1,3 @@
-## 1.2.91
+## 1.2.98
 
-HSQC plot title and axis labels updated. HSQC peaks validated before ploting
+Return value added to n15hsqc function
