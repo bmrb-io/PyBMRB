@@ -65,13 +65,13 @@ class Spectra(object):
         """
         outdata = []
         if bmrbid is None and filename is None and seq is None:
-            print("BMRB ID or filename or sequence must be given")
+            raise ValueError("BMRB ID or filename or sequence must be given")
         else:
             if seq is not None:
                 if nn in [3, 5, 7]:
                     outdata = self.predict_from_seq(seq, tag, nn)
                 else:
-                    print("Wrong nearest neighbour value nn = 3/5/7")
+                    raise ValueError("Wrong nearest neighbour value nn = 3/5/7")
                     outdata = []
             if filename is not None:
                 if os.path.exists(filename):
@@ -96,7 +96,7 @@ class Spectra(object):
                     else:
                         outdata = eid_cs_data
                 else:
-                    print('File not found : {}'.format(filename))
+                    raise IOError('File not found : {}'.format(filename))
             if bmrbid is not None:
                 if type(bmrbid) is list:
                     for eid in bmrbid:
@@ -117,7 +117,7 @@ class Spectra(object):
                                            cs_data['_Atom_chem_shift.Val'],
                                            cs_data['_Atom_chem_shift.Entity_assembly_ID']]
                         except (OSError, IOError) as e:
-                            print(e)
+                            logging.exception("Failed to load entry %s from database with exception %s.", eid, e)
                         if len(outdata):
                             for i in range(len(eid_cs_data)):
                                 outdata[i] = outdata[i] + eid_cs_data[i]
@@ -145,7 +145,7 @@ class Spectra(object):
                         else:
                             outdata = eid_cs_data
                     except (OSError, IOError) as e:
-                        print(e)
+                        logging.exception("Failed to load entry %s from database with exception %s.", bmrbid, e)
         return outdata
 
 
@@ -214,7 +214,7 @@ class Spectra(object):
                                 elif atm == 'H':
                                     val.append(dict_h[tp])
                                 else:
-                                    print("Something wrong")
+                                    logging.warning("Something wrong")
                     for i in range(1, len(seq) - 1):
                         if self.oneTOthree[seq[i]] != "PRO":
                             tp3 = '{}-{}-{}'.format(self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]],
@@ -231,7 +231,7 @@ class Spectra(object):
                                 elif atm == 'H':
                                     val.append(dict_h3[tp3])
                                 else:
-                                    print("Something wrong")
+                                    logging.warning("Something wrong")
                 elif nearest_nei == 5:
                     dict_n5 = self._load_pp_dict('N', 2)
                     dict_h5 = self._load_pp_dict('H', 2)
@@ -262,7 +262,7 @@ class Spectra(object):
                                     elif atm == 'H':
                                         val.append(dict_h[tp])
                                     else:
-                                        print("Something wrong")
+                                        logging.warning("Something wrong")
                             else:
                                 tp3 = '{}-{}-{}'.format(self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]],
                                                         self.oneTOthree[seq[i + 1]])
@@ -278,7 +278,7 @@ class Spectra(object):
                                     elif atm == 'H':
                                         val.append(dict_h3[tp3])
                                     else:
-                                        print("Something wrong")
+                                        logging.warning("Something wrong")
                     for i in range(2, len(seq) - 2):
                         if self.oneTOthree[seq[i]] != "PRO":
                             tp5 = '{}-{}-{}-{}-{}'.format(self.oneTOthree[seq[i - 2]], self.oneTOthree[seq[i - 1]],
@@ -304,7 +304,7 @@ class Spectra(object):
                                     except KeyError:
                                         val.append(dict_h3[tp3])
                                 else:
-                                    print("Something wrong")
+                                    logging.warning("Something wrong")
                 else:
                     dict_n7 = self._load_pp_dict('N', 3)
                     dict_h7 = self._load_pp_dict('H', 3)
@@ -337,7 +337,7 @@ class Spectra(object):
                                     elif atm == 'H':
                                         val.append(dict_h[tp])
                                     else:
-                                        print("Something wrong")
+                                        logging.warning("Something wrong")
                             elif i == 1 or i == len(seq) - 2:
                                 tp3 = '{}-{}-{}'.format(self.oneTOthree[seq[i - 1]], self.oneTOthree[seq[i]],
                                                         self.oneTOthree[seq[i + 1]])
@@ -353,7 +353,7 @@ class Spectra(object):
                                     elif atm == 'H':
                                         val.append(dict_h3[tp3])
                                     else:
-                                        print("Something wrong")
+                                        logging.warning("Something wrong")
                             else:
                                 tp5 = '{}-{}-{}-{}-{}'.format(self.oneTOthree[seq[i - 2]], self.oneTOthree[seq[i - 1]],
                                                               self.oneTOthree[seq[i]],
@@ -378,7 +378,7 @@ class Spectra(object):
                                         except KeyError:
                                             val.append(dict_h3[tp3])
                                     else:
-                                        print("Something wrong")
+                                        logging.warning("Something wrong")
                     for i in range(3, len(seq) - 3):
                         if self.oneTOthree[seq[i]] != "PRO":
                             tp7 = '{}-{}-{}-{}-{}-{}-{}'.format(self.oneTOthree[seq[i - 3]],
@@ -416,17 +416,15 @@ class Spectra(object):
                                         except KeyError:
                                             val.append(dict_h3[tp3])
                                 else:
-                                    print("Something wrong")
+                                    logging.warning("Something wrong")
 
                 out_data = [eid, comp_index_id, comp_id, atom_id, atom_type, cs_list_id, val]
             else:
-                print("Sequence contains nonstandard amino acid code. Random coil prediction is not possible with non "
+                logging.exception("Sequence contains nonstandard amino acid code. Random coil prediction is not possible with non "
                       "standard amino acids")
                 out_data = []
         else:
             out_data = []
-        # for i in range(len(out_data[0])):
-        #     print (out_data[1][i],out_data[2][i],out_data[3][i],out_data[-1][i])
         return out_data
 
 
@@ -553,7 +551,6 @@ class Spectra(object):
 
         if len(csdata):
             hsqcdata = self.check_hsqc_peaks(self.convert_to_n15hsqc_peaks(csdata))
-            #print (hsqcdata)
         else:
             hsqcdata = []
 
@@ -638,10 +635,10 @@ class Spectra(object):
                 plotly.offline.iplot(fig)
             else:
                 plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-                print ("Output written on {}".format(outfilename))
+                logging.info("Output written on {}".format(outfilename))
             return True
         else:
-            print ("No amide proton nitrogen chemical shifts found")
+            raise ValueError("No amide proton nitrogen chemical shifts found")
             return False
 
 
@@ -674,8 +671,7 @@ class Histogram(object):
                     'A', 'C', 'G', 'U', 'DA', 'DC', 'DG', 'DT']
 
         if residue == "*" and atom == "*":
-            print("ERROR: Getting full database will overload the memory! please chose a residue or atom")
-            sys.exit(1)
+            raise ValueError("Getting full database will overload the memory! Please chose a residue or atom.")
         elif residue == "*":
             url = Request(_API_URL + "/search/chemical_shifts?atom_id={}".format(atom))
         elif atom == "*":
@@ -714,7 +710,7 @@ class Histogram(object):
                     ub = mean + (sd_limit * sd)
                     x = [i for i in x if lb < i < ub]
                 if len(x) == 0:
-                    print('{} has no data at BMRB. Please check the atom nomenclature.'.format(atm))
+                    logging.warning('{} has no data at BMRB. Please check the atom nomenclature.'.format(atm))
                 if normalized:
                     data.append(plotly.graph_objs.Histogram(x=x, name=atm,
                                                             histnorm='probability', opacity=_OPACITY))
@@ -729,7 +725,7 @@ class Histogram(object):
                 x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d
                      if i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity)]
             if len(x) == 0:
-                print('{}-{} has no data at BMRB. Please check the atom nomenclature.'.format(residue, atom))
+                logging.warning('{}-{} has no data at BMRB. Please check the atom nomenclature.'.format(residue, atom))
             if filtered:
                 mean = np.mean(x)
                 sd = np.std(x)
@@ -872,11 +868,9 @@ class Histogram(object):
                 pass
 
         if len(x) == 0:
-            print("No data found for {}".format(atom2))
-            sys.exit("No data found for {}".format(atom2))
+            raise ValueError("No data found for {}".format(atom2))
         if len(y) == 0:
-            print("No data found for {}".format(atom1))
-            sys.exit("No data found for {}".format(atom1))
+            raise ValueError("No data found for {}".format(atom1))
 
         # y = [i[d2['columns'].index('Atom_chem_shift.Val')] for i in d2['data']]
         if filtered:
@@ -952,13 +946,13 @@ class Histogram(object):
         :param outfilename: output file name
         :return: writes output in a html file
         """
-        print("This may take time to gather data from entire BMRB database!")
+        logging.info("This may take time to gather data from entire BMRB database!")
         if normalized:
             count = 'Density'
         else:
             count = 'Count'
         if residue is None and atom is None and atom_list is None:
-            print('Atleast one of the three parameters should be given residue or atom or atomlist')
+            raise ValueError('At least one of the three parameters should be given: residue, atom or atomlist')
         elif (residue is not None and atom is not None and atom_list is not None) or \
                 (residue is None and atom is not None and atom_list is not None) or \
                 (residue is not None and atom is None and atom_list is not None):
@@ -984,7 +978,7 @@ class Histogram(object):
                 plotly.offline.iplot(fig)
             else:
                 plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-                print("Output written on {}".format(outfilename))
+                logging.info("Output written on {}".format(outfilename))
         elif residue is None and atom is None and atom_list is not None:
             self.multiple_atom(atom_list, filtered, sd_limit, normalized,ambiguity,outfilename,)
         elif residue is not None and atom is not None and atom_list is None:
@@ -994,7 +988,7 @@ class Histogram(object):
         elif residue is None and atom is not None and atom_list is None:
             self.single_atom('*', atom, filtered, sd_limit, normalized, ambiguity, outfilename)
         else:
-            print("Not a valid option")
+            raise ValueError("Not a valid option")
 
     def hist2d(self, residue, atom1, atom2, filtered=True, sd_limit=10, normalized=False,
                ambiguity1='*', ambiguity2='*',outfilename='hist2d.html'):
@@ -1011,7 +1005,7 @@ class Histogram(object):
         :param ambiguity2: NMR-STAR Ambiguity code for atom2 default:'*'
         :return: writes output in a html file
         """
-        print("This may take time to gather data from entire BMRB database!")
+        logging.info("This may take time to gather data from entire BMRB database!")
         layout = plotly.graph_objs.Layout(
             autosize=True,
             xaxis=dict(
@@ -1051,7 +1045,7 @@ class Histogram(object):
             plotly.offline.iplot(fig)
         else:
             plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-            print("Output written on {}".format(outfilename))
+            logging.info("Output written on {}".format(outfilename))
 
     def single_atom(self, residue, atom, filtered=True, sd_limit=10, normalized=False, ambiguity = '*',outfilename='hist.html'):
         """
@@ -1079,7 +1073,7 @@ class Histogram(object):
             plotly.offline.iplot(fig)
         else:
             plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-            print("Output written on {}".format(outfilename))
+            logging.info("Output written on {}".format(outfilename))
 
     def multiple_atom(self, atom_list, filtered=True, sd_limit=10, normalized=False, ambiguity = '*',outfilename='hist.html'):
         """
@@ -1112,7 +1106,7 @@ class Histogram(object):
             plotly.offline.iplot(fig)
         else:
             plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-            print("Output written on {}".format(outfilename))
+            logging.info("Output written on {}".format(outfilename))
 
     def conditional_hist(self, residue, atom, atomlist, cslist, filtered=True, sd_limit=10, normalized=False,
                          ambiguity='*', outfilename='hist.html'):
@@ -1129,7 +1123,7 @@ class Histogram(object):
         :param outfilename: output file name
         :return: writes output in a html file
         """
-        print("This may take time to gather data from entire BMRB database!")
+        logging.info("This may take time to gather data from entire BMRB database!")
         if normalized:
             count = 'Density'
         else:
@@ -1147,7 +1141,7 @@ class Histogram(object):
             plotly.offline.iplot(fig)
         else:
             plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
-            print("Output written on {}".format(outfilename))
+            logging.info("Output written on {}".format(outfilename))
 
 
 def _called_directly():
