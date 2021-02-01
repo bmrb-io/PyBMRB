@@ -1,10 +1,10 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(name='pybmrb',
-      version='1.2.97',
+      version='1.2.98',
       packages=['pybmrb'],
       author='Kumaran Baskaran',
       author_email='baskaran@uchc.edu',
@@ -15,7 +15,7 @@ setup(name='pybmrb',
       url='https://github.com/uwbmrb/PyBMRB',
       package_data={'pybmrb': ['data/*', 'examples/*']},
       install_requires=[
-          'pynmrstar',
-          'plotly',
-          'numpy'],
+          'pynmrstar>=3.0.4',
+          'plotly==4.5.4',
+          'numpy>=1.15.0'],
       license='MIT')
