@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 
 setup(name='pybmrb',
-      version='1.2.98',
+      version='1.2.99',
       packages = ['pybmrb'],
       author='Kumaran Baskaran',
       author_email='baskaran@uchc.edu',

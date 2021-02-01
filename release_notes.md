@@ -1,3 +1,3 @@
-## 1.2.98
+## 1.2.99
 
-Return value added to n15hsqc function
+Minot bug fix: Unwanted sorting in the scatter plot is now fixed
