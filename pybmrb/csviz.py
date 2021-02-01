@@ -30,7 +30,7 @@ _API_URL = "http://api.bmrb.io/v2"
 NOTEBOOK = False
 _OPACITY = 0.5
 _AUTOOPEN = True
-__version__ = "1.2.98"
+__version__ = "1.2.99"
 
 __all__ = ['Spectra', 'Histogram']
 
@@ -623,9 +623,11 @@ class Spectra(object):
 
         layout = plotly.graph_objs.Layout(
             xaxis=dict(autorange='reversed',
-                       title='<sup>1</sup>H (ppm)'),
+                       title='<sup>1</sup>H (ppm)',
+                       type='linear'),
             yaxis=dict(autorange='reversed',
-                       title='<sup>15</sup>N (ppm)'),
+                       title='<sup>15</sup>N (ppm)',
+                       type='linear'),
             showlegend=True,
             hovermode='closest',
             title=title)
