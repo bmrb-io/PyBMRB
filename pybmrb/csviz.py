@@ -30,7 +30,7 @@ _API_URL = "http://api.bmrb.io/v2"
 NOTEBOOK = False
 _OPACITY = 0.5
 _AUTOOPEN = True
-__version__ = "1.2.98"
+__version__ = "1.2.99"
 
 __all__ = ['Spectra', 'Histogram']
 
