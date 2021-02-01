@@ -623,9 +623,11 @@ class Spectra(object):
 
         layout = plotly.graph_objs.Layout(
             xaxis=dict(autorange='reversed',
-                       title='<sup>1</sup>H (ppm)'),
+                       title='<sup>1</sup>H (ppm)',
+                       type='linear'),
             yaxis=dict(autorange='reversed',
-                       title='<sup>15</sup>N (ppm)'),
+                       title='<sup>15</sup>N (ppm)',
+                       type='linear'),
             showlegend=True,
             hovermode='closest',
             title=title)
