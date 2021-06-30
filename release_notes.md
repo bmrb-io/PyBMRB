@@ -1,3 +1,3 @@
-## 1.2.99
+## 1.2.991
 
-Minot bug fix: Unwanted sorting in the scatter plot is now fixed
+Ambiguity code bug fixed. 
