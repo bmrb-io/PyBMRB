@@ -26,7 +26,8 @@ if PY3:
 else:
     from urllib2 import urlopen, Request
 
-_API_URL = "http://api.bmrb.io/v2"
+#_API_URL = "http://api.bmrb.io/v2"
+_API_URL = "http://dev-api.bmrb.io/v2"
 NOTEBOOK = False
 _OPACITY = 0.5
 _AUTOOPEN = True
@@ -768,6 +769,7 @@ class Histogram(object):
             url = Request(_API_URL + "/search/chemical_shifts?comp_id={}".format(residue))
         else:
             url = Request(_API_URL + "/search/chemical_shifts?comp_id={}&atom_id={}".format(residue, atom))
+        print (_API_URL + "/search/chemical_shifts?comp_id={}&atom_id={}".format(residue, atom))
         url.add_header('Application', 'PyBMRB')
         r = urlopen(url)
         dump = json.loads(r.read())
@@ -1025,6 +1027,109 @@ class Histogram(object):
                     ]
         return data
 
+    @staticmethod
+    def get_histogram_temp(residue, atom, filtered=True, sd_limit=10, normalized=False,
+                            ambiguity='*'):
+        """
+        Calculates the correlation between two atoms in the same residue
+        :param residue: Residue name in standard 3 letter code
+        :param atom1: IUIPAC atom name
+        :param atom2: IUIPAC atom name
+        :param filtered:  True/False Filters based on standard deviation cutoff Default:True
+        :param sd_limit: Number of time Standard deviation for filtering default: 10
+        :param normalized: True/False Plots either Count/Density default: False
+        :param ambiguity1: NMR-STAR Ambiguity for atom1 code default:'*'
+        :param ambiguity2: NMR-STAR Ambiguity for atom2 code default:'*'
+        :return: Plotly object
+        """
+        url = Request(_API_URL + "/search/chemical_shifts?comp_id={}&atom_id={}".format(residue, atom))
+        url.add_header('Application', 'PyBMRB')
+        r = urlopen(url)
+        dump = json.loads(r.read())
+        if ambiguity == '*':
+            d1 = dump
+        else:
+            d1 = {}
+            d1['columns'] = dump['columns']
+            d1['data'] = [i for i in dump['data'] if
+                          i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity)]
+        d = {}
+        for i in d1['data']:
+            entry_id = i[d1['columns'].index('Atom_chem_shift.Entry_ID')]
+            seq_id = i[d1['columns'].index('Atom_chem_shift.Comp_index_ID')]
+            d["{}-{}".format(entry_id, seq_id)] = (i[d1['columns'].index('Atom_chem_shift.Val')],i[d1['columns'].index('Sample_conditions.Temperature_K')])
+            #d["{}-{}".format(entry_id, seq_id)] = (i[d1['columns'].index('Atom_chem_shift.Val')],i[d1['columns'].index('Sample_conditions.pH')])
+
+        # x = [i[d1['columns'].index('Atom_chem_shift.Val')] for i in d1['data']]
+        x = []
+        y = []
+        l=[]
+        for i in d.keys():
+            if d[i][1] is not None:
+                x.append(d[i][0])
+                y.append(d[i][1])
+                l.append(i)
+        if len(x) == 0:
+            raise ValueError("No data found for {}".format(atom2))
+        if len(y) == 0:
+            raise ValueError("No data found for {}".format(atom1))
+
+        # y = [i[d2['columns'].index('Atom_chem_shift.Val')] for i in d2['data']]
+        if filtered:
+            meanx = np.mean(x)
+            sdx = np.std(x)
+            lbx = meanx - (sd_limit * sdx)
+            ubx = meanx + (sd_limit * sdx)
+            print (y)
+            x1 = [x[i] for i in range(len(x)) if lbx < x[i] < ubx and 0 <= y[i] <=14 ]
+            y1 = [y[i] for i in range(len(y)) if lbx < x[i] < ubx and 0 <= y[i] <=14]
+            l1 = [l[i] for i in range(len(y)) if lbx < x[i] < ubx and 0 <= y[i] <=14 ]
+            x = x1
+            y = y1
+            l = l1
+        if 'H' in atom:
+            binsizex = 0.05
+        else:
+            binsizex = 0.25
+
+        nbinsx = int(round((max(x) - min(x)) / binsizex))
+        nbinsy = int(round((max(y) - min(y)) / 0.1))
+        if normalized:
+            data = [plotly.graph_objs.Scatter(x=x, y=y),#, nbinsx=nbinsx,
+                                                        # histnorm='probability', colorscale='Jet'),
+                    plotly.graph_objs.Histogram(
+                        y=y,
+                        xaxis='x2',
+                        name="Temperature (K)",
+                        nbinsy=nbinsy,
+                        histnorm='probability'
+                    ),
+                    plotly.graph_objs.Histogram(
+                        x=x,
+                        yaxis='y2',
+                        nbinsx=nbinsx,
+                        name="{}-{}".format(residue, atom),
+                        histnorm='probability'
+                    )
+                    ]
+        else:
+            data = [plotly.graph_objs.Scatter(x=x, y=y,mode='markers'),#,nbinsx=nbinsx,nbinsy=nbinsy,
+                                                         #colorscale='Jet'),
+                    plotly.graph_objs.Histogram(
+                        y=y,
+                        xaxis='x2',
+                        nbinsy=nbinsy,
+                        name="Temperature"
+                    ),
+                    plotly.graph_objs.Histogram(
+                        x=x,
+                        nbinsx=nbinsx,
+                        yaxis='y2',
+                        name="{}-{}".format(residue, atom)
+                    )
+                    ]
+        return data
+
     def hist(self, residue=None, atom=None, atom_list=None, filtered=True, sd_limit=10,
              normalized=False, ambiguity='*', outfilename='hist.html'):
         """
@@ -1133,6 +1238,61 @@ class Histogram(object):
             showlegend=False
         )
         data = self.get_histogram2d_api(residue, atom1, atom2, filtered, sd_limit, normalized, ambiguity1, ambiguity2)
+        fig = plotly.graph_objs.Figure(data=data, layout=layout)
+
+        if NOTEBOOK:
+            plotly.offline.iplot(fig)
+        else:
+            plotly.offline.plot(fig, filename=outfilename, auto_open=_AUTOOPEN)
+            logging.info("Output written on {}".format(outfilename))
+
+    def hist_temperature(self, residue, atom, filtered=True, sd_limit=10, normalized=False,
+               ambiguity='*', outfilename='hist2d.html'):
+        """
+        Generates chemical shift correlation plots for a given two atoms in a given amino acid
+        :param residue: 3 letter amino acid code
+        :param atom: IUPAC atom name
+        :param filtered:True/False Filters based on standard deviation cutoff Default:True
+        :param sd_limit: Number of time Standard deviation for filtering default: 10
+        :param normalized: True/False Plots either Count/Density default: False
+        :param outfilename: output file name
+        :param ambiguity: NMR-STAR Ambiguity code for atom1 default:'*'
+        :return: writes output in a html file
+        """
+        logging.info("This may take time to gather data from entire BMRB database!")
+        layout = plotly.graph_objs.Layout(
+            autosize=True,
+            xaxis=dict(
+                autorange='reversed',
+                zeroline=False,
+                domain=[0, 0.85],
+                showgrid=True,
+                title='{}-{} [ppm]'.format(residue, atom)
+
+            ),
+            yaxis=dict(
+                autorange='reversed',
+                zeroline=False,
+                domain=[0, 0.85],
+                showgrid=True,
+                title='Temperature [K]'
+
+            ),
+            xaxis2=dict(
+                zeroline=False,
+                domain=[0.85, 1],
+                showgrid=True
+
+            ),
+            yaxis2=dict(
+                zeroline=False,
+                domain=[0.85, 1],
+                showgrid=True
+            ),
+            hovermode='closest',
+            showlegend=False
+        )
+        data = self.get_histogram_temp(residue, atom, filtered, sd_limit, normalized, ambiguity)
         fig = plotly.graph_objs.Figure(data=data, layout=layout)
 
         if NOTEBOOK:
@@ -1296,4 +1456,6 @@ def _called_directly():
 
 
 if __name__ == "__main__":
-    _called_directly()
+    #_called_directly()
+    h=Histogram()
+    h.hist_temperature('VAL','CB',filtered=True)
