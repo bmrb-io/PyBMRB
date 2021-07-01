@@ -1,35 +1,12 @@
 from __future__ import print_function
-
-import json
 import logging
-import ntpath
-import optparse
 import os
-import sys
-import re
-import numpy as np
-import plotly
 import pynmrstar
 
 # Set the log level to INFO
 logging.getLogger().setLevel(logging.INFO)
 
-# Determine if we are running in python3
-PY3 = (sys.version_info[0] == 3)
-(scriptPath, scriptName) = ntpath.split(os.path.realpath(__file__))
-# pylint: disable=wrong-import-position,no-name-in-module
-# pylint: disable=import-error,wrong-import-order
-# Python version dependent loads
-if PY3:
-    from urllib.request import urlopen, Request
-else:
-    from urllib2 import urlopen, Request
 
-# _API_URL = "http://api.bmrb.io/v2"
-_API_URL = "http://dev-api.bmrb.io/v2"
-NOTEBOOK = False
-_OPACITY = 0.5
-_AUTOOPEN = True
 __version__ = "test"
 
 three_letter_code = {'I': 'ILE', 'Q': 'GLN', 'G': 'GLY', 'E': 'GLU', 'C': 'CYS',
@@ -56,6 +33,7 @@ class ChemicalShift(object):
         cs_data = {}
         # entry_data = pynmrstar.Entry.from_database(bmrb_id)
         cs_loops = entry_data.get_loops_by_category('Atom_chem_shift')
+        logging.debug('Chemical shift loop read')
         cs_list_id = 1
         for cs_loop in cs_loops:
             cs_id = '{}-{}'.format(data_set_id, cs_list_id)
@@ -96,6 +74,7 @@ class ChemicalShift(object):
                     cs_data[cs_id][c][s][a].append(r)
                 # cs_data[cs_id][c][s][a].append(a)
                 cs_data[cs_id][c][s][a].append(v)
+        logging.debug('Getting sequence information from chemical shift loop')
         for cs_id in cs_data.keys():
             for chain in cs_data[cs_id].keys():
                 seq_ids = sorted(set([i for i in cs_data[cs_id][chain].keys()]))
@@ -105,7 +84,7 @@ class ChemicalShift(object):
     @classmethod
     def from_file(self, file_names, auth_tag=False, data_set_id=None):
         '''
-        Extracts chemical shift information from NMR-STAR file
+        Extracts chemical shift information one or more NMR-STAR files
         :param file_name: list of NMR-STAR file names with full path or single file name
         :param auth_tag: Use author sequence numbering True/False default: False
         :param data_set_id: User defined data set id default: filename
@@ -115,27 +94,31 @@ class ChemicalShift(object):
         if type(file_names) is list:
             all_cs_data = {}
             for file_name in file_names:
+                logging.debug('Reading file {}'.format(file_name))
                 if os.path.exists(file_name):
                     entry_data = pynmrstar.Entry.from_file(file_name)
                     data_set_id = os.path.splitext(os.path.basename(file_name))[0]
                     cs_data = self.from_entry(entry_data, data_set_id, auth_tag)
                 else:
+                    logging.error('File not found {}'.format(file_name))
                     raise IOError('File not found : {}'.format(file_name))
                 all_cs_data.update(cs_data)
         else:
+            logging.debug('Reading file {}'.format(file_names))
             if os.path.exists(file_names):
                 entry_data = pynmrstar.Entry.from_file(file_names)
                 if data_set_id is None:
                     data_set_id = os.path.splitext(os.path.basename(file_names))[0]
                 all_cs_data = self.from_entry(entry_data, data_set_id, auth_tag)
             else:
+                logging.error('File not found {}'.format(file_names))
                 raise IOError('File not found : {}'.format(file_names))
         return all_cs_data
 
     @classmethod
     def from_bmrb(self, bmrb_ids, auth_tag=False):
         '''
-        Extracts chemical shift information directly from BMRB database for a given BMRB entry id
+        Extracts chemical shift information directly from BMRB database for a given BMRB entry or list of entreis
         :param bmrb_ids: list of BMRB entry ids or single BMRB ID
         :param auth_tag: Use author sequence numbering True/False default: False
         :return: Chemical shift dictionary
@@ -144,6 +127,7 @@ class ChemicalShift(object):
             all_cs_data={}
             for bmrb_id in bmrb_ids:
                 try:
+                    logging.debug('Getting entry {} from BMRB'.format(bmrb_id))
                     entry_data = pynmrstar.Entry.from_database(bmrb_id)
                 except OSError:
                     entry_data = None
@@ -154,10 +138,13 @@ class ChemicalShift(object):
                 if entry_data is not None:
                     cs_data = self.from_entry(entry_data, bmrb_id, auth_tag)
                 else:
+                    logging.error('Entry {} not found in public database'.format(bmrb_id))
                     raise IOError('Entry not found in public database: {}'.format(bmrb_id))
                 all_cs_data.update(cs_data)
         else:
+
             try:
+                logging.debug('Getting entry {} from BMRB'.format(bmrb_ids))
                 entry_data = pynmrstar.Entry.from_database(bmrb_ids)
             except OSError:
                 entry_data = None
@@ -168,15 +155,12 @@ class ChemicalShift(object):
             if entry_data is not None:
                 all_cs_data = self.from_entry(entry_data, bmrb_ids, auth_tag)
             else:
-                raise IOError('Entry not found in public database: {}'.format(bmrb_id))
-
+                logging.error('Entry {} not found in public database'.format(bmrb_ids))
+                raise IOError('Entry not found in public database: {}'.format(bmrb_ids))
         return all_cs_data
 
-
-    def from_bmrb_database(self):
-        pass
-
-
 if __name__ == "__main__":
-    p = ChemicalShift()
-    p.from_file('/Users/kumaran/MyData3.str',data_set_id='test')
+    p = ChemicalShift.from_bmrb(15060)
+    # p.from_file('/Users/kumaran/MyData.str',data_set_id='test')
+    # p.
+

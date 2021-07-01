@@ -143,7 +143,12 @@ class Spectra(object):
         return x,y,data_set,info,res,cs_track
 
     @classmethod
-    def n15hsqc(self,bmrb_ids,file_names=None,auth_tag=False,legend = None,draw_trace=False,include_sidechain=True):
+    def n15hsqc(self,bmrb_ids,file_names=None,auth_tag=False,legend = None,draw_trace=False,
+                include_sidechain=True,
+                output_format='html',
+                output_file=None,
+                output_image_width=800,
+                output_image_height=600):
         atom_x='H'
         atom_y='N'
         peak_list_2d = self.create_n15hsqc_peaklist(bmrb_ids,
@@ -174,7 +179,7 @@ class Spectra(object):
             fig.update_layout(showlegend=False)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-            fig.show()
+
         elif legend == 'residue':
             fig = px.scatter(x=x, y=y,
                              hover_name=info,
@@ -188,7 +193,7 @@ class Spectra(object):
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines')
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-            fig.show()
+
         elif legend == 'dataset':
             fig = px.scatter(x=x, y=y,
                              hover_name=info,
@@ -202,7 +207,26 @@ class Spectra(object):
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-            fig.show()
+        fig.show()
+        if output_file is not None:
+            if output_format=='html':
+                fig.write_html('{}.html'.format(output_file))
+                logging.info('Sucessfully written {}.html'.format(output_file))
+            elif output_format=='jpg':
+                fig.write_image('{}.jpg'.format(output_file),width=output_image_width,height=output_image_height)
+                logging.info('Sucessfully written {}.jpg'.format(output_file))
+            elif output_format=='png':
+                fig.write_image('{}.png'.format(output_file),width=output_image_width,height=output_image_height)
+                logging.info('Sucessfully written {}.png'.format(output_file))
+            elif output_format=='pdf':
+                fig.write_image('{}.pdf'.format(output_file),width=output_image_width,height=output_image_height)
+                logging.info('Sucessfully written {}.pdf'.format(output_file))
+            elif output_format=='webp':
+                fig.write_image('{}.webp'.format(output_file),width=output_image_width,height=output_image_height)
+                logging.info('Sucessfully written {}.wepb'.format(output_file))
+            else:
+                logging.ERROR('Output file format nor support:{}'.format(output_format))
+        return True
 
     def generic_2d(self,bmrb_ids,file_names=None,atom_x='H',atom_y='N',auth_tag=False,legend = None,draw_trace=False):
 
@@ -234,7 +258,7 @@ class Spectra(object):
             fig.update_layout(showlegend=False)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-            fig.show()
+
         elif legend=='residue':
             fig = px.scatter(x=x, y=y,
                              hover_name=info,
@@ -248,7 +272,7 @@ class Spectra(object):
                     fig.add_scatter(x=cs_track[k][0],y=cs_track[k][1],name=k,mode='lines')
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-            fig.show()
+
         elif legend=='dataset':
             fig = px.scatter(x=x, y=y,
                              hover_name=info,
@@ -262,7 +286,8 @@ class Spectra(object):
                     fig.add_scatter(x=cs_track[k][0],y=cs_track[k][1],name=k)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-            fig.show()
+        fig.show()
+
 
 
 
@@ -270,5 +295,5 @@ class Spectra(object):
 
 
 if __name__ == "__main__":
-    Spectra.n15hsqc([17074,17077,17076],legend='residue',draw_trace=True)
+    Spectra.n15hsqc([17074,17077,17076],legend='residue',output_file='test',output_format='webp')
     #s.generic_2d([15060,18857],file_names='/Users/Kumaran/MyData.str',draw_trace=True,legend='dataset')
