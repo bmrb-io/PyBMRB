@@ -17,9 +17,13 @@ one_letter_code = dict([(value, key) for key, value in three_letter_code.items()
 
 
 class ChemicalShift(object):
+    '''
+    Reads NMR-STAR data from file or from database and generates chemical shift dictionary
+    '''
+
 
     def __init__(self):
-        return
+        pass
 
     @staticmethod
     def from_entry(entry_data, data_set_id, auth_tag=False, ):

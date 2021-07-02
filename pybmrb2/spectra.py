@@ -1,5 +1,5 @@
 import logging
-
+import csv
 from pybmrb2.get_cs_data import ChemicalShift
 import plotly.express as px
 import plotly.graph_objects as go
@@ -10,7 +10,78 @@ class Spectra(object):
         pass
 
     @classmethod
-    def create_c13hsqc_peaklist(self, bmrb_ids, file_names=None, atom_x='H', atom_y='N', auth_tag=False,
+    def create_c13hsqc_peaklist(self, bmrb_ids, file_names=None, auth_tag=False,
+                                draw_trace=False):
+        ch_atoms={'ALA':[('HA','CA'),('HB*','CB')],
+                  'ARG':[('HA','CA'),('HB*','CB'),('HG*','CG'),('HD*','CD')],
+                  'ASN':[('HA','CA'),('HB*','CB')],
+                  'ASP': [('HA', 'CA'), ('HB*', 'CB')],
+                  'CYS': [('HA', 'CA'), ('HB*', 'CB')],
+                  'GLN': [('HA', 'CA'), ('HB*', 'CB'),('HG*','CG')],
+                  'GLU': [('HA', 'CA'), ('HB*', 'CB'),('HG*','CG')],
+                  'GLY': [('HA*', 'CA')],
+                  'HIS': [('HA', 'CA'), ('HB*', 'CB'),('HD2','CD2'),('HE1','CE1')],
+                  'ILE': [('HA', 'CA'), ('HB', 'CB'),('HG2*','CG2'),('HG1*','CG1'),('HD1*','CD1')],
+                  'LEU': [('HA', 'CA'), ('HB*', 'CB'),('HG','CG'), ('HD1*','CD1'),('HD2*','CD2')],
+                  'LYS': [('HA', 'CA'), ('HB*', 'CB'),('HG*','CG'),('HD*','CD'),('HE*','CE')],
+                  'MET': [('HA', 'CA'), ('HB*', 'CB'),('HG*','CG'),('HE*','CE')],
+                  'PHE': [('HA', 'CA'), ('HB*', 'CB'),('HD1','CD1'),('HE1','CE1'),('HD2','CD2'),('HE2','CE2'),('HZ','CZ')],
+                  'PRO': [('HA', 'CA'), ('HB*', 'CB'),('HG*','CG'),('HD*','CD')],
+                  'SER': [('HA', 'CA'), ('HB*', 'CB')],
+                  'TRP': [('HA', 'CA'), ('HB*', 'CB'),('HD1','CD1'),('HE3','CE3'),('HZ2','CZ2'),('HH2','CH2')],
+                  'TYR': [('HA', 'CA'), ('HB*', 'CB'),('HD1','CD1'),('HE1','CE1'),('HD2','CD2'),('HE2','CE2')],
+                  'THR': [('HA', 'CA'), ('HB', 'CB'),('HG2*','CG2')],
+                  'VAL': [('HA', 'CA'), ('HB', 'CB'),('HG1*','CG1'),('HG2*','CG2')],
+                  }
+        cs_data = {}
+        cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
+        cs_data.update(cs_data_bmrb)
+        if file_names is not None:
+            cs_data_file = ChemicalShift.from_file(file_names, auth_tag=auth_tag)
+            cs_data.update(cs_data_file)
+        data_set = []
+        x = []
+        y = []
+        res = []
+        info = []
+        atom_ids = {}
+        for data_id in cs_data.keys():
+            for chain in cs_data[data_id].keys():
+                for seq_no in cs_data[data_id][chain]['seq_ids']:
+                    residue = cs_data[data_id][chain][seq_no][list(cs_data[data_id][chain][seq_no].keys())[0]][0]
+                    ch_list=ch_atoms[residue]
+                    for ch_atom in ch_list:
+                        for atm_x in cs_data[data_id][chain][seq_no].keys():
+                            if ('*' in ch_atom[0]
+                                and ch_atom[0][:-1]==atm_x[:len(ch_atom[0][:-1])]) \
+                                    or (ch_atom[0]==atm_x):
+                                cs_x=cs_data[data_id][chain][seq_no][atm_x][2]
+                                for atm_y in cs_data[data_id][chain][seq_no].keys():
+                                    if ('*' in ch_atom[1]
+                                        and ch_atom[1][:-1] == atm_y[:len(ch_atom[1][:-1])]) \
+                                            or (ch_atom[1] == atm_y):
+                                        cs_y = cs_data[data_id][chain][seq_no][atm_y][2]
+                                        data_set.append(data_id)
+                                        x.append(cs_x)
+                                        y.append(cs_y)
+                                        res.append(residue)
+                                        tag='{}-{}-{}-{}-{}-{}'.format(data_id,chain,seq_no,residue,atm_x,atm_y)
+                                        info.append(tag)
+                                        atom_id='{}-{}-{}-{}-{}'.format(chain,seq_no,residue,atm_x,atm_y)
+                                        if draw_trace:
+                                            if atom_id not in atom_ids.keys():
+                                                atom_ids[atom_id] = [[], []]
+                                            atom_ids[atom_id][0].append(cs_x)
+                                            atom_ids[atom_id][1].append(cs_y)
+        cs_track = {}
+        if draw_trace:
+            for k in atom_ids.keys():
+                if len(atom_ids[k][0]) > 1:
+                    cs_track[k] = atom_ids[k]
+        return x, y, data_set, info, res, cs_track
+
+    @classmethod
+    def create_tocsy_peaklist(self, bmrb_ids, file_names=None, auth_tag=False,
                                 draw_trace=False):
         cs_data = {}
         cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
@@ -27,30 +98,88 @@ class Spectra(object):
         for data_id in cs_data.keys():
             for chain in cs_data[data_id].keys():
                 for seq_no in cs_data[data_id][chain]['seq_ids']:
-                    try:
-                        x_cs = cs_data[data_id][chain][seq_no][atom_x][2]
-                        y_cs = cs_data[data_id][chain][seq_no][atom_y][2]
-                        residue = cs_data[data_id][chain][seq_no][atom_y][0]
-                        res.append(residue)
-                        tag = '{}-{}-{}-{}'.format(data_id, chain, seq_no, residue)
-                        data_set.append(data_id)
-                        atom_id = '{}-{}-{}'.format(chain, seq_no, residue)
-                        if draw_trace:
-                            if atom_id not in atom_ids.keys():
-                                atom_ids[atom_id] = [[], []]
-                            atom_ids[atom_id][0].append(x_cs)
-                            atom_ids[atom_id][1].append(y_cs)
-                        x.append(x_cs)
-                        y.append(y_cs)
-                        info.append(tag)
-                    except KeyError:
-                        logging.debug('Data not found:{},{},{}'.format(data_id, chain, seq_no))
-            cs_track = {}
-            if draw_trace:
-                for k in atom_ids.keys():
-                    if len(atom_ids[k][0]) > 1:
-                        cs_track[k] = atom_ids[k]
+                    residue = cs_data[data_id][chain][seq_no][list(cs_data[data_id][chain][seq_no].keys())[0]][0]
+                    ch_list = [('H*','H*')]
+                    for ch_atom in ch_list:
+                        for atm_x in cs_data[data_id][chain][seq_no].keys():
+                            if ('*' in ch_atom[0]
+                                and ch_atom[0][:-1] == atm_x[:len(ch_atom[0][:-1])]) \
+                                    or (ch_atom[0] == atm_x):
+                                cs_x = cs_data[data_id][chain][seq_no][atm_x][2]
+                                for atm_y in cs_data[data_id][chain][seq_no].keys():
+                                    if ('*' in ch_atom[1]
+                                        and ch_atom[1][:-1] == atm_y[:len(ch_atom[1][:-1])]) \
+                                            or (ch_atom[1] == atm_y):
+                                        cs_y = cs_data[data_id][chain][seq_no][atm_y][2]
+                                        data_set.append(data_id)
+                                        x.append(cs_x)
+                                        y.append(cs_y)
+                                        res.append(residue)
+                                        tag = '{}-{}-{}-{}-{}-{}'.format(data_id, chain, seq_no, residue, atm_x, atm_y)
+                                        info.append(tag)
+                                        atom_id = '{}-{}-{}-{}-{}'.format(chain, seq_no, residue, atm_x, atm_y)
+                                        if draw_trace:
+                                            if atom_id not in atom_ids.keys():
+                                                atom_ids[atom_id] = [[], []]
+                                            atom_ids[atom_id][0].append(cs_x)
+                                            atom_ids[atom_id][1].append(cs_y)
+        cs_track = {}
+        if draw_trace:
+            for k in atom_ids.keys():
+                if len(atom_ids[k][0]) > 1:
+                    cs_track[k] = atom_ids[k]
         return x, y, data_set, info, res, cs_track
+
+    @classmethod
+    def create_2d_peaklist(self, bmrb_ids,atom_x,atom_y,file_names=None, auth_tag=False,
+                              draw_trace=False):
+        cs_data = {}
+        cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
+        cs_data.update(cs_data_bmrb)
+        if file_names is not None:
+            cs_data_file = ChemicalShift.from_file(file_names, auth_tag=auth_tag)
+            cs_data.update(cs_data_file)
+        data_set = []
+        x = []
+        y = []
+        res = []
+        info = []
+        atom_ids = {}
+        for data_id in cs_data.keys():
+            for chain in cs_data[data_id].keys():
+                for seq_no in cs_data[data_id][chain]['seq_ids']:
+                    residue = cs_data[data_id][chain][seq_no][list(cs_data[data_id][chain][seq_no].keys())[0]][0]
+                    ch_list = [(atom_x, atom_y)]
+                    for ch_atom in ch_list:
+                        for atm_x in cs_data[data_id][chain][seq_no].keys():
+                            if ('*' in ch_atom[0]
+                                and ch_atom[0][:-1] == atm_x[:len(ch_atom[0][:-1])]) \
+                                    or (ch_atom[0] == atm_x):
+                                cs_x = cs_data[data_id][chain][seq_no][atm_x][2]
+                                for atm_y in cs_data[data_id][chain][seq_no].keys():
+                                    if ('*' in ch_atom[1]
+                                        and ch_atom[1][:-1] == atm_y[:len(ch_atom[1][:-1])]) \
+                                            or (ch_atom[1] == atm_y):
+                                        cs_y = cs_data[data_id][chain][seq_no][atm_y][2]
+                                        data_set.append(data_id)
+                                        x.append(cs_x)
+                                        y.append(cs_y)
+                                        res.append(residue)
+                                        tag = '{}-{}-{}-{}-{}-{}'.format(data_id, chain, seq_no, residue, atm_x, atm_y)
+                                        info.append(tag)
+                                        atom_id = '{}-{}-{}-{}-{}'.format(chain, seq_no, residue, atm_x, atm_y)
+                                        if draw_trace:
+                                            if atom_id not in atom_ids.keys():
+                                                atom_ids[atom_id] = [[], []]
+                                            atom_ids[atom_id][0].append(cs_x)
+                                            atom_ids[atom_id][1].append(cs_y)
+        cs_track = {}
+        if draw_trace:
+            for k in atom_ids.keys():
+                if len(atom_ids[k][0]) > 1:
+                    cs_track[k] = atom_ids[k]
+        return x, y, data_set, info, res, cs_track
+
 
     @classmethod
     def create_n15hsqc_peaklist(self, bmrb_ids, file_names=None, atom_x='H', atom_y='N', auth_tag=False, draw_trace=False,
@@ -135,20 +264,29 @@ class Spectra(object):
                                         logging.debug('Data not found:{},{},{}'.format(data_id, chain, seq_no))
                     except KeyError:
                         logging.debug('Data not found:{},{},{}'.format(data_id,chain,seq_no))
-            cs_track={}
-            if draw_trace:
-                for k in atom_ids.keys():
-                    if len(atom_ids[k][0])>1:
-                        cs_track[k]=atom_ids[k]
+        cs_track={}
+        if draw_trace:
+            for k in atom_ids.keys():
+                if len(atom_ids[k][0])>1:
+                    cs_track[k]=atom_ids[k]
         return x,y,data_set,info,res,cs_track
 
     @classmethod
     def n15hsqc(self,bmrb_ids,file_names=None,auth_tag=False,legend = None,draw_trace=False,
                 include_sidechain=True,
+                peak_list=None,
                 output_format='html',
                 output_file=None,
                 output_image_width=800,
                 output_image_height=600):
+        if peak_list is not None:
+            x1=[]
+            y1=[]
+            with open(peak_list) as csvfile:
+                spamreader = csv.reader(csvfile, delimiter=',')
+                for row in spamreader:
+                    x1.append(float(row[0]))
+                    y1.append(float(row[1]))
         atom_x='H'
         atom_y='N'
         peak_list_2d = self.create_n15hsqc_peaklist(bmrb_ids,
@@ -176,6 +314,8 @@ class Spectra(object):
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+            if peak_list is not None:
+                fig.add_scatter(x1,y1,mode='markers',name='Peak list')
             fig.update_layout(showlegend=False)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
@@ -191,6 +331,8 @@ class Spectra(object):
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines')
+            if peak_list is not None:
+                fig.add_scatter(x=x1, y=y1,mode='markers', name='Peak list')
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
 
@@ -205,6 +347,8 @@ class Spectra(object):
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+            if peak_list is not None:
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
         fig.show()
@@ -228,65 +372,292 @@ class Spectra(object):
                 logging.ERROR('Output file format nor support:{}'.format(output_format))
         return True
 
-    def generic_2d(self,bmrb_ids,file_names=None,atom_x='H',atom_y='N',auth_tag=False,legend = None,draw_trace=False):
+    @classmethod
+    def c13hsqc(self, bmrb_ids, file_names=None, auth_tag=False, legend=None, draw_trace=False,
+                peak_list=None,
+                output_format='html',
+                output_file=None,
+                output_image_width=800,
+                output_image_height=600):
+        peak_list_2d = self.create_c13hsqc_peaklist(bmrb_ids,
+                                                    file_names=file_names,
+                                                    auth_tag=auth_tag,
+                                                    draw_trace=draw_trace)
+        if peak_list is not None:
+            x1 = []
+            y1 = []
+            with open(peak_list) as csvfile:
+                spamreader = csv.reader(csvfile, delimiter=',')
+                for row in spamreader:
+                    x1.append(float(row[0]))
+                    y1.append(float(row[1]))
 
-        peak_list_2d=self.create_n15hsqc_peaklist(bmrb_ids,
-                                                  file_names=file_names,
-                                                  atom_x=atom_x,
-                                                  atom_y=atom_y,
-                                                  auth_tag=auth_tag,
-                                                  draw_trace=draw_trace)
-        x=peak_list_2d[0]
-        y=peak_list_2d[1]
-        data_set=peak_list_2d[2]
-        info=peak_list_2d[3]
-        res=peak_list_2d[4]
-        cs_track=peak_list_2d[5]
+        x = peak_list_2d[0]
+        y = peak_list_2d[1]
 
+        data_set = peak_list_2d[2]
+        info = peak_list_2d[3]
+        res = peak_list_2d[4]
+        cs_track = peak_list_2d[5]
         if legend is None:
-            fig=px.scatter(x=x,y=y,
-                           symbol=data_set,
-                           hover_name=info,
-                           color=res,
-                           labels={"color":"Residue",
-                                   "symbol":"Data set",
-                                   "x":'{} (ppm)'.format(atom_x),
-                                   "y":'{} (ppm)'.format(atom_y)})
+            fig = px.scatter(x=x, y=y,
+                             symbol=data_set,
+                             hover_name=info,
+                             color=res,
+                             labels={"color": "Residue",
+                                     "symbol": "Data set",
+                                     "x": '<sup>1</sup>H (ppm)',
+                                     "y": '<sup>13</sup>C (ppm)'})
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+            if peak_list is not None:
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
             fig.update_layout(showlegend=False)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
 
-        elif legend=='residue':
+        elif legend == 'residue':
             fig = px.scatter(x=x, y=y,
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
-                                     #"symbol": "Data set",
-                                     "x": '{} (ppm)'.format(atom_x),
-                                     "y": '{} (ppm)'.format(atom_y)})
+                                     # "symbol": "Data set",
+                                     "x": '<sup>1</sup>H (ppm)',
+                                     "y": '<sup>13</sup>C (ppm)'})
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0],y=cs_track[k][1],name=k,mode='lines')
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines')
+            if peak_list is not None:
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
 
-        elif legend=='dataset':
+        elif legend == 'dataset':
             fig = px.scatter(x=x, y=y,
                              hover_name=info,
                              color=data_set,
                              labels={"color": "Data set",
-                                     #"symbol": "Data set",
+                                     # "symbol": "Data set",
+                                     "x": '<sup>1</sup>H (ppm)',
+                                     "y": '<sup>13</sup>C (ppm)'})
+            if draw_trace:
+                for k in cs_track.keys():
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+            if peak_list is not None:
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+            fig.update_xaxes(autorange="reversed")
+            fig.update_yaxes(autorange="reversed")
+        fig.show()
+        if output_file is not None:
+            if output_format == 'html':
+                fig.write_html('{}.html'.format(output_file))
+                logging.info('Sucessfully written {}.html'.format(output_file))
+            elif output_format == 'jpg':
+                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.jpg'.format(output_file))
+            elif output_format == 'png':
+                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.png'.format(output_file))
+            elif output_format == 'pdf':
+                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.pdf'.format(output_file))
+            elif output_format == 'webp':
+                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.wepb'.format(output_file))
+            else:
+                logging.ERROR('Output file format nor support:{}'.format(output_format))
+        return True
+
+    @classmethod
+    def tocsy(self, bmrb_ids, file_names=None, auth_tag=False, legend=None, draw_trace=False,
+                peak_list=None,
+                output_format='html',
+                output_file=None,
+                output_image_width=800,
+                output_image_height=600):
+        peak_list_2d = self.create_tocsy_peaklist(bmrb_ids,
+                                                    file_names=file_names,
+                                                    auth_tag=auth_tag,
+                                                    draw_trace=draw_trace)
+        if peak_list is not None:
+            x1=[]
+            y1=[]
+            with open(peak_list) as csvfile:
+                spamreader = csv.reader(csvfile, delimiter=',')
+                for row in spamreader:
+                    x1.append(float(row[0]))
+                    y1.append(float(row[1]))
+        x = peak_list_2d[0]
+        y = peak_list_2d[1]
+        data_set = peak_list_2d[2]
+        info = peak_list_2d[3]
+        res = peak_list_2d[4]
+        cs_track = peak_list_2d[5]
+        if legend is None:
+            fig = px.scatter(x=x, y=y,
+                             symbol=data_set,
+                             hover_name=info,
+                             color=res,
+                             labels={"color": "Residue",
+                                     "symbol": "Data set",
+                                     "x": '<sup>1</sup>H (ppm)',
+                                     "y": '<sup>1</sup>H (ppm)'})
+            if draw_trace:
+                for k in cs_track.keys():
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+            if peak_list is not None:
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+            fig.update_layout(showlegend=False)
+            fig.update_xaxes(autorange="reversed")
+            fig.update_yaxes(autorange="reversed")
+
+        elif legend == 'residue':
+            fig = px.scatter(x=x, y=y,
+                             hover_name=info,
+                             color=res,
+                             labels={"color": "Residue",
+                                     # "symbol": "Data set",
+                                     "x": '<sup>1</sup>H (ppm)',
+                                     "y": '<sup>1</sup>H (ppm)'})
+            if draw_trace:
+                for k in cs_track.keys():
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines')
+            if peak_list is not None:
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+            fig.update_xaxes(autorange="reversed")
+            fig.update_yaxes(autorange="reversed")
+
+        elif legend == 'dataset':
+            fig = px.scatter(x=x, y=y,
+                             hover_name=info,
+                             color=data_set,
+                             labels={"color": "Data set",
+                                     # "symbol": "Data set",
+                                     "x": '<sup>1</sup>H (ppm)',
+                                     "y": '<sup>1</sup>H (ppm)'})
+            if draw_trace:
+                for k in cs_track.keys():
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+            if peak_list is not None:
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+            fig.update_xaxes(autorange="reversed")
+            fig.update_yaxes(autorange="reversed")
+        fig.show()
+        if output_file is not None:
+            if output_format == 'html':
+                fig.write_html('{}.html'.format(output_file))
+                logging.info('Sucessfully written {}.html'.format(output_file))
+            elif output_format == 'jpg':
+                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.jpg'.format(output_file))
+            elif output_format == 'png':
+                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.png'.format(output_file))
+            elif output_format == 'pdf':
+                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.pdf'.format(output_file))
+            elif output_format == 'webp':
+                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.wepb'.format(output_file))
+            else:
+                logging.ERROR('Output file format nor support:{}'.format(output_format))
+        return True
+
+    @classmethod
+    def generic_2d(self, bmrb_ids, file_names=None, atom_x='H',atom_y='N',auth_tag=False, legend=None, draw_trace=False,
+              peak_list=None,
+              output_format='html',
+              output_file=None,
+              output_image_width=800,
+              output_image_height=600):
+        peak_list_2d = self.create_2d_peaklist(bmrb_ids,atom_x=atom_x,atom_y=atom_y,
+                                                  file_names=file_names,
+                                                  auth_tag=auth_tag,
+                                                  draw_trace=draw_trace)
+        if peak_list is not None:
+            x1=[]
+            y1=[]
+            with open(peak_list) as csvfile:
+                spamreader = csv.reader(csvfile, delimiter=',')
+                for row in spamreader:
+                    x1.append(float(row[0]))
+                    y1.append(float(row[1]))
+        x = peak_list_2d[0]
+        y = peak_list_2d[1]
+        data_set = peak_list_2d[2]
+        info = peak_list_2d[3]
+        res = peak_list_2d[4]
+        cs_track = peak_list_2d[5]
+        if legend is None:
+            fig = px.scatter(x=x, y=y,
+                             symbol=data_set,
+                             hover_name=info,
+                             color=res,
+                             labels={"color": "Residue",
+                                     "symbol": "Data set",
                                      "x": '{} (ppm)'.format(atom_x),
                                      "y": '{} (ppm)'.format(atom_y)})
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0],y=cs_track[k][1],name=k)
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+            if peak_list is not None:
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+            fig.update_layout(showlegend=False)
+            fig.update_xaxes(autorange="reversed")
+            fig.update_yaxes(autorange="reversed")
+
+        elif legend == 'residue':
+            fig = px.scatter(x=x, y=y,
+                             hover_name=info,
+                             color=res,
+                             labels={"color": "Residue",
+                                     # "symbol": "Data set",
+                                     "x": '{} (ppm)'.format(atom_x),
+                                     "y": '{} (ppm)'.format(atom_y)})
+            if draw_trace:
+                for k in cs_track.keys():
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines')
+            if peak_list is not None:
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+            fig.update_xaxes(autorange="reversed")
+            fig.update_yaxes(autorange="reversed")
+
+        elif legend == 'dataset':
+            fig = px.scatter(x=x, y=y,
+                             hover_name=info,
+                             color=data_set,
+                             labels={"color": "Data set",
+                                     # "symbol": "Data set",
+                                     "x": '{} (ppm)'.format(atom_x),
+                                     "y": '{} (ppm)'.format(atom_y)})
+            if draw_trace:
+                for k in cs_track.keys():
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+            if peak_list is not None:
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
         fig.show()
+        if output_file is not None:
+            if output_format == 'html':
+                fig.write_html('{}.html'.format(output_file))
+                logging.info('Sucessfully written {}.html'.format(output_file))
+            elif output_format == 'jpg':
+                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.jpg'.format(output_file))
+            elif output_format == 'png':
+                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.png'.format(output_file))
+            elif output_format == 'pdf':
+                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.pdf'.format(output_file))
+            elif output_format == 'webp':
+                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.wepb'.format(output_file))
+            else:
+                logging.ERROR('Output file format nor support:{}'.format(output_format))
+        return True
 
 
 
@@ -295,5 +666,8 @@ class Spectra(object):
 
 
 if __name__ == "__main__":
-    Spectra.n15hsqc([17074,17077,17076],legend='residue',output_file='test',output_format='webp')
+    #p=Spectra()
+    #p.create_c13hsqc_peaklist(15060)
+    #Spectra.c15hsqc([17077,17076],legend='dataset',peak_list='tests/test_data/test_peak_list3.csv')
+    Spectra.generic_2d([17074,17076,17077],legend='dataset',atom_x='H',atom_y='N',peak_list='tests/test_data/test_peak_list4.csv')
     #s.generic_2d([15060,18857],file_names='/Users/Kumaran/MyData.str',draw_trace=True,legend='dataset')
