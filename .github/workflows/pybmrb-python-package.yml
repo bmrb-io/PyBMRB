@@ -9,7 +9,7 @@ on:
   pull_request:
     branches: [ master ]
 
-obs:
+jobs:
   run_tests:
     name: Testing on ${{ matrix.os }} with Python ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
