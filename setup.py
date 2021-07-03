@@ -1,21 +1,48 @@
-from setuptools import setup
+#!/usr/bin/env python3
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+import os
+from setuptools import setup, Extension
 
-setup(name='pybmrb',
-      version='1.2.97',
-      packages=['pybmrb'],
+
+# Should fail if the readme is missing
+long_des = open('README.rst', 'r').read()
+
+setup(name='pynmrstar',
+      version='alpha',
+      packages=['pybmrb2'],
+      install_requires=['requests>=2.21.0,<=3','plotly>=4.1.0','pynmrstar>=3.0.4','numpy>1.15'],
+      python_requires='>=3.6',
       author='Kumaran Baskaran',
       author_email='baskaran@uchc.edu',
-      description='PyBMRB provides tools to visualize chemical shift data in BMRB',
-      long_description=long_description,
-      long_description_content_type='text/markdown',
-      keywords=['bmrb', 'hsqc', 'chemical shift', 'nmrstar', 'biomagresbank', 'biological magnetic resonance bank'],
+      description='PyBMRB provides tools for visializing BMRB entries and  NMR-STAR files. '
+                  'Maintained by the BMRB.',
+      long_description=long_des,
+      long_description_content_type='text/x-rst',
+      keywords=['bmrb', 'nmr', 'nmrstar', 'biomagresbank',
+                'biological magnetic resonance bank',
+                'HSQC','TOCSY','Chemical shifts',
+                'Histogram'],
       url='https://github.com/uwbmrb/PyBMRB',
-      package_data={'pybmrb': ['data/*', 'examples/*']},
-      install_requires=[
-          'pynmrstar',
-          'plotly',
-          'numpy'],
-      license='MIT')
+      license='MIT',
+      package_data={'pynmrstar': ['reference_files/schema.csv',
+                                  'reference_files/comments.str',
+                                  'reference_files/data_types.csv']},
+      classifiers=[
+          'Development Status :: 3 - Alpha',
+          'Environment :: Console',
+          'Programming Language :: Python :: 3 :: Only',
+          'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3.7',
+          'Programming Language :: Python :: 3.8',
+          'Programming Language :: Python :: 3.9',
+          'Intended Audience :: Education',
+          'License :: OSI Approved :: MIT License',
+          'Natural Language :: English',
+          'Operating System :: MacOS',
+          'Operating System :: POSIX :: Linux',
+          'Operating System :: Microsoft :: Windows',
+          'Topic :: Scientific/Engineering :: Bio-Informatics',
+          'Topic :: Software Development :: Libraries',
+          'Topic :: Software Development :: Libraries :: Python Modules'
+      ]
+      )

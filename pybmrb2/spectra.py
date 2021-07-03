@@ -1,6 +1,6 @@
 import logging
 import csv
-from pybmrb2.get_cs_data import ChemicalShift
+from pybmrb2.get_entry_cs_data import ChemicalShift
 import plotly.express as px
 import plotly.graph_objects as go
 
