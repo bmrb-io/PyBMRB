@@ -2,7 +2,7 @@ Welcome to PyBMRB!
 ======================================
 
 A Python module for visualizing Nuclear Magnetic Resonance(NMR)  chemical shift data from Biological Magnetic
-Resonance data Bank(`BMRB <http://bmrb.ip>`_) and  from NMR-STAR :cite:p:`Ulrich2019` format files
+Resonance data Bank(`BMRB <http://bmrb.ip>`_) and  from NMR-STAR :footcite:`Ulrich2019` format files
 
 |BuildStatus| |License| |Wheel| |PythonVersions|
 
@@ -22,16 +22,19 @@ Previous python versions (back to 2.6) are supported by the v2 branch
    release-notes
 
 
-.. |BuildStatus| image:: https://travis-ci.org/uwbmrb/PyNMRSTAR.svg?branch=v3
-   :target: https://travis-ci.org/uwbmrb/PyNMRSTAR
+
 
 .. |PythonVersions| image:: https://img.shields.io/pypi/pyversions/pynmrstar.svg
-   :target: https://pypi.org/project/PyNMRSTAR
+   :target: https://pypi.org/project/PyBMRB
 
-.. |License| image:: https://img.shields.io/pypi/l/pynmrstar.svg
-   :target: https://pypi.org/project/PyNMRSTAR
+.. |License| image::  https://img.shields.io/github/license/kumar-physics/PyBMRB
+   :target: https://pypi.org/project/PyBMRB
 
 .. |Wheel| image:: https://img.shields.io/pypi/wheel/pynmrstar.svg
    :target: https://pypi.org/project/PyNMRSTAR
 
-.. bibliography::
+
+.. |BuildStatus| image:: https://img.shields.io/github/workflow/status/kumar-physics/PyBMRB/CI/dev
+   :target: https://pypi.org/project/PyNMRSTAR
+
+.. footbibliography::
