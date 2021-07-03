@@ -10,7 +10,7 @@ long_des = open('README.rst', 'r').read()
 setup(name='pynmrstar',
       version='alpha',
       packages=['pybmrb2'],
-      install_requires=['requests>=2.21.0,<=3','plotly>=4.1.0','pynmrstar>=3.0.4','numpy>1.15'],
+      install_requires=['requests>=2.21.0,<=3','plotly>=4.1.0','pynmrstar>=3.0','numpy>1.15'],
       python_requires='>=3.6',
       author='Kumaran Baskaran',
       author_email='baskaran@uchc.edu',
