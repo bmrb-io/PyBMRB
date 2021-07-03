@@ -22,7 +22,6 @@ Previous python versions (back to 2.6) are supported by the v2 branch
    release-notes
 
 
-
 .. |BuildStatus| image:: https://travis-ci.org/uwbmrb/PyNMRSTAR.svg?branch=v3
    :target: https://travis-ci.org/uwbmrb/PyNMRSTAR
 
