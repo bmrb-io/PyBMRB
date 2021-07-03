@@ -2,7 +2,7 @@ Welcome to PyBMRB!
 ======================================
 
 A Python module for visualizing Nuclear Magnetic Resonance(NMR)  chemical shift data from Biological Magnetic
-Resonance data Bank(`BMRB <http://bmrb.ip>`_) and  from NMR-STAR :cite:`Ulrich2019` format files
+Resonance data Bank(`BMRB <http://bmrb.ip>`_) and  from NMR-STAR :cite:p:`Ulrich2019` format files
 
 |BuildStatus| |License| |Wheel| |PythonVersions|
 
@@ -22,28 +22,6 @@ Previous python versions (back to 2.6) are supported by the v2 branch
    release-notes
 
 
-Overview
---------
-
-This library was developed by the BMRB to give the Python-using NMR
-community tools to work with the NMR-STAR data format. It is used
-internally and is actively maintained. The library is thoroughly
-documented such that calling ``help(object_or_method)`` from an
-interactive python session will print the documentation for the object
-or method.
-
-There are several command-line based tools developed to enable simple
-queries to pull data out of an NMR-STAR file. Those tools also serve as
-great examples of how to use the library. You can view those
-`here <https://github.com/uwbmrb/PyNMRSTAR/tree/v3/cmdline>`__.
-
-For more examples of PyNMRSTAR library usage, please head to
-:doc:`usage/examples`. For the full documentation of all
-available methods and classes, please look at :doc:`usage/full`.
-
-For any questions or suggestions, please create an issue on the GitHub
-page.
-
 
 .. |BuildStatus| image:: https://travis-ci.org/uwbmrb/PyNMRSTAR.svg?branch=v3
    :target: https://travis-ci.org/uwbmrb/PyNMRSTAR
@@ -58,4 +36,3 @@ page.
    :target: https://pypi.org/project/PyNMRSTAR
 
 .. bibliography::
-   :style: unsrt
