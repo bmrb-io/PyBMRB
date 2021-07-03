@@ -2,7 +2,7 @@ Welcome to PyBMRB!
 ======================================
 
 A Python module for visualizing Nuclear Magnetic Resonance(NMR)  chemical shift data from Biological Magnetic
-Resonance data Bank(`BMRB <http://bmrb.ip>`_) and  from NMR-STAR :cite:p:`Ulrich2019` format files
+Resonance data Bank(`BMRB <http://bmrb.ip>`_) and  from NMR-STAR :cite:`Ulrich2019` format files
 
 |BuildStatus| |License| |Wheel| |PythonVersions|
 
@@ -58,5 +58,4 @@ page.
    :target: https://pypi.org/project/PyNMRSTAR
 
 .. bibliography::
-   :all:
-   :list: bullet
+   :style: unsrt
