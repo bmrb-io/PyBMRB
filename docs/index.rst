@@ -20,9 +20,20 @@ Previous python versions (back to 2.6) are supported by the v2 branch
    usage/examples
    usage/full
    release-notes
+Module documentation
+======================================
+
+Spectra class
+~~~~~~~~~~~
+
+.. autoclass:: pybmrb2.Spectra
+   :special-members:
+   :members:
 
 
-
+.. autoclass:: pybmrb2.ChemicalShift
+   :special-members:
+   :members:
 
 .. |PythonVersions| image:: https://img.shields.io/pypi/pyversions/pynmrstar.svg
    :target: https://pypi.org/project/PyBMRB
