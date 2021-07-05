@@ -57,13 +57,14 @@ class ChemicalShiftStatistics(object):
                     'ALA', 'MET', 'LEU', 'ARG', 'TYR',
                     'A', 'C', 'G', 'U', 'DA', 'DC', 'DG', 'DT']
         api_data=self.get_dta_from_api(residue=residue,atom=atom)
-        cs_index = api_data['columns'].index('Atom_chem_shift.Val')
-        ph_index = api_data['columns'].index('Sample_conditions.pH')
-        temp_index = api_data['columns'].index('Sample_conditions.Temperature_K')
-        res_index = api_data['columns'].index('Atom_chem_shift.Comp_ID')
-        atm_index = api_data['columns'].index('Atom_chem_shift.Atom_ID')
-        amb_index = api_data['columns'].index('Atom_chem_shift.Ambiguity_code')
         columns = api_data['columns']
+        cs_index = columns.index('Atom_chem_shift.Val')
+        ph_index = columns.index('Sample_conditions.pH')
+        temp_index = columns.index('Sample_conditions.Temperature_K')
+        res_index = columns.index('Atom_chem_shift.Comp_ID')
+        atm_index = columns.index('Atom_chem_shift.Atom_ID')
+        amb_index = columns.index('Atom_chem_shift.Ambiguity_code')
+
         data=api_data['data']
         if len(data):
             if standard_amino_acids:
@@ -274,6 +275,7 @@ class ChemicalShiftStatistics(object):
         seq_index = columns.index('Atom_chem_shift.Comp_index_ID')
         atm_index = columns.index('Atom_chem_shift.Atom_ID')
         list_index = columns.index('Atom_chem_shift.Assigned_chem_shift_list_ID')
+        amb_index = columns.index('Atom_chem_shift.Ambiguity_code')
         cs_dict={}
         for dat in data:
             entry_id = dat[entry_index]
@@ -286,8 +288,9 @@ class ChemicalShiftStatistics(object):
                 cs_dict[key]={}
             atom = dat[atm_index]
             cs = dat[cs_index]
+            ambi = dat[amb_index]
             if atom not in cs_dict[key].keys():
-                cs_dict[key][atom]=cs
+                cs_dict[key][atom]=(cs,ambi)
             else:
                 logging.warning('Duplicate key found {}'.format(dat))
         return cs_dict
@@ -298,18 +301,74 @@ class ChemicalShiftStatistics(object):
                                ph_min=None,ph_max=None,t_min=None,t_max=None,standard_amino_acids=True):
         x=[]
         y=[]
-        cs_data = self.get_data_from_bmrb(residue=residue)
+        cs_data = self.get_data_from_bmrb(residue=residue,ph_min=ph_min,ph_max=ph_max,
+                                          t_min=t_min,t_max=t_max,standard_amino_acids=standard_amino_acids)
         cs_dict = self.list_do_dict(cs_data[0],cs_data[1])
         for key in cs_dict.keys():
             if atom1 in cs_dict[key].keys() and atom2 in cs_dict[key].keys():
-                x.append(cs_dict[key][atom1])
-                y.append(cs_dict[key][atom2])
-        return x,y
+                if ambiguity1 !='*' or ambiguity2 !='*':
+                    if ambiguity1 != '*':
+                        if cs_dict[key][atom2][1] == ambiguity2:
+                            x.append(cs_dict[key][atom1][0])
+                            y.append(cs_dict[key][atom2][0])
+                    elif ambiguity2 != '*':
+                        if cs_dict[key][atom1][1] == ambiguity1:
+                            x.append(cs_dict[key][atom1][0])
+                            y.append(cs_dict[key][atom2][0])
+                    else:
+                        if cs_dict[key][atom1][1] == ambiguity1 and cs_dict[key][atom2][1] == ambiguity2:
+                            x.append(cs_dict[key][atom1][0])
+                            y.append(cs_dict[key][atom2][0])
+                else:
+                    x.append(cs_dict[key][atom1][0])
+                    y.append(cs_dict[key][atom2][0])
+        cs_x = []
+        cs_y = []
+        if filtered:
+            mean_x = numpy.mean(x)
+            mean_y = numpy.mean(y)
+            std_x = numpy.std(x)
+            std_y = numpy.std(y)
+            min_x = mean_x - std_x*sd_limit
+            max_x = mean_x + std_x*sd_limit
+            min_y = mean_y - std_y*sd_limit
+            max_y = mean_y + std_y*sd_limit
+            for i in range(len(x)):
+                if min_x<=x[i]<=max_x and min_y<=y[i]<=max_y:
+                    cs_x.append(x[i])
+                    cs_y.append(y[i])
+        return cs_x,cs_y
 
     @classmethod
-    def get_filtered_data_from_bmrb(self, residue, atom, filtering_rules, filtered=True, sd_limit=10, ambiguity='*',
+    def get_filtered_data_from_bmrb(self, residue, atom, filtering_rules,
                            ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True):
-        cs_data = self.get_data_from_bmrb(residue=residue)
+        cs_data = self.get_data_from_bmrb(residue=residue, ph_min=ph_min, ph_max=ph_max,
+                                          t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+        def filter(cs_dict,atm,cs_val):
+            if 'H' in atm:
+                cs_width = 0.1
+            if 'C' in atm:
+                cs_width = 2.0
+            if 'N' in atm:
+                cs_width = 2.0
+            out_cs_dict = {}
+            for key in cs_dict.keys():
+                try:
+                    if cs_val-cs_width <= cs_dict[key][atm][0] <= cs_val+cs_width:
+                        out_cs_dict[key] = cs_dict[key]
+                except KeyError:
+                    pass
+            return out_cs_dict
+        cs_dict = self.list_do_dict(cs_data[0], cs_data[1])
+        for rule in filtering_rules:
+            cs_dict = filter(cs_dict,rule[0],rule[1])
+        x=[]
+        for key in cs_dict.keys():
+            for atm in cs_dict[key].keys():
+                if atm == atom:
+                    x.append(cs_dict[key][atm][0])
+        return x
+
 
 
 
@@ -328,5 +387,5 @@ if __name__=="__main__":
     # x=ChemicalShiftStatistics.get_data_from_bmrb(list_of_atoms='ALA-N')
     # #print (x[0])
     # y=ChemicalShiftStatistics.list_do_dict(x[0],x[1])
-    x=ChemicalShiftStatistics.get_2d_chemical_shifts(residue='ALA',atom1='CA',atom2='CB')
-    print (len(x[0]),len(x[0]))
+    #x=ChemicalShiftStatistics.get_2d_chemical_shifts(residue='ALA',atom1='CA',atom2='CB')
+    x=ChemicalShiftStatistics.get_filtered_data_from_bmrb(residue='THR',atom='N',filtering_rules=[('CB',69.51),('CA',60.79),('H',8.13)])
