@@ -1,14 +1,27 @@
 #!/usr/bin/env python3
 
+#!/usr/bin/env python3
+
 import os
 from setuptools import setup, Extension
 
+
+def get_version():
+    internal_file_location = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'pynmrstar', '_internal.py')
+
+    with open(internal_file_location, 'r') as internal_file:
+        for line in internal_file:
+            if line.startswith('__version__'):
+                delim = '"' if '"' in line else "'"
+                return line.split(delim)[1]
+        else:
+            raise RuntimeError("Unable to find version string.")
 
 # Should fail if the readme is missing
 long_des = open('README.rst', 'r').read()
 
 setup(name='pynmrstar',
-      version='alpha',
+      version=get_version(),
       packages=['pybmrb2'],
       install_requires=['pandas','requests>=2.21.0,<=3','plotly>=4.1.0','pynmrstar>=3.0.4','numpy>1.15'],
       python_requires='>=3.6',

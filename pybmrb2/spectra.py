@@ -5,6 +5,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 class Spectra(object):
+    '''
+    Converts one dimensional chemical shift list into multidimensional peak list and generates interactive plots
+    '''
 
     def __init__(self):
         pass
@@ -12,6 +15,14 @@ class Spectra(object):
     @classmethod
     def create_c13hsqc_peaklist(self, bmrb_ids, file_names=None, auth_tag=False,
                                 draw_trace=False):
+        '''
+        Converts one dimensional chemical shifts from list of BMRB entries into CHSQC peak list
+        :param bmrb_ids: BMRB entry ID or list of entry ids
+        :param file_names: Input NMR-STAR file name
+        :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
+        :param draw_trace: Connect the matching residues using sequence numbering; default: False
+        :return: tuple (x, y, dataset_id, info, res, cs_trac)
+        '''
         ch_atoms={'ALA':[('HA','CA'),('HB*','CB')],
                   'ARG':[('HA','CA'),('HB*','CB'),('HG*','CG'),('HD*','CD')],
                   'ASN':[('HA','CA'),('HB*','CB')],
@@ -83,6 +94,14 @@ class Spectra(object):
     @classmethod
     def create_tocsy_peaklist(self, bmrb_ids, file_names=None, auth_tag=False,
                                 draw_trace=False):
+        '''
+        Converts one dimensional chemical shifts from list of BMRB entries into TOCSY peak list
+        :param bmrb_ids: BMRB entry ID or list of entry ids
+        :param file_names: Input NMR-STAR file name
+        :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
+        :param draw_trace: Connect the matching residues using sequence numbering; default: False
+        :return: tuple (x, y, dataset_id, info, res, cs_trac)
+        '''
         cs_data = {}
         cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
         cs_data.update(cs_data_bmrb)
@@ -133,6 +152,16 @@ class Spectra(object):
     @classmethod
     def create_2d_peaklist(self, bmrb_ids,atom_x,atom_y,file_names=None, auth_tag=False,
                               draw_trace=False):
+        '''
+         Converts one dimensional chemical shifts from list of BMRB entries into generic 2D peak list
+        :param bmrb_ids: BMRB entry ID or list of entry ids
+        :param atom_x: atom for x coordinate in IUPAC format
+        :param atom_y: atom for y coordinate in IUPAC format
+        :param file_names: Input NMR-STAR file name
+        :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
+        :param draw_trace: Connect the matching residues using sequence numbering; default: False
+        :return: tuple (x, y, dataset_id, info, res, cs_trac)
+        '''
         cs_data = {}
         cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
         cs_data.update(cs_data_bmrb)
@@ -182,8 +211,19 @@ class Spectra(object):
 
 
     @classmethod
-    def create_n15hsqc_peaklist(self, bmrb_ids, file_names=None, atom_x='H', atom_y='N', auth_tag=False, draw_trace=False,
-                                include_sidechain=False):
+    def create_n15hsqc_peaklist(self, bmrb_ids, file_names=None, auth_tag=False, draw_trace=False,
+                                include_sidechain=True):
+        '''
+        Converts one dimensional chemical shifts from list of BMRB entries into NHSQC peak list
+        :param bmrb_ids: BMRB entry ID or list of entry ids
+        :param file_names: Input NMR-STAR file name
+        :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
+        :param draw_trace: Connect the matching residues using sequence numbering; default: False
+        :param include_sidechain: include side chain NHs ; default: True
+        :return: tuple (x, y, dataset_id, info, res, cs_trac)
+        '''
+        atom_x = 'H'
+        atom_y = 'N'
         sidechain_nh_atoms = {'ARG': {
             'ARG-HH11-NH1': ['HH11','NH1'],
             'ARG-HH12-NH1': ['HH12', 'NH1'],
@@ -208,8 +248,9 @@ class Spectra(object):
                 'LYS-HZ3-NZ': ['HZ3', 'NZ']}
         }
         cs_data={}
-        cs_data_bmrb=ChemicalShift.from_bmrb(bmrb_ids,auth_tag=auth_tag)
-        cs_data.update(cs_data_bmrb)
+        if bmrb_ids is not None:
+            cs_data_bmrb=ChemicalShift.from_bmrb(bmrb_ids,auth_tag=auth_tag)
+            cs_data.update(cs_data_bmrb)
         if file_names is not None:
             cs_data_file=ChemicalShift.from_file(file_names,auth_tag=auth_tag)
             cs_data.update(cs_data_file)
@@ -272,13 +313,28 @@ class Spectra(object):
         return x,y,data_set,info,res,cs_track
 
     @classmethod
-    def n15hsqc(self,bmrb_ids,file_names=None,auth_tag=False,legend = None,draw_trace=False,
+    def n15hsqc(self,bmrb_ids=None,file_names=None,auth_tag=False,legend = None,draw_trace=False,
                 include_sidechain=True,
                 peak_list=None,
                 output_format='html',
                 output_file=None,
                 output_image_width=800,
                 output_image_height=600):
+        '''
+        Plots NHSQC spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
+        :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
+        :param file_names: list of NMR-STAR files : default: None
+        :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
+        :param legend: legend based on residue name or data set id; values: None, residue, datase ; default None
+        :param draw_trace: Connect matching residues by list
+        :param include_sidechain: include side-chain NH peaks
+        :param peak_list: optionally peak list as csv file cam be provided
+        :param output_format: html,jpg,png,pdf,wabp,None; default None opens figure in default web browser
+        :param output_file: output file name default None
+        :param output_image_width: output image width; default 800
+        :param output_image_height:output image height; default 600
+        :return: Ture if plotting is successful
+        '''
         if peak_list is not None:
             x1=[]
             y1=[]
@@ -375,10 +431,24 @@ class Spectra(object):
     @classmethod
     def c13hsqc(self, bmrb_ids, file_names=None, auth_tag=False, legend=None, draw_trace=False,
                 peak_list=None,
-                output_format='html',
+                output_format=None,
                 output_file=None,
                 output_image_width=800,
                 output_image_height=600):
+        '''
+        Plots CHSQC spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
+        :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
+        :param file_names: list of NMR-STAR files : default: None
+        :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
+        :param legend: legend based on residue name or data set id; values: None, residue, datase ; default None
+        :param draw_trace: Connect matching residues by list
+        :param peak_list: optionally peak list as csv file cam be provided
+        :param output_format: html,jpg,png,pdf,wabp,None; default None opens figure in default web browser
+        :param output_file: output file name default None
+        :param output_image_width: output image width; default 800
+        :param output_image_height:output image height; default 600
+        :return: Ture if plotting is successful
+        '''
         peak_list_2d = self.create_c13hsqc_peaklist(bmrb_ids,
                                                     file_names=file_names,
                                                     auth_tag=auth_tag,
@@ -472,10 +542,24 @@ class Spectra(object):
     @classmethod
     def tocsy(self, bmrb_ids, file_names=None, auth_tag=False, legend=None, draw_trace=False,
                 peak_list=None,
-                output_format='html',
+                output_format=None,
                 output_file=None,
                 output_image_width=800,
                 output_image_height=600):
+        '''
+        Plots TOCSY spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
+        :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
+        :param file_names: list of NMR-STAR files : default: None
+        :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
+        :param legend: legend based on residue name or data set id; values: None, residue, datase ; default None
+        :param draw_trace: Connect matching residues by list
+        :param peak_list: optionally peak list as csv file cam be provided
+        :param output_format: html,jpg,png,pdf,wabp,None; default None opens figure in default web browser
+        :param output_file: output file name default None
+        :param output_image_width: output image width; default 800
+        :param output_image_height:output image height; default 600
+        :return: True if function is successful
+        '''
         peak_list_2d = self.create_tocsy_peaklist(bmrb_ids,
                                                     file_names=file_names,
                                                     auth_tag=auth_tag,
@@ -567,10 +651,27 @@ class Spectra(object):
     @classmethod
     def generic_2d(self, bmrb_ids, file_names=None, atom_x='H',atom_y='N',auth_tag=False, legend=None, draw_trace=False,
               peak_list=None,
-              output_format='html',
+              output_format=None,
               output_file=None,
               output_image_width=800,
               output_image_height=600):
+        '''
+        Plots generic 2D spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
+        :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
+        :param file_names: list of NMR-STAR files : default: None
+        :param atom_x: atom name for x coordinate in IUPAC format; default : 'H
+        :param atom_y: atom name for y coordinate in IUPAC format; default :'N'
+        :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
+        :param legend: legend based on residue name or data set id; values: None, residue, datase ; default None
+        :param draw_trace: Connect matching residues by list
+        :param include_sidechain: include side-chain NH peaks
+        :param peak_list: optionally peak list as csv file cam be provided
+        :param output_format: html,jpg,png,pdf,wabp,None; default None opens figure in default web browser
+        :param output_file: output file name default None
+        :param output_image_width: output image width; default 800
+        :param output_image_height:output image height; default 600
+        :return: True if plotting is sucessful.
+        '''
         peak_list_2d = self.create_2d_peaklist(bmrb_ids,atom_x=atom_x,atom_y=atom_y,
                                                   file_names=file_names,
                                                   auth_tag=auth_tag,
