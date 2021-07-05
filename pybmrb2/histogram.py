@@ -41,6 +41,20 @@ class Histogram(object):
                                      "count": 'Count'},opacity=0.5)
         fig.update_xaxes(autorange="reversed")
         fig.show()
+        fig = px.box(x=tag,y=x,color=tag,
+                           labels={"color": "Atom",
+                                   "x":"",
+                                   "y":'Chemical shift (ppm)'
+                                     })
+        fig.update_xaxes(tickangle=90)
+        fig.show()
+        fig=px.violin(x=tag,y=x,color=tag,
+                           labels={"color": "Atom",
+                                     "x":"",
+                                   "y":'Chemical shift (ppm)'
+                                     })
+        fig.update_xaxes(tickangle=90)
+        fig.show()
 
     @classmethod
     def hist2d(cls,residue,atom1,atom2,filtered=True, sd_limit=10,
@@ -67,7 +81,7 @@ class Histogram(object):
         fig.show()
 
 if __name__=="__main__":
-    Histogram.hist(list_of_atoms=['ALA-CB','TYR-N','GLY-N'])
+    Histogram.hist(residue='CYS',atom='CB')
 
 
 
