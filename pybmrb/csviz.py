@@ -30,7 +30,7 @@ _API_URL = "http://api.bmrb.io/v2"
 NOTEBOOK = False
 _OPACITY = 0.5
 _AUTOOPEN = True
-__version__ = "1.2.99"
+__version__ = "2.0.1"
 
 __all__ = ['Spectra', 'Histogram']
 
@@ -703,7 +703,7 @@ class Histogram(object):
                     x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d
                          if i[dump['columns'].index('Atom_chem_shift.Comp_ID')] == res and
                          i[dump['columns'].index('Atom_chem_shift.Atom_ID')] == at and
-                         i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity)]
+                         i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == ambiguity]
 
                 if filtered:
                     mean = np.mean(x)
@@ -725,7 +725,7 @@ class Histogram(object):
                 x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d]
             else:
                 x = [i[dump['columns'].index('Atom_chem_shift.Val')] for i in d
-                     if i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity)]
+                     if i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == ambiguity]
             if len(x) == 0:
                 logging.warning('{}-{} has no data at BMRB. Please check the atom nomenclature.'.format(residue, atom))
             if filtered:
@@ -768,7 +768,7 @@ class Histogram(object):
         else:
             d1={}
             d1['columns']=dump['columns']
-            d1['data'] = [i for i in dump['data'] if i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity)]
+            d1['data'] = [i for i in dump['data'] if i[dump['columns'].index('Atom_chem_shift.Ambiguity_code')] == ambiguity]
         d = {}
         entry_id_index = d1['columns'].index('Atom_chem_shift.Entry_ID')
         seq_id_index = d1['columns'].index('Atom_chem_shift.Comp_index_ID')
@@ -843,7 +843,7 @@ class Histogram(object):
         else:
             d1={}
             d1['columns']=dump1['columns']
-            d1['data'] = [i for i in dump1['data'] if i[dump1['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity1)]
+            d1['data'] = [i for i in dump1['data'] if i[dump1['columns'].index('Atom_chem_shift.Ambiguity_code')] == ambiguity1]
         d = {}
         for i in d1['data']:
             entry_id = i[d1['columns'].index('Atom_chem_shift.Entry_ID')]
@@ -856,7 +856,7 @@ class Histogram(object):
         else:
             d2={}
             d2['columns'] = dump2['columns']
-            d2['data'] = [i for i in dump2['data'] if i[dump2['columns'].index('Atom_chem_shift.Ambiguity_code')] == str(ambiguity2)]
+            d2['data'] = [i for i in dump2['data'] if i[dump2['columns'].index('Atom_chem_shift.Ambiguity_code')] == ambiguity2]
         x = []
         y = []
         for i in d2['data']:
