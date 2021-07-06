@@ -13,32 +13,3 @@ downloading and parsing the data from the BMRB for visualizations.
 
 
 |BuildStatus| |License| |Wheel| |PythonVersions|
-
-
-
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   usage/pybmrb-introduction
-   usage/quick-start
-   usage/example
-   usage/full
-   release-notes
-
-
-.. |PythonVersions| image:: https://img.shields.io/pypi/pyversions/pynmrstar.svg
-   :target: https://pypi.org/project/PyBMRB
-
-.. |License| image::  https://img.shields.io/github/license/kumar-physics/PyBMRB
-   :target: https://pypi.org/project/PyBMRB
-
-.. |Wheel| image:: https://img.shields.io/pypi/wheel/pynmrstar.svg
-   :target: https://pypi.org/project/PyNMRSTAR
-
-
-.. |BuildStatus| image:: https://img.shields.io/github/workflow/status/kumar-physics/PyBMRB/CI/dev
-   :target: https://pypi.org/project/PyNMRSTAR
-
-.. footbibliography::
