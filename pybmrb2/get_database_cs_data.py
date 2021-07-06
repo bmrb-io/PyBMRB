@@ -400,6 +400,7 @@ class ChemicalShiftStatistics(object):
                            ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True):
         '''
         Fetches the chemical shift data for a given residue and filters them using filtering rules
+
         :param residue: residue name in IUPAC format; example 'CYS'
         :param atom: atom name in IUPAC format; example 'CB'
         :param filtering_rules: list of atoms and chemical shift values as tuples; example[('CA',64.5),('H',7.8)]
@@ -442,6 +443,7 @@ class ChemicalShiftStatistics(object):
                  ph_min=None,ph_max=None,t_min=None,t_max=None,standard_amino_acids=True,verbose=False):
         '''
         Provides chemical shift statistics like Mean, Median, Standard deviation for a given residue / atom /list of atoms
+
         :param residue: Single residue name or list of residue names  in IUPAC format
         :param atom: Single atom name or list of atom names in IUPAC format
         :param list_of_atoms: list of atoms; example ['ALA-CB','CYS-N','TYR-CB']
