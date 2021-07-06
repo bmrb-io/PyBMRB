@@ -1,6 +1,6 @@
 import pytest
 import pynmrstar
-from pybmrb2.get_database_cs_data import ChemicalShiftStatistics
+from pybmrb.get_database_cs_data import ChemicalShiftStatistics
 import os
 import ntpath
 

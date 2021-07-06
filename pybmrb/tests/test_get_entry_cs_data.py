@@ -1,6 +1,6 @@
 import pytest
 import pynmrstar
-from pybmrb2.get_entry_cs_data import ChemicalShift
+from pybmrb.get_entry_cs_data import ChemicalShift
 import os
 import ntpath
 
