@@ -4,23 +4,23 @@ Module documentation
 Spectra Class
 ~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: pybmrb2.Spectra
+.. autoclass:: pybmrb.Spectra
    :members:
 
 Histogram Class
 ~~~~~~~~~~~~~~~~~
 
-.. autoclass:: pybmrb2.Histogram
+.. autoclass:: pybmrb.Histogram
    :members:
 
 ChemicalShift Class
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: pybmrb2.ChemicalShift
+.. autoclass:: pybmrb.ChemicalShift
    :members:
 
 ChemicalShiftStatistics Class
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: pybmrb2.ChemicalShiftStatistics
+.. autoclass:: pybmrb.ChemicalShiftStatistics
    :members:
