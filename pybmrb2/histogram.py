@@ -4,9 +4,11 @@ import plotly.express as px
 from pybmrb2.get_database_cs_data import ChemicalShiftStatistics
 
 class Histogram(object):
+    '''
+    Fetches chemical shift records from BMRB, plots histograms and calculates statistical properties.
+    '''
 
-    def __init__(self):
-        pass
+
     @classmethod
     def hist(self, residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
                            ph_min=None, ph_max=None, t_min=None, t_max=None,
@@ -16,6 +18,27 @@ class Histogram(object):
              output_image_width=800,
              output_image_height=600
         ):
+        '''
+        plots histogram for a given list of atoms and residues with some filters. One of either residue or atom or list of atoms is required
+
+        :param residue: residue name in IUPAC format; '*' for all standard residues: default None
+        :param atom: atom name in IUPAC format; '*' for all standard atoms; default None
+        :param list_of_atoms: list of atoms in IUPAC actom; example '['ALA-CA','CYS-CB']'; default None
+        :param filtered: Filters values beyond (sd_limt)*(standard deviation) on both sides of the mean; default:True
+        :param sd_limit: scaling factor used to filter data based on standard deviation; default 10
+        :param ambiguity: ambiguity filter; default '*' => no filter
+        :param ph_min: PH filter (min);default None
+        :param ph_max: PH filter (max); default None
+        :param t_min: Temperature filter (min); default None
+        :param t_max: Temperature filter (max); default None
+        :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
+        :param plot_type: plot type; supported types 'histogram','box','violin' ; default histogram
+        :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
+        :param output_file: output file name; if provided, the output will be written in a file , otherwise opens is a web browser; default ;None
+        :param output_image_width: output image width to write in a file; default:800
+        :param output_image_height: output image height to write in a file; default 600
+        :return: chemical shift data and tags as tuple (chemical shifts, tags)
+        '''
         columns, cs_data = ChemicalShiftStatistics.get_data_from_bmrb(residue=residue,
                                                                       atom=atom,
                                                                       list_of_atoms=list_of_atoms,
@@ -82,6 +105,7 @@ class Histogram(object):
                 logging.info('Sucessfully written {}.wepb'.format(output_file))
             else:
                 logging.ERROR('Output file format nor support:{}'.format(output_format))
+        return x,tag
 
 
     @classmethod
@@ -92,6 +116,26 @@ class Histogram(object):
                 output_file=None,
                 output_image_width=800,
                 output_image_height=600):
+        '''
+        Generates chemical shift correlation plot for any two atoms from a given residue.
+
+        :param residue: residue name in IUPAC format
+        :param atom1: atom name in IUPAC format
+        :param atom2: atom name in IUPAC format
+        :param filtered: Filters values beyond (sd_limt)*(standard deviation) on both sides of the mean; default:True
+        :param sd_limit: scaling factor used to filter data based on standard deviation; default 10
+        :param ambiguity: ambiguity filter; default '*' => no filter
+        :param ph_min: PH filter (min);default None
+        :param ph_max: PH filter (max); default None
+        :param t_min: Temperature filter (min); default None
+        :param t_max: Temperature filter (max); default None
+        :param plot_type: plot type; support types 'heatmap','contour'
+        :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
+        :param output_file: output file name; if provided, the output will be written in a file , otherwise opens is a web browser; default ;None
+        :param output_image_width: output image width to write in a file; default:800
+        :param output_image_height: output image height to write in a file; default 600
+        :return: tuple (chemical shift list of atom1, chemical shift list of atom2)
+        '''
         x,y = ChemicalShiftStatistics.get_2d_chemical_shifts(residue=residue,
                                                              atom1=atom1,
                                                              atom2=atom2,
@@ -145,6 +189,7 @@ class Histogram(object):
                 logging.info('Sucessfully written {}.wepb'.format(output_file))
             else:
                 logging.ERROR('Output file format nor support:{}'.format(output_format))
+        return x,y
 
 if __name__=="__main__":
     Histogram.hist(residue='CYS',atom='H',sd_limit=10)

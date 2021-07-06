@@ -10,13 +10,13 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('..'))
 
-import pybmrb2
 # -- Project information -----------------------------------------------------
 
+import pybmrb2
 project = 'PyBMRB'
 copyright = '2021, Kumaran Baksaran'
 author = 'Kumaran Baksaran'
@@ -32,7 +32,6 @@ release = '3.0'
 # ones.
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
-              'sphinx.ext.imgconverter',
               'sphinxcontrib.bibtex']
 
 bibtex_bibfiles = ['refs.bib']

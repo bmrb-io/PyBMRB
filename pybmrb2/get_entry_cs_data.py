@@ -20,14 +20,11 @@ class ChemicalShift(object):
     Generates chemical shift dictionary from BMRB entry or NMR-STAR file
     '''
 
-
-    def __init__(self):
-        pass
-
     @staticmethod
     def from_entry(entry_data, data_set_id, auth_tag=False, ):
         '''
-        Extracts chemical shift data as dictionary from pynmrstar entry object
+        Extracts chemical shift data as dictionary from PyNMRSTAR entry object
+
         :param entry_data: PyNMRSTAR entry object
         :param data_set_id: Data set identifier (bmrb id or filename or user defined id)
         :param auth_tag: Use author sequence numbering True/False default: False
@@ -88,6 +85,7 @@ class ChemicalShift(object):
     def from_file(cls, file_names, auth_tag=False, data_set_id=None):
         '''
         Extracts chemical shift information one or more NMR-STAR files
+
         :param file_name: list of NMR-STAR file names with full path or single file name with full path
         :param auth_tag: Use author sequence numbering True/False default: False
         :param data_set_id: User defined data set id default: filename
@@ -122,6 +120,7 @@ class ChemicalShift(object):
     def from_bmrb(cls, bmrb_ids, auth_tag=False):
         '''
         Extracts chemical shift information directly from BMRB database for a given BMRB entry or list of entries
+
         :param bmrb_ids: List of BMRB entries ids or single BMRB ID
         :param auth_tag: Use author sequence numbering True/False default: False
         :return: Chemical shift dictionary {data_set_id:{chain_id:{seq_id:{atom_id:cs_value}},'seq_ids':[1,2,3,4..]}}

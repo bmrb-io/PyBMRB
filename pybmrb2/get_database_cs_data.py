@@ -37,6 +37,7 @@ class ChemicalShiftStatistics(object):
     def get_data_from_api(residue, atom):
         '''
         Dumps the BMRB-API return for given residue and atom
+
         :param residue: Residue name in IUPAC format
         :param atom: Atom name in IUPAC format
         :return: API dump
@@ -62,6 +63,7 @@ class ChemicalShiftStatistics(object):
                  ph_min=None,ph_max=None,t_min=None,t_max=None,standard_amino_acids=True):
         '''
         Fetches the data from BMRB-API for given residue and atom and filters based of the values provided in the parameters
+
         :param residue: Residue name in IPUPAC format; use '*' for any residue
         :param atom: Atom name in IUPAC format; Wild card supported '*' for any atom
         :param filtered: Filters values beyond (sd_limt)*(standard deviation) on both sides of the mean; default:True
@@ -72,7 +74,7 @@ class ChemicalShiftStatistics(object):
         :param t_min: Temperature filter (min); default None
         :param t_max: Temperature filter (max); default None
         :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
-        :return: column names and data as tuple
+        :return: column names and data as tuple (columns,data)
         '''
         standard = ['ILE', 'GLN', 'GLY', 'GLU', 'CYS',
                     'ASP', 'SER', 'LYS', 'PRO', 'ASN',
@@ -116,6 +118,8 @@ class ChemicalShiftStatistics(object):
     def get_data_from_bmrb(cls,residue=None,atom=None,list_of_atoms=None,filtered=True, sd_limit=10, ambiguity='*',
                  ph_min=None,ph_max=None,t_min=None,t_max=None,standard_amino_acids=True):
         '''
+        Fetches the data from BMRB-API for given residue/list of residues (and/or)  atom/list of atoms and
+         filters based of the values provided in the parameters
 
         :param residue: Single residue name or list of residue names  in IUPAC format
         :param atom: Single atom name or list of atom names in IUPAC format
@@ -128,7 +132,7 @@ class ChemicalShiftStatistics(object):
         :param t_min: Temperature filter (min); default None
         :param t_max: Temperature filter (max); default None
         :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
-        :return: column names and data as tuple
+        :return: column names and data as tuple (columns,data)
         '''
         if residue is None and atom is None and list_of_atoms is None:
             logging.error('Please provide residue name or atom name or list of atoms as a list ')
@@ -297,9 +301,11 @@ class ChemicalShiftStatistics(object):
     @classmethod
     def list_do_dict(cls,columns,data):
         '''
-        Converts the outputs from get_data_from_bmrb into a dictionary :param columns: Column headers :param data:
-        data as list of lists :return: chemical shift dictionary; {
-        entry_id-entity_id-seq_id-residue-chemical_shift_list_id:{atom:(chemical shift, ambiguity code}}
+        Converts the outputs from get_data_from_bmrb into a dictionary
+
+        :param columns: Column headers
+        :param data: data as list of lists
+        :return: chemical shift dictionary; { entry_id-entity_id-seq_id-residue-chemical_shift_list_id:{atom:(chemical shift, ambiguity code}}
         '''
         entity_index=columns.index('Atom_chem_shift.Entity_ID')
         entry_index = columns.index('Atom_chem_shift.Entry_ID')
@@ -335,18 +341,19 @@ class ChemicalShiftStatistics(object):
         '''
         Fetches chemical shift data for a given residue and combines the desired two atoms chemical shift value from the
         same residue as two dimensional list
+
         :param residue: residue name in IUPAC format
         :param atom1: atom name in IUPAC format
         :param atom2: atom name in IPUPAC format
         :param filtered: Filters values beyond (sd_limt)*(standard deviation) on both sides of the mean; default:True
         :param sd_limit: scaling factor used to filter data based on standard deviation; default 10
-        :param ambiguity1: ambiguity filter; default '*' => no filter
-        :param ambiguity2: ambiguity filter; default '*' => no filter
+        :param ambiguity1: ambiguity filter; default '*' (no filter)
+        :param ambiguity2: ambiguity filter; default '*'  (no filter)
         :param ph_min: PH filter (min);default None
         :param ph_max: PH filter (max); default None
         :param t_min: Temperature filter (min); default None
         :param t_max: Temperature filter (max); default None
-        :return: atom1_cs,atom2_cs as list
+        :return: tuple of lists (atom1_cs,atom2_cs as list)
         '''
         x=[]
         y=[]
