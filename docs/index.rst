@@ -12,7 +12,7 @@ downloading and parsing the data from the BMRB for visualizations.
 
 
 
-|BuildStatus| |License| |Wheel| |PythonVersions|
+|BuildStatus| |License| | |PythonVersions|
 
 
 
@@ -29,16 +29,12 @@ downloading and parsing the data from the BMRB for visualizations.
 
 
 .. |PythonVersions| image:: https://img.shields.io/pypi/pyversions/pynmrstar.svg
-   :target: https://pypi.org/project/PyBMRB
+   :target: https://github.com/uwbmrb/PyBMRB
 
 .. |License| image::  https://img.shields.io/github/license/kumar-physics/PyBMRB
-   :target: https://pypi.org/project/PyBMRB
-
-.. |Wheel| image:: https://img.shields.io/pypi/wheel/pynmrstar.svg
-   :target: https://pypi.org/project/PyNMRSTAR
-
+   :target: https://github.com/uwbmrb/PyBMRB
 
 .. |BuildStatus| image:: https://img.shields.io/github/workflow/status/kumar-physics/PyBMRB/CI/dev
-   :target: https://pypi.org/project/PyNMRSTAR
+   :target: https://github.com/uwbmrb/PyBMRB
 
 .. footbibliography::

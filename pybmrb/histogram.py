@@ -70,6 +70,7 @@ class Histogram(object):
                                          "value": 'Chemical shift (ppm)',
                                          "count": 'Count'},opacity=0.5)
             fig.update_xaxes(autorange="reversed")
+            fig.update_layout(barmode='overlay')
         elif plot_type=='box':
             fig = px.box(x=tag,y=x,color=tag,
                                labels={"color": "Atom",
@@ -192,8 +193,111 @@ class Histogram(object):
                 logging.ERROR('Output file format nor support:{}'.format(output_format))
         return x,y
 
+    @classmethod
+    def conditional_hist(cls, residue, atom, filtering_rules,
+                         ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True,
+                         plot_type='histogram', output_format='html',
+                         output_file=None,
+                         output_image_width=800,
+                         output_image_height=600
+                         ):
+        '''
+        Plots the distribution of
+        :param residue:
+        :param atom:
+        :param filtering_rules:
+        :param ph_min:
+        :param ph_max:
+        :param t_min:
+        :param t_max:
+        :param standard_amino_acids:
+        :param plot_type:
+        :param output_format:
+        :param output_file:
+        :param output_image_width:
+        :param output_image_height:
+        :return:
+        '''
+        columns, cs_data = ChemicalShiftStatistics.get_data_from_bmrb(residue=residue,
+                                                                      atom=atom,
+                                                                      ph_min=ph_min,
+                                                                      ph_max=ph_max,
+                                                                      t_min=t_min,
+                                                                      t_max=t_max,
+                                                                      standard_amino_acids=standard_amino_acids)
+        cs_index = columns.index('Atom_chem_shift.Val')
+        ph_index = columns.index('Sample_conditions.pH')
+        temp_index = columns.index('Sample_conditions.Temperature_K')
+        res_index = columns.index('Atom_chem_shift.Comp_ID')
+        atm_index = columns.index('Atom_chem_shift.Atom_ID')
+        amb_index = columns.index('Atom_chem_shift.Ambiguity_code')
+        x1=ChemicalShiftStatistics.get_filtered_data_from_bmrb(residue=residue,
+                                                              atom=atom,
+                                                              filtering_rules=filtering_rules,
+                                                              ph_min=ph_min,
+                                                              ph_max=ph_max,
+                                                              t_min=t_min,
+                                                              t_max=t_max,
+                                                              standard_amino_acids=standard_amino_acids
+                                                              )
+
+        x = []
+        tag = []
+        for row in cs_data:
+            t = '{}-{}'.format(row[res_index], row[atm_index])
+            tag.append(t)
+            x.append(row[cs_index])
+        for i in x1:
+            x.append(i)
+            tag.append('Filtered')
+        if plot_type == 'histogram':
+            fig = px.histogram(x, color=tag,
+                               labels={"color": "Atom",
+                                       "value": 'Chemical shift (ppm)',
+                                       "count": 'Count'}, opacity=0.5)
+            fig.update_xaxes(autorange="reversed")
+        elif plot_type == 'box':
+            fig = px.box(x=tag, y=x, color=tag,
+                         labels={"color": "Atom",
+                                 "x": "",
+                                 "y": 'Chemical shift (ppm)'
+                                 })
+            fig.update_xaxes(tickangle=90)
+        elif plot_type == 'violin':
+            fig = px.violin(x=tag, y=x, color=tag,
+                            labels={"color": "Atom",
+                                    "x": "",
+                                    "y": 'Chemical shift (ppm)'
+                                    })
+            fig.update_xaxes(tickangle=90)
+        else:
+            logging.error('Plot type not supported : {}'.format(plot_type))
+            raise TypeError('Plot type not supported : {}'.format(plot_type))
+        fig.update_layout(barmode='overlay')
+        fig.show()
+        if output_file is not None:
+            if output_format == 'html':
+                fig.write_html('{}.html'.format(output_file))
+                logging.info('Sucessfully written {}.html'.format(output_file))
+            elif output_format == 'jpg':
+                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.jpg'.format(output_file))
+            elif output_format == 'png':
+                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.png'.format(output_file))
+            elif output_format == 'pdf':
+                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.pdf'.format(output_file))
+            elif output_format == 'webp':
+                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
+                logging.info('Sucessfully written {}.wepb'.format(output_file))
+            else:
+                logging.ERROR('Output file format nor support:{}'.format(output_format))
+        return x, tag
+
 if __name__=="__main__":
-    Histogram.hist(residue='CYS',atom='H',sd_limit=10)
+    #Histogram.hist(residue='CYS',atom='H',sd_limit=10)
+    Histogram.hist(atom='CB')
 
 
 

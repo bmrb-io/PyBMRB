@@ -419,9 +419,9 @@ class ChemicalShiftStatistics(object):
             if 'H' in atm:
                 cs_width = 0.1
             if 'C' in atm:
-                cs_width = 2.0
+                cs_width = 1.0
             if 'N' in atm:
-                cs_width = 2.0
+                cs_width = 1.0
             out_cs_dict = {}
             for key in cs_dict.keys():
                 try:

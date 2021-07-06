@@ -340,7 +340,6 @@ class Spectra(object):
         :param output_image_height: output image height; default 600
         :return: tuple of lists (x,y,data_set,info,res,cs_track)
         '''
-
         if peak_list is not None:
             x1=[]
             y1=[]
@@ -353,8 +352,6 @@ class Spectra(object):
         atom_y='N'
         peak_list_2d = self.create_n15hsqc_peaklist(bmrb_ids,
                                                     file_names=file_names,
-                                                    atom_x=atom_x,
-                                                    atom_y=atom_y,
                                                     auth_tag=auth_tag,
                                                     draw_trace=draw_trace,
                                                     include_sidechain=include_sidechain)
@@ -364,6 +361,9 @@ class Spectra(object):
         info = peak_list_2d[3]
         res = peak_list_2d[4]
         cs_track = peak_list_2d[5]
+        if len(x)==0 or len(y)==0:
+            logging.error('Resuired chemical shifts not found')
+            raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
                              symbol=data_set,
@@ -475,6 +475,9 @@ class Spectra(object):
         info = peak_list_2d[3]
         res = peak_list_2d[4]
         cs_track = peak_list_2d[5]
+        if len(x)==0 or len(y)==0:
+            logging.error('Resuired chemical shifts not found')
+            raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
                              symbol=data_set,
@@ -585,6 +588,9 @@ class Spectra(object):
         info = peak_list_2d[3]
         res = peak_list_2d[4]
         cs_track = peak_list_2d[5]
+        if len(x)==0 or len(y)==0:
+            logging.error('Resuired chemical shifts not found')
+            raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
                              symbol=data_set,
@@ -698,6 +704,9 @@ class Spectra(object):
         info = peak_list_2d[3]
         res = peak_list_2d[4]
         cs_track = peak_list_2d[5]
+        if len(x)==0 or len(y)==0:
+            logging.error('Resuired chemical shifts not found')
+            raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
                              symbol=data_set,
@@ -774,9 +783,13 @@ class Spectra(object):
 
 
 
+
+
 if __name__ == "__main__":
     #p=Spectra()
+    #Spectra.tocsy(18857,legend='residue')
+    Spectra.generic_2d(15060,atom_x='HB*',atom_y='CB')
     #p.create_c13hsqc_peaklist(15060)
     #Spectra.c15hsqc([17077,17076],legend='dataset',peak_list='tests/test_data/test_peak_list3.csv')
-    Spectra.generic_2d([17074,17076,17077],legend='dataset',atom_x='H',atom_y='N',peak_list='tests/test_data/test_peak_list4.csv')
+    #Spectra.generic_2d([17074,17076,17077],legend='dataset',atom_x='H',atom_y='N',peak_list='tests/test_data/test_peak_list4.csv')
     #s.generic_2d([15060,18857],file_names='/Users/Kumaran/MyData.str',draw_trace=True,legend='dataset')
