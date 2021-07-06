@@ -10,6 +10,8 @@ This package uses `PyBMRB <https://github.com/uwbmrb/PyNMRSTAR>`_ to parse the N
 and `BMRB-API <https://github.com/uwbmrb/BMRB-API>`_ to fetch the data directly from BMRB, which avoids the hustle of
 downloading and parsing the data from the BMRB for visualizations.
 
+`Read the documents here <https://pybmrb.readthedocs.org>`__.
+
 
 
 |BuildStatus| |License| |Wheel| |PythonVersions|
