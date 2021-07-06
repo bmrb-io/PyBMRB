@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-import pybmrb2
+
 project = 'PyBMRB'
 copyright = '2021, Kumaran Baksaran'
 author = 'Kumaran Baksaran'
