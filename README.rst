@@ -10,6 +10,21 @@ This package uses `PyBMRB <https://github.com/uwbmrb/PyNMRSTAR>`_ to parse the N
 and `BMRB-API <https://github.com/uwbmrb/BMRB-API>`_ to fetch the data directly from BMRB, which avoids the hustle of
 downloading and parsing the data from the BMRB for visualizations.
 
+`Read the documents here <https://pybmrb.readthedocs.org>`__.
+
+
+.. |PythonVersions| image:: https://img.shields.io/pypi/pyversions/pynmrstar.svg
+   :target: https://pypi.org/project/PyBMRB
+
+.. |License| image::  https://img.shields.io/github/license/kumar-physics/PyBMRB
+   :target: https://pypi.org/project/PyBMRB
+
+.. |Wheel| image:: https://img.shields.io/pypi/wheel/pynmrstar.svg
+   :target: https://pypi.org/project/PyNMRSTAR
+
+
+.. |BuildStatus| image:: https://img.shields.io/github/workflow/status/kumar-physics/PyBMRB/CI/dev
+   :target: https://pypi.org/project/PyNMRSTAR
 
 
 |BuildStatus| |License| |Wheel| |PythonVersions|
