@@ -17,7 +17,8 @@ class Histogram(object):
              plot_type='histogram', output_format='html',
              output_file=None,
              output_image_width=800,
-             output_image_height=600
+             output_image_height=600,
+             show_visualization = True
         ):
         '''
         plots histogram for a given list of atoms and residues with some filters. One of either residue or atom or list of atoms is required
@@ -38,6 +39,7 @@ class Histogram(object):
         :param output_file: output file name; if provided, the output will be written in a file , otherwise opens is a web browser; default ;None
         :param output_image_width: output image width to write in a file; default:800
         :param output_image_height: output image height to write in a file; default 600
+        :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: chemical shift data and tags as tuple (chemical shifts, tags)
         '''
         columns, cs_data = ChemicalShiftStatistics.get_data_from_bmrb(residue=residue,
@@ -88,7 +90,7 @@ class Histogram(object):
         else:
             logging.error('Plot type not supported : {}'.format(plot_type))
             raise TypeError('Plot type not supported : {}'.format(plot_type))
-        fig.show()
+        if show_visualization: fig.show()
         if output_file is not None:
             if output_format == 'html':
                 fig.write_html('{}.html'.format(output_file))
@@ -117,7 +119,8 @@ class Histogram(object):
                plot_type='heatmap',output_format='html',
                 output_file=None,
                 output_image_width=800,
-                output_image_height=600):
+                output_image_height=600,
+               show_visualization=True):
         '''
         Generates chemical shift correlation plot for any two atoms from a given residue.
 
@@ -136,6 +139,7 @@ class Histogram(object):
         :param output_file: output file name; if provided, the output will be written in a file , otherwise opens is a web browser; default ;None
         :param output_image_width: output image width to write in a file; default:800
         :param output_image_height: output image height to write in a file; default 600
+        :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple (chemical shift list of atom1, chemical shift list of atom2)
         '''
         x,y = ChemicalShiftStatistics.get_2d_chemical_shifts(residue=residue,
@@ -199,24 +203,28 @@ class Histogram(object):
                          plot_type='histogram', output_format='html',
                          output_file=None,
                          output_image_width=800,
-                         output_image_height=600
+                         output_image_height=600,
+                         show_visualization=True
                          ):
         '''
-        Plots the distribution of
-        :param residue:
-        :param atom:
-        :param filtering_rules:
-        :param ph_min:
-        :param ph_max:
-        :param t_min:
-        :param t_max:
-        :param standard_amino_acids:
-        :param plot_type:
-        :param output_format:
-        :param output_file:
-        :param output_image_width:
-        :param output_image_height:
-        :return:
+        Plots the distribution of the given atom in the residue along with the filtered distribution besed
+        on the chemical shift values of the other atoms in the residue
+
+        :param residue: residue name in IUPAC format; example 'CYS'
+        :param atom: atom name in IUPAC format; example 'CB'
+        :param filtering_rules: list of atoms and chemical shift values as tuples; example[('CA',64.5),('H',7.8)]
+        :param ph_min: PH filter (min);default None
+        :param ph_max: PH filter (max); default None
+        :param t_min: Temperature filter (min); default None
+        :param t_max: Temperature filter (max); default None
+        :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
+        :param plot_type: plot type; support types 'heatmap','contour'
+        :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
+        :param output_file: output file name; if provided, the output will be written in a file , otherwise opens is a web browser; default ;None
+        :param output_image_width: output image width to write in a file; default:800
+        :param output_image_height: output image height to write in a file; default 600
+        :param show_visualization: Automatically opens the visualization on a web browser; default True
+        :return: chemical shift data and tags as tuple (chemical shifts, tags)
         '''
         columns, cs_data = ChemicalShiftStatistics.get_data_from_bmrb(residue=residue,
                                                                       atom=atom,
@@ -274,7 +282,7 @@ class Histogram(object):
             logging.error('Plot type not supported : {}'.format(plot_type))
             raise TypeError('Plot type not supported : {}'.format(plot_type))
         fig.update_layout(barmode='overlay')
-        fig.show()
+        if show_visualization: fig.show()
         if output_file is not None:
             if output_format == 'html':
                 fig.write_html('{}.html'.format(output_file))

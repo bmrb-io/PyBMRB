@@ -323,7 +323,8 @@ class Spectra(object):
                 output_format='html',
                 output_file=None,
                 output_image_width=800,
-                output_image_height=600):
+                output_image_height=600,
+                show_visualization=True):
         '''
         Plots NHSQC spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
@@ -338,6 +339,7 @@ class Spectra(object):
         :param output_file: output file name default None
         :param output_image_width: output image width; default 800
         :param output_image_height: output image height; default 600
+        :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple of lists (x,y,data_set,info,res,cs_track)
         '''
         if peak_list is not None:
@@ -413,7 +415,7 @@ class Spectra(object):
                 fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-        fig.show()
+        if show_visualization: fig.show()
         if output_file is not None:
             if output_format=='html':
                 fig.write_html('{}.html'.format(output_file))
@@ -440,7 +442,8 @@ class Spectra(object):
                 output_format=None,
                 output_file=None,
                 output_image_width=800,
-                output_image_height=600):
+                output_image_height=600,
+                show_visualization=True):
         '''
         Plots CHSQC spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
@@ -454,6 +457,7 @@ class Spectra(object):
         :param output_file: output file name default None
         :param output_image_width: output image width; default 800
         :param output_image_height: output image height; default 600
+        :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple of lists (x,y,data_set,info,res,cs_track)
         '''
         peak_list_2d = self.create_c13hsqc_peaklist(bmrb_ids,
@@ -527,7 +531,7 @@ class Spectra(object):
                 fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-        fig.show()
+        if show_visualization: fig.show()
         if output_file is not None:
             if output_format == 'html':
                 fig.write_html('{}.html'.format(output_file))
@@ -554,7 +558,8 @@ class Spectra(object):
                 output_format=None,
                 output_file=None,
                 output_image_width=800,
-                output_image_height=600):
+                output_image_height=600,
+              show_visualization=True):
         '''
         Plots TOCSY spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
@@ -568,6 +573,7 @@ class Spectra(object):
         :param output_file: output file name default None
         :param output_image_width: output image width; default 800
         :param output_image_height: output image height; default 600
+        :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple of lists (x,y,data_set,info,res,cs_track)
         '''
         peak_list_2d = self.create_tocsy_peaklist(bmrb_ids,
@@ -640,7 +646,7 @@ class Spectra(object):
                 fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-        fig.show()
+        if show_visualization: fig.show()
         if output_file is not None:
             if output_format == 'html':
                 fig.write_html('{}.html'.format(output_file))
@@ -667,7 +673,8 @@ class Spectra(object):
               output_format=None,
               output_file=None,
               output_image_width=800,
-              output_image_height=600):
+              output_image_height=600,
+                   show_visualization=True):
         '''
         Plots generic 2D spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
@@ -684,6 +691,7 @@ class Spectra(object):
         :param output_file: output file name default None
         :param output_image_width: output image width; default 800
         :param output_image_height: output image height; default 600
+        :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple of lists (x,y,data_set,info,res,cs_track)
         '''
         peak_list_2d = self.create_2d_peaklist(bmrb_ids,atom_x=atom_x,atom_y=atom_y,
@@ -756,7 +764,7 @@ class Spectra(object):
                 fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-        fig.show()
+        if show_visualization: fig.show()
         if output_file is not None:
             if output_format == 'html':
                 fig.write_html('{}.html'.format(output_file))
