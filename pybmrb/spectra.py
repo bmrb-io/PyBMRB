@@ -22,7 +22,7 @@ class Spectra(object):
         :param file_names: Input NMR-STAR file name
         :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
-        :return: tuple (x, y, dataset_id, info, res, cs_trac)
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
         '''
         ch_atoms={'ALA':[('HA','CA'),('HB*','CB')],
                   'ARG':[('HA','CA'),('HB*','CB'),('HG*','CG'),('HD*','CD')],
@@ -102,7 +102,7 @@ class Spectra(object):
         :param file_names: Input NMR-STAR file name
         :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
-        :return: tuple (x, y, dataset_id, info, res, cs_trac)
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
         """
         cs_data = {}
         cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
@@ -163,7 +163,7 @@ class Spectra(object):
         :param file_names: Input NMR-STAR file name
         :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
-        :return: tuple (x, y, dataset_id, info, res, cs_trac)
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
         """
         cs_data = {}
         cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
@@ -224,7 +224,7 @@ class Spectra(object):
         :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
         :param include_sidechain: include side chain NHs ; default: True
-        :return: tuple (x, y, dataset_id, info, res, cs_trac)
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
         '''
         atom_x = 'H'
         atom_y = 'N'
@@ -340,7 +340,7 @@ class Spectra(object):
         :param output_image_width: output image width; default 800
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
-        :return: tuple of lists (x,y,data_set,info,res,cs_track)
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
         '''
         if peak_list is not None:
             x1=[]
@@ -458,7 +458,7 @@ class Spectra(object):
         :param output_image_width: output image width; default 800
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
-        :return: tuple of lists (x,y,data_set,info,res,cs_track)
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
         '''
         peak_list_2d = self.create_c13hsqc_peaklist(bmrb_ids,
                                                     file_names=file_names,
@@ -574,7 +574,7 @@ class Spectra(object):
         :param output_image_width: output image width; default 800
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
-        :return: tuple of lists (x,y,data_set,info,res,cs_track)
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
         '''
         peak_list_2d = self.create_tocsy_peaklist(bmrb_ids,
                                                     file_names=file_names,
@@ -692,7 +692,7 @@ class Spectra(object):
         :param output_image_width: output image width; default 800
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
-        :return: tuple of lists (x,y,data_set,info,res,cs_track)
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
         '''
         peak_list_2d = self.create_2d_peaklist(bmrb_ids,atom_x=atom_x,atom_y=atom_y,
                                                   file_names=file_names,
@@ -789,15 +789,17 @@ class Spectra(object):
 
 
 
-
-
-
+#
+#
+#
 #
 # if __name__ == "__main__":
 #     #p=Spectra()
 #     #Spectra.tocsy(18857,legend='residue')
-#     Spectra.n15hsqc([17074,17076,17077],show_visualization=False,legend='dataset',draw_trace=True,output_format='jpg',output_file='../docs/_images/n15hsqc')
-#     Spectra.n15hsqc([17074,17076,17077], show_visualization=False, output_format='html', draw_trace=True,legend='dataset',output_file='../docs/_static/n15hsqc')
+#     Spectra.n15hsqc([17076,17077],legend='dataset', peak_list='tests/test_data/test_peak_list.csv',output_format='jpg',output_file='../docs/_images/n15_peaklist')
+#     #
+#     # Spectra.n15hsqc([17074,17076,17077],show_visualization=False,legend='dataset',draw_trace=True,output_format='jpg',output_file='../docs/_images/n15hsqc')
+#     # Spectra.n15hsqc([17074,17076,17077], show_visualization=False, output_format='html', draw_trace=True,legend='dataset',output_file='../docs/_static/n15hsqc')
 #     #p.create_c13hsqc_peaklist(15060)
 #     #Spectra.c15hsqc([17077,17076],legend='dataset',peak_list='tests/test_data/test_peak_list3.csv')
 #     #Spectra.generic_2d([17074,17076,17077],legend='dataset',atom_x='H',atom_y='N',peak_list='tests/test_data/test_peak_list4.csv')

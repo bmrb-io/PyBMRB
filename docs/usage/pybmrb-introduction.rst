@@ -35,8 +35,8 @@ compare with their spectra measured using their sample. PyBMRB can do this in a 
 of downloading and parsing the data for visualization. This would greatly benefit the research community by allowing them
 to quickly and easily compare their data with any BMRB entry and  visualizing the BMRB data in different types of 2D spectra.
 
-How it works?
-~~~~~~~~~~~~~~
+How does it work?
+~~~~~~~~~~~~~~~~~~~
 PyBMRB extracts the assigned chemical shift list from NMR-STAR files and combines them with certain rules
 defined by the NMR experiment to generate the peak positions. This peak list is displayed on a 2D plane using
 interactive data visualization tool `plotly <https://plotly.com>`_ . It can also generate chemical shift histograms
