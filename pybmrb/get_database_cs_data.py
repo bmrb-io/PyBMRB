@@ -44,6 +44,7 @@ class ChemicalShiftStatistics(object):
         :param atom: Atom name in IUPAC format
         :return: API dump
         '''
+        #logging.info('Fetching chemical shift data for {}-{}'.format(residue,atom))
         if residue == "*" and atom == "*":
             logging.error("Getting full database will overload the memory! Please chose a residue or atom.")
             raise ValueError("Getting full database will overload the memory! Please chose a residue or atom.")
@@ -53,7 +54,7 @@ class ChemicalShiftStatistics(object):
             url = Request(_API_URL + "/search/chemical_shifts?comp_id={}".format(residue))
         else:
             url = Request(_API_URL + "/search/chemical_shifts?comp_id={}&atom_id={}".format(residue, atom))
-        print (_API_URL + "/search/chemical_shifts?comp_id={}&atom_id={}".format(residue, atom))
+        logging.debug(_API_URL + "/search/chemical_shifts?comp_id={}&atom_id={}".format(residue, atom))
         logging.info('Fetching chemical shift data for {}-{}'.format(residue,atom))
         url.add_header('Application', 'PyBMRB')
         r = urlopen(url)
@@ -174,7 +175,7 @@ class ChemicalShiftStatistics(object):
                     columns = cs_dat[0]
                     out_dat+=cs_dat[1]
         else:
-            logging.info("list of atoms was not provided")
+            logging.debug("list of atoms was not provided")
 
         if type(residue) is list and type(atom) is list:
             for res in residue:
@@ -419,9 +420,9 @@ class ChemicalShiftStatistics(object):
             if 'H' in atm:
                 cs_width = 0.1
             if 'C' in atm:
-                cs_width = 2.0
+                cs_width = 1.0
             if 'N' in atm:
-                cs_width = 2.0
+                cs_width = 1.0
             out_cs_dict = {}
             for key in cs_dict.keys():
                 try:
@@ -520,10 +521,10 @@ class ChemicalShiftStatistics(object):
 
 
 
-if __name__=="__main__":
-    # x=ChemicalShiftStatistics.get_data_from_bmrb(list_of_atoms='ALA-N')
-    # #print (x[0])
-    # y=ChemicalShiftStatistics.list_do_dict(x[0],x[1])
-    #x=ChemicalShiftStatistics.get_2d_chemical_shifts(residue='ALA',atom1='CA',atom2='CB')
-    #x=ChemicalShiftStatistics.get_filtered_data_from_bmrb(residue='THR',atom='N',filtering_rules=[('CB',69.51),('CA',60.79),('H',8.13)])
-    ChemicalShiftStatistics.get_statistics(residue='GLY',atom='XX')
+# if __name__=="__main__":
+#     # x=ChemicalShiftStatistics.get_data_from_bmrb(list_of_atoms='ALA-N')
+#     # #print (x[0])
+#     # y=ChemicalShiftStatistics.list_do_dict(x[0],x[1])
+#     #x=ChemicalShiftStatistics.get_2d_chemical_shifts(residue='ALA',atom1='CA',atom2='CB')
+#     #x=ChemicalShiftStatistics.get_filtered_data_from_bmrb(residue='THR',atom='N',filtering_rules=[('CB',69.51),('CA',60.79),('H',8.13)])
+#     ChemicalShiftStatistics.get_statistics(residue='GLY',atom='XX')

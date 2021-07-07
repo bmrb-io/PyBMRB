@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import pytest
 import pynmrstar
 from pybmrb.get_entry_cs_data import ChemicalShift

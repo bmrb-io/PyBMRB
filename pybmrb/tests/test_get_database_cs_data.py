@@ -1,5 +1,5 @@
-import pytest
-import pynmrstar
+#!/usr/bin/env python3
+
 from pybmrb.get_database_cs_data import ChemicalShiftStatistics
 import os
 import ntpath
