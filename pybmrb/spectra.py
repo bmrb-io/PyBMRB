@@ -796,7 +796,7 @@ class Spectra(object):
 # if __name__ == "__main__":
 #     #p=Spectra()
 #     #Spectra.tocsy(18857,legend='residue')
-#     Spectra.n15hsqc([17074,17076,17077],show_visualization=False,legend='dataset',draw_trace=True,output_format='jpg',output_file='../docs/figures/n15hsqc')
+#     Spectra.n15hsqc([17074,17076,17077],show_visualization=False,legend='dataset',draw_trace=True,output_format='jpg',output_file='../docs/_images/n15hsqc')
 #     Spectra.n15hsqc([17074,17076,17077], show_visualization=False, output_format='html', draw_trace=True,legend='dataset',output_file='../docs/_static/n15hsqc')
 #     #p.create_c13hsqc_peaklist(15060)
 #     #Spectra.c15hsqc([17077,17076],legend='dataset',peak_list='tests/test_data/test_peak_list3.csv')

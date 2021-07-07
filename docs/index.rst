@@ -19,25 +19,25 @@ Sample visualizations
 
 Click the figure caption for interactive visualization
 
-.. figure:: figures/n15hsqc.jpg
+.. figure:: _images/n15hsqc.jpg
     :alt: n15hsqc
     :align: center
 
     `Figure 1 <_static/n15hsqc.html>`_ :  |n15| -HSQC
 
-.. figure:: figures/c13hsqc.jpg
+.. figure:: _images/c13hsqc.jpg
     :alt: c13hsqc
     :align: center
 
     `Figure 2 <_static/c13hsqc.html>`_ :  |c13| -HSQC
 
-.. figure:: figures/cbhist.jpg
+.. figure:: _images/cbhist.jpg
     :alt: cbhist
     :align: center
 
     `Figure 3 <_static/cbhist.html>`_ :  CB-Histogram
 
-.. figure:: figures/cys-n-cb.jpg
+.. figure:: _images/cys-n-cb.jpg
     :alt: cys-n-cb
     :align: center
 
