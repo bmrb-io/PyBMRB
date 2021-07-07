@@ -176,7 +176,7 @@ class Histogram(object):
         else:
             logging.error('Plot type not supported : {}'.format(plot_type))
             raise TypeError('Plot type not supported : {}'.format(plot_type))
-        fig.show()
+        if show_visualization: fig.show()
         if output_file is not None:
             if output_format == 'html':
                 fig.write_html('{}.html'.format(output_file))
