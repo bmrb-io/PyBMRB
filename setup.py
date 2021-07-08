@@ -5,7 +5,7 @@ from setuptools import setup, Extension
 
 
 def get_version():
-    internal_file_location = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'pynmrstar', '_internal.py')
+    internal_file_location = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'pynmrstar', '__init__.py')
 
     with open(internal_file_location, 'r') as internal_file:
         for line in internal_file:
