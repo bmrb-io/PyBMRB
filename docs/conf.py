@@ -33,7 +33,8 @@ release = '3.0'
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'sphinxcontrib.bibtex',
-              'sphinx_rtd_theme']
+              'sphinx_rtd_theme',
+              'sphinx.ext.autosectionlabel']
 
 bibtex_bibfiles = ['refs.bib']
 
