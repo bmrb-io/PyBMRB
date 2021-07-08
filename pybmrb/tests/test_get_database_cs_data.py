@@ -14,7 +14,7 @@ def test_get_data_from_api():
     dump=ChemicalShiftStatistics.get_data_from_api('ALA','N')
     assert len(dump)==2
     assert type(dump) is dict
-    assert len(dump['columns'])==12
+    assert len(dump['columns'])==13
     assert len(dump['data'])>0
 
 
@@ -22,7 +22,7 @@ def test_get_data():
     dump = ChemicalShiftStatistics.get_data(residue='ALA',atom='CB',filtered=True,ambiguity=1)
     assert type(dump) is tuple
     assert len(dump) == 2
-    assert len(dump[0]) == 12
+    assert len(dump[0]) == 13
     assert len(dump[1])>0
     # dump = ChemicalShiftStatistics.get_data(residue='ALA', atom='*',filtered=True)
     # assert type(dump) is tuple
@@ -38,7 +38,7 @@ def test_get_data_from_bmrb():
     dump = ChemicalShiftStatistics.get_data_from_bmrb(residue='ALA')
     assert type(dump) is tuple
     assert len(dump) == 2
-    assert len(dump[0]) == 12
+    assert len(dump[0]) == 13
     assert len(dump[1]) > 0
 
 
@@ -60,7 +60,7 @@ def test_get_filtered_data_from_bmrb():
 
 
 def test_get_statistics():
-    dump = ChemicalShiftStatistics.get_statistics(atom='CB')
+    dump = ChemicalShiftStatistics.get_statistics(residue='TYR',atom='CB')
     assert type(dump) is dict
     for key in dump:
         assert len(dump[key].keys()) == 7

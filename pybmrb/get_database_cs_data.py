@@ -19,8 +19,8 @@ else:
 # Set the log level to INFO
 logging.getLogger().setLevel(logging.INFO)
 
-_API_URL = "http://dev-api.bmrb.io/v2"
-
+#_API_URL = "http://dev-api.bmrb.io/v2"
+_API_URL = "http://api.bmrb.io/v2"
 
 three_letter_code = {'I': 'ILE', 'Q': 'GLN', 'G': 'GLY', 'E': 'GLU', 'C': 'CYS',
                      'D': 'ASP', 'S': 'SER', 'K': 'LYS', 'P': 'PRO', 'N': 'ASN',
@@ -311,6 +311,7 @@ class ChemicalShiftStatistics(object):
         :return: chemical shift dictionary; { entry_id-entity_id-seq_id-residue-chemical_shift_list_id:{atom:(chemical shift, ambiguity code}}
         '''
         entity_index=columns.index('Atom_chem_shift.Entity_ID')
+        entity_assembly_index = columns.index('Atom_chem_shift.Entity_assembly_ID')
         entry_index = columns.index('Atom_chem_shift.Entry_ID')
         cs_index = columns.index('Atom_chem_shift.Val')
         res_index = columns.index('Atom_chem_shift.Comp_ID')
@@ -321,11 +322,12 @@ class ChemicalShiftStatistics(object):
         cs_dict={}
         for dat in data:
             entry_id = dat[entry_index]
-            entity_id = dat[entity_index]
+            entity_id=dat[entity_index]
+            entity_assembly_id = dat[entity_assembly_index]
             res = dat[res_index]
             seq = dat[seq_index]
             list_id = dat[list_index]
-            key = '{}-{}-{}-{}-{}'.format(entry_id,entity_id,seq,res,list_id)
+            key = '{}-{}-{}-{}-{}'.format(entry_id,entity_assembly_id,seq,res,list_id)
             if key not in cs_dict.keys():
                 cs_dict[key]={}
             atom = dat[atm_index]
