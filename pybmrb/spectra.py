@@ -374,12 +374,12 @@ class Spectra(object):
                              labels={"color": "Residue",
                                      "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>15</sup>N (ppm)'})
+                                     "y": '<sup>15</sup>N (ppm)'},opacity=0.7)
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k,opacity=0.7)
             if peak_list is not None:
-                fig.add_scatter(x1,y1,mode='markers',name='Peak list')
+                fig.add_scatter(x1,y1,mode='markers',name='Peak list',opacity=0.7)
             fig.update_layout(showlegend=False)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
@@ -391,12 +391,12 @@ class Spectra(object):
                              labels={"color": "Residue",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>15</sup>N (ppm)'})
+                                     "y": '<sup>15</sup>N (ppm)'},opacity=0.7)
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines')
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines',opacity=0.7)
             if peak_list is not None:
-                fig.add_scatter(x=x1, y=y1,mode='markers', name='Peak list')
+                fig.add_scatter(x=x1, y=y1,mode='markers', name='Peak list',opacity=0.7)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
 
@@ -407,12 +407,12 @@ class Spectra(object):
                              labels={"color": "Data set",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>15</sup>N (ppm)'})
+                                     "y": '<sup>15</sup>N (ppm)'},opacity=0.7)
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k,opacity=0.7)
             if peak_list is not None:
-                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list',opacity=0.7)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
         if show_visualization: fig.show()
@@ -490,12 +490,12 @@ class Spectra(object):
                              labels={"color": "Residue",
                                      "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>13</sup>C (ppm)'})
+                                     "y": '<sup>13</sup>C (ppm)'},opacity=0.7)
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k,opacity=0.7)
             if peak_list is not None:
-                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list',opacity=0.7)
             fig.update_layout(showlegend=False)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
@@ -507,12 +507,12 @@ class Spectra(object):
                              labels={"color": "Residue",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>13</sup>C (ppm)'})
+                                     "y": '<sup>13</sup>C (ppm)'},opacity=0.7)
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines')
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines',opacity=0.7)
             if peak_list is not None:
-                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list',opacity=0.7)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
 
@@ -523,12 +523,12 @@ class Spectra(object):
                              labels={"color": "Data set",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>13</sup>C (ppm)'})
+                                     "y": '<sup>13</sup>C (ppm)'},opacity=0.7)
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k,opacity=0.7)
             if peak_list is not None:
-                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list',opacity=0.7)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
         if show_visualization: fig.show()
@@ -605,12 +605,12 @@ class Spectra(object):
                              labels={"color": "Residue",
                                      "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>1</sup>H (ppm)'})
+                                     "y": '<sup>1</sup>H (ppm)'},opacity=0.7)
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k,opacity=0.7)
             if peak_list is not None:
-                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list',opacity=0.7)
             fig.update_layout(showlegend=False)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
@@ -622,12 +622,12 @@ class Spectra(object):
                              labels={"color": "Residue",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>1</sup>H (ppm)'})
+                                     "y": '<sup>1</sup>H (ppm)'},opacity=0.7)
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines')
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines',opacity=0.7)
             if peak_list is not None:
-                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list',opacity=0.7)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
 
@@ -638,12 +638,12 @@ class Spectra(object):
                              labels={"color": "Data set",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>1</sup>H (ppm)'})
+                                     "y": '<sup>1</sup>H (ppm)'},opacity=0.7)
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k,opacity=0.7)
             if peak_list is not None:
-                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list',opacity=0.7)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
         if show_visualization: fig.show()
@@ -723,12 +723,12 @@ class Spectra(object):
                              labels={"color": "Residue",
                                      "symbol": "Data set",
                                      "x": '{} (ppm)'.format(atom_x),
-                                     "y": '{} (ppm)'.format(atom_y)})
+                                     "y": '{} (ppm)'.format(atom_y)},opacity=0.7)
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k,opacity=0.7)
             if peak_list is not None:
-                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list',opacity=0.7)
             fig.update_layout(showlegend=False)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
@@ -740,12 +740,12 @@ class Spectra(object):
                              labels={"color": "Residue",
                                      # "symbol": "Data set",
                                      "x": '{} (ppm)'.format(atom_x),
-                                     "y": '{} (ppm)'.format(atom_y)})
+                                     "y": '{} (ppm)'.format(atom_y)},opacity=0.7)
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines')
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines',opacity=0.7)
             if peak_list is not None:
-                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list',opacity=0.7)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
 
@@ -756,12 +756,12 @@ class Spectra(object):
                              labels={"color": "Data set",
                                      # "symbol": "Data set",
                                      "x": '{} (ppm)'.format(atom_x),
-                                     "y": '{} (ppm)'.format(atom_y)})
+                                     "y": '{} (ppm)'.format(atom_y)},opacity=0.7)
             if draw_trace:
                 for k in cs_track.keys():
-                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k)
+                    fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k,opacity=0.7)
             if peak_list is not None:
-                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list')
+                fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list',opacity=0.7)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
         if show_visualization: fig.show()
@@ -786,21 +786,75 @@ class Spectra(object):
         return x,y,data_set,info,res,cs_track
 
 
-
-
-
-#
-#
-#
-#
 # if __name__ == "__main__":
-#     #p=Spectra()
-#     #Spectra.tocsy(18857,legend='residue')
-#     Spectra.n15hsqc([17076,17077],legend='dataset', peak_list='tests/test_data/test_peak_list.csv',output_format='jpg',output_file='../docs/_images/n15_peaklist')
-#     #
-#     # Spectra.n15hsqc([17074,17076,17077],show_visualization=False,legend='dataset',draw_trace=True,output_format='jpg',output_file='../docs/_images/n15hsqc')
-#     # Spectra.n15hsqc([17074,17076,17077], show_visualization=False, output_format='html', draw_trace=True,legend='dataset',output_file='../docs/_static/n15hsqc')
-#     #p.create_c13hsqc_peaklist(15060)
-#     #Spectra.c15hsqc([17077,17076],legend='dataset',peak_list='tests/test_data/test_peak_list3.csv')
-#     #Spectra.generic_2d([17074,17076,17077],legend='dataset',atom_x='H',atom_y='N',peak_list='tests/test_data/test_peak_list4.csv')
-#     #s.generic_2d([15060,18857],file_names='/Users/Kumaran/MyData.str',draw_trace=True,legend='dataset')
+    # # Generating examples for documentation
+    # Spectra.n15hsqc(bmrb_ids=15060,output_format='jpg',legend='residue',output_file='../docs/_images/15060_n15',
+    #                 show_visualization=False)
+    # Spectra.n15hsqc(bmrb_ids=15060, output_format='html', legend='residue',output_file='../docs/_static/15060_n15',
+    #                 show_visualization=False)
+    # Spectra.n15hsqc(bmrb_ids=[17076,17077], file_names='tests/test_data/MyData.str',
+    #                 output_format='jpg', output_file='../docs/_images/multi_n15',
+    #                 legend='dataset',show_visualization=False)
+    # Spectra.n15hsqc(bmrb_ids=[17076,17077], file_names='tests/test_data/MyData.str',
+    #                 output_format='html', output_file='../docs/_static/multi_n15',
+    #                 legend='dataset',show_visualization=False)
+    # Spectra.n15hsqc(bmrb_ids=[ 17076, 17077], file_names='tests/test_data/MyData.str',
+    #                 peak_list='tests/test_data/test_peak_list.csv',
+    #                 output_format='jpg', output_file='../docs/_images/multi_n152',
+    #                 legend='dataset', show_visualization=False)
+    # Spectra.n15hsqc(bmrb_ids=[ 17076, 17077], file_names='tests/test_data/MyData.str',
+    #                 peak_list='tests/test_data/test_peak_list.csv',
+    #                 output_format='html', output_file='../docs/_static/multi_n152',
+    #                 legend='dataset', show_visualization=False)
+    # Spectra.n15hsqc(bmrb_ids=[ 17076, 17077],file_names='tests/test_data/MyData.str',
+    #                 output_format='jpg', output_file='../docs/_images/multi2_n15',
+    #                 legend='dataset',draw_trace=True, show_visualization=False,)
+    # Spectra.n15hsqc(bmrb_ids=[ 17076, 17077], file_names='tests/test_data/MyData.str',
+    #                 output_format='html', output_file='../docs/_static/multi2_n15',
+    #                 legend='dataset',draw_trace=True,show_visualization=False)
+    #
+    # Spectra.c13hsqc(bmrb_ids=15060, output_format='jpg', legend='residue', output_file='../docs/_images/15060_c13',
+    #                 show_visualization=False)
+    # Spectra.c13hsqc(bmrb_ids=15060, output_format='html', legend='residue', output_file='../docs/_static/15060_c13',
+    #                 show_visualization=False)
+    # Spectra.c13hsqc(bmrb_ids=[17074, 17076, 17077], output_format='jpg', output_file='../docs/_images/multi_c13',
+    #                 legend='dataset', show_visualization=False)
+    # Spectra.c13hsqc(bmrb_ids=[17074, 17076, 17077], output_format='html', output_file='../docs/_static/multi_c13',
+    #                 legend='dataset', show_visualization=False)
+    # Spectra.n15hsqc(bmrb_ids=[17074, 17076, 17077], output_format='jpg', output_file='../docs/_images/multi2_c13',
+    #                 legend='dataset', draw_trace=True, show_visualization=False, )
+    # Spectra.c13hsqc(bmrb_ids=[17074, 17076, 17077], output_format='html', output_file='../docs/_static/multi2_c13',
+    #                 legend='dataset', draw_trace=True, show_visualization=False)
+    #
+    # Spectra.tocsy(bmrb_ids=15060, output_format='jpg', legend='residue', output_file='../docs/_images/15060_tocsy',
+    #                 show_visualization=False)
+    # Spectra.tocsy(bmrb_ids=15060, output_format='html', legend='residue', output_file='../docs/_static/15060_tocsy',
+    #                 show_visualization=False)
+    # Spectra.tocsy(bmrb_ids=[17074, 17076, 17077], output_format='jpg', output_file='../docs/_images/multi_tocsy',
+    #                 legend='dataset', show_visualization=False)
+    # Spectra.tocsy(bmrb_ids=[17074, 17076, 17077], output_format='html', output_file='../docs/_static/multi_tocsy',
+    #                 legend='dataset', show_visualization=False)
+    # Spectra.tocsy(bmrb_ids=[17074, 17076, 17077], output_format='jpg', output_file='../docs/_images/multi_tocsy2',
+    #               legend='residue', show_visualization=False)
+    # Spectra.tocsy(bmrb_ids=[17074, 17076, 17077], output_format='html', output_file='../docs/_static/multi_tocsy2',
+    #               legend='residue', show_visualization=False)
+    # Spectra.tocsy(bmrb_ids=[17074, 17076, 17077], output_format='jpg', output_file='../docs/_images/multi2_tocsy',
+    #                 legend='dataset', draw_trace=True, show_visualization=False, )
+    # Spectra.tocsy(bmrb_ids=[17074, 17076, 17077], output_format='html', output_file='../docs/_static/multi2_tocsy',
+    #                 legend='dataset', draw_trace=True, show_visualization=False)
+    #
+    # Spectra.generic_2d(bmrb_ids=15060, atom_x='N',atom_y='CB', output_format='jpg', legend='residue',
+    #                    output_file='../docs/_images/15060_2d',
+    #                    show_visualization=False)
+    # Spectra.generic_2d(bmrb_ids=15060, atom_x='N',atom_y='CB',output_format='html', legend='residue',
+    #                    output_file='../docs/_static/15060_2d', show_visualization=False)
+    # Spectra.generic_2d(bmrb_ids=[17074, 17076, 17077], atom_x='N',atom_y='CB',output_format='jpg',
+    #                    output_file='../docs/_images/multi_2d', legend='dataset', show_visualization=False)
+    # Spectra.generic_2d(bmrb_ids=[17074, 17076, 17077], atom_x='N',atom_y='CB',output_format='html',
+    #                    output_file='../docs/_static/multi_2d', legend='dataset', show_visualization=False)
+    # Spectra.generic_2d(bmrb_ids=[17074, 17076, 17077], atom_x='N',atom_y='CB',output_format='jpg',
+    #                    output_file='../docs/_images/multi2_2d', legend='dataset', draw_trace=True,
+    #                    show_visualization=False, )
+    # Spectra.generic_2d(bmrb_ids=[17074, 17076, 17077], atom_x='N',atom_y='CB',output_format='html',
+    #                    output_file='../docs/_static/multi2_2d',
+    #                    legend='dataset', draw_trace=True, show_visualization=False)
