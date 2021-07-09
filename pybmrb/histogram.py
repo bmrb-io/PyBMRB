@@ -304,13 +304,37 @@ class Histogram(object):
         return x, tag
 
 if __name__=="__main__":
-    Histogram.hist2d(residue='VAL', atom1='CG1',atom2='CG2',sd_limit=5) #,output_format='html',output_file='../docs/_static/cys-cb-violin',plot_type='violin')
-    # #Histogram.hist(residue='CYS',atom='H',sd_limit=10)
-    # Histogram.hist(atom='CB', show_visualization=False, output_format='jpg', output_file='../docs/_images/cbhist')
-    # Histogram.hist(atom='CB',show_visualization=False,output_format='html',output_file='../docs/_static/cbhist')
-    # Histogram.hist2d(residue='CYS', atom1='N', atom2='CB', sd_limit=5, output_format='jpg', output_file='../docs/_images/cys-n-cb', show_visualization=False)
-    # Histogram.hist2d(residue='CYS',atom1='N',atom2='CB',sd_limit=5,output_format='html',output_file='../docs/_static/cys-n-cb',show_visualization=False)
+    # Histogram.hist(residue='CYS',atom='CB',output_format='jpg',output_file='../docs/_images/cys_cb_hist')
+    # Histogram.hist(residue='CYS', atom='CB', output_format='html', output_file='../docs/_images/cys_cb_hist')
+    # Histogram.hist(residue='CYS', atom='CB', output_format='jpg',
+    #                sd_limit=5, output_file='../docs/_images/cys_cb_hist_sd5')
+    # Histogram.hist(residue='CYS', atom='CB', output_format='jpg',
+    #                sd_limit=5, output_file='../docs/_images/cys_cb_hist_sd5')
+    # Histogram.hist(residue='CYS', atom='CB', output_format='jpg', plot_type='box',
+    #                 output_file='../docs/_images/cys_cb_box_sd5')
+    # Histogram.hist(residue='CYS', atom='CB', output_format='html', plot_type='box',
+    #                output_file='../docs/_images/cys_cb_box_sd5')
+    # Histogram.hist(residue='CYS', atom='CB', output_format='jpg', plot_type='violin',
+    #                 output_file='../docs/_images/cys_cb_violin_sd5')
+    # Histogram.hist(residue='CYS', atom='CB', output_format='html', plot_type='violin',
+    #                 output_file='../docs/_images/cys_cb_violin_sd5')
+    # Histogram.hist(residue='GLN', atom='H*', output_format='jpg',
+    #                output_file='../docs/_images/gln_h_hist')
+    # Histogram.hist(residue='GLN', atom='H*', output_format='html',
+    #                 output_file='../docs/_images/gln_h_hist')
+    # Histogram.hist(residue='ASP', atom='*', output_format='jpg',
+    #                output_file='../docs/_images/asp_hist')
+    # Histogram.hist(residue='ASP', atom='*', output_format='html',
+    #                output_file='../docs/_images/asp_hist')
+    # Histogram.hist(residue='*', atom='CG*', output_format='jpg',
+    #                output_file='../docs/_images/cg_hist')
+    # Histogram.hist(residue='*', atom='CG*', output_format='html',
+    #                output_file='../docs/_images/cg_hist')
     #
+    #
+    # Histogram.hist2d(residue='CYS',atom1='CA',atom2='CB',output_format='jpg',
+    #                  output_file='../docs/_images/cys-ca-cb')
+    # Histogram.hist2d(residue='CYS', atom1='CA', atom2='CB', output_format='html',
+    #                  output_file='../docs/_images/cys-ca-cb')
 
-
-
+    Histogram.hist(residue='CYS',atom='CB',ph_min=7.4)
