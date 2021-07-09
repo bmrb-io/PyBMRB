@@ -304,7 +304,7 @@ class Histogram(object):
         return x, tag
 
 if __name__=="__main__":
-    Histogram.hist2d(residue='VAL', atom1='CB',atom2='CG2') #,output_format='html',output_file='../docs/_static/cys-cb-violin',plot_type='violin')
+    Histogram.hist2d(residue='VAL', atom1='CG1',atom2='CG2',sd_limit=5) #,output_format='html',output_file='../docs/_static/cys-cb-violin',plot_type='violin')
     # #Histogram.hist(residue='CYS',atom='H',sd_limit=10)
     # Histogram.hist(atom='CB', show_visualization=False, output_format='jpg', output_file='../docs/_images/cbhist')
     # Histogram.hist(atom='CB',show_visualization=False,output_format='html',output_file='../docs/_static/cbhist')
