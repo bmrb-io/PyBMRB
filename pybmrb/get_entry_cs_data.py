@@ -133,17 +133,18 @@ class ChemicalShift(object):
                 try:
                     logging.debug('Getting entry {} from BMRB'.format(bmrb_id))
                     entry_data = pynmrstar.Entry.from_database(bmrb_id)
-                except OSError:
+                except OSError as e:
                     entry_data = None
-                except KeyError:
+                except KeyError as e:
                     entry_data = None
-                except IOError:
+                except IOError as e:
                     entry_data = None
                 if entry_data is not None:
                     cs_data = cls.from_entry(entry_data, bmrb_id, auth_tag)
                 else:
-                    logging.error('Entry {} not found in public database'.format(bmrb_id))
-                    raise IOError('Entry not found in public database: {}'.format(bmrb_id))
+
+                    logging.error('Entry {} not found in public database{}'.format(bmrb_id,e))
+                    raise IOError('Entry not found in public database: {}{}'.format(bmrb_id,e))
                 all_cs_data.update(cs_data)
         else:
 
