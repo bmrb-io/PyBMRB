@@ -41,6 +41,10 @@ You may customize the visualization using some of the optional  parameters
 * **draw_trac**\  While comparing multiple entreis or comparing BMRB entreis with your local NMR-STAR files, you may chose to trace the changes in peak positions for matching residues in the sequence. This will connect the peaks from the corresponding residues from different data set using a line. example *draw_trace=True*\
 * **peak_list**\  Optionally you may also provide peak list as a simple csv file to plot with any BMRB entry or your local NMR-STAR files. The difference is NMR-STAR files contain assigned chemical shifts, while the peak list is just a list of peak positions in two columns. example *peak_list='/test/peak_list1.csv'*\
 
+for chemical shift histograms, you may plot either count or percent or probability or probability density. default would be count
+
+* **histnorm**\  normalization method 'percent','probability','probability density'
+
 Output format
 ----------------
 All spectra and histograms automatically open on your browser as an interactive visualization. If you wish to store them as interactive visualization,

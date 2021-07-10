@@ -61,6 +61,7 @@ class ChemicalShiftStatistics(object):
         dump = json.loads(r.read())
         return dump
 
+
     @classmethod
     def get_data(cls,residue,atom,filtered=True, sd_limit=10, ambiguity='*',
                  ph_min=None,ph_max=None,t_min=None,t_max=None,standard_amino_acids=True):
@@ -422,9 +423,9 @@ class ChemicalShiftStatistics(object):
             if 'H' in atm:
                 cs_width = 0.1
             if 'C' in atm:
-                cs_width = 1.0
+                cs_width = 2.0
             if 'N' in atm:
-                cs_width = 1.0
+                cs_width = 2.0
             out_cs_dict = {}
             for key in cs_dict.keys():
                 try:
@@ -505,22 +506,6 @@ class ChemicalShiftStatistics(object):
                 print('\t\tCount\t\t\t\t:{}'.format(cs_stat[key]['count']))
                 print("\n")
         return cs_stat
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # if __name__=="__main__":

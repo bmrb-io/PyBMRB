@@ -231,10 +231,201 @@ were used as  x axis and CB chemical shifts were was used a Y axis.
 Chemical shift Histograms
 ---------------------------
 
-text
+PyBMRB is able to fetch database wide chemical shift data and plot the distribution in different ways.
+The default distribution would be Chemical shift vs number of instances(count). You may also plot the 'percent' or 'probability'
+or 'probability density' by providing desired value for 'histnorm'. These distributions
+can be filtered using temperature range and PH range. Here are some of the examples.
 
 
 Histogram
 ^^^^^^^^^^^
 
-test
+- Example 15: Chemical shift distribution of CYS-CB
+
+.. code:: python
+
+    pybmrb.Histogram.hist(residue='CYS', atom='CB')
+
+.. figure:: ../_images/cys_cb_hist.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for CYS-CB histogram <../_static/cys_cb_hist.html>`_
+
+- Example 16: Chemical shift distribution of CYS-CB with standard deviation filter
+
+You may exclude extreme values by using the filter based on standard deviation. sd_limit=5 would  exclude
+the values beyond 5 times standard deviation on moth sides of the mean
+
+.. code:: python
+
+    pybmrb.Histogram.hist(residue='CYS', atom='CB', sd_limt=5 )
+
+.. figure:: ../_images/cys_cb_hist_sd5.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for CYS-CB histogram with in 5 std on both sides of the mean <../_static/cys_cb_hist_sd5.html>`_
+
+- Example 17: Chemical shift distribution of CYS-CB with Ph filter
+
+You may use experimental conditions like  Ph or temperature values as a filter
+
+.. code:: python
+
+    pybmrb.Histogram.hist(residue='CYS', atom='CB', sd_limt=5,
+    ph_min=7.0, ph_max=8.2)
+
+.. figure:: ../_images/cys_cb_hist_ph.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for CYS-CB histogram with Ph filter <../_static/cys_cb_hist_ph.html>`_
+
+- Example 18: Chemical shift distribution of CYS-CB as box plot
+
+Box plot and Violin plot will show all the statistical properties of the distribution, when you mouse over the distribution.
+
+.. code:: python
+
+    pybmrb.Histogram.hist(residue='CYS', atom='CB',
+    plot_type='box')
+
+.. figure:: ../_images/cys_cb_box_sd5.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for CYS-CB box plot <../_static/cys_cb_box_sd5.html>`_
+
+- Example 19: Chemical shift distribution of CYS-CB as violin plot
+
+Box plot and Violin plot will show all the statistical properties of the distribution, when you mouse over the distribution.
+
+.. code:: python
+
+    pybmrb.Histogram.hist(residue='CYS', atom='CB',
+    plot_type='violin')
+
+.. figure:: ../_images/cys_cb_violin_sd5.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for CYS-CB violin plot <../_static/cys_cb_violin_sd5.html>`_
+
+- Example 20: Histogram method supports wildcard
+
+If you want to see the chemical shift distribution of protons in GLN, then you may use the following command.
+You may chose histnorm as 'probability density' to compare distributions
+
+.. code:: python
+
+    pybmrb.Histogram.hist(residue='GLN', atom='H*',
+    hist_norm='probability density')
+
+.. figure:: ../_images/gln_h_hist.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for GLN-H* distribution <../_static/gln_h_hist.html>`_
+
+- Example 21: Distribution of all atoms from a residue
+
+If you want to see the chemical shift distribution of all atoms from a residue you may use atom='*' or simply leave out atom.
+
+.. code:: python
+
+    pybmrb.Histogram.hist(residue='ASP', atom='*')
+
+or
+
+.. code:: python
+
+    pybmrb.Histogram.hist(residue='ASP')
+
+
+.. figure:: ../_images/asp_hist.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for ASP distribution <../_static/asp_hist.html>`_
+
+- Example 22: Distribution of specific atom type from al residues
+
+If you want to see the chemical shift distribution CG atoms from all 20 standard residues you may use residue=*' or simply leave out residue.
+
+.. code:: python
+
+    pybmrb.Histogram.hist(residue='*', atom='CG*',
+    hist_norm='percent')
+
+or
+
+.. code:: python
+
+    pybmrb.Histogram.hist(atom='CG*',
+    hist_norm='percent')
+
+
+.. figure:: ../_images/cg_hist.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for CG* distribution <../_static/cg_hist.html>`_
+
+- Example 23: Chemical shift correlation as 2d heatmap
+
+
+.. code:: python
+
+    pybmrb.Histogram.hist2d(residue='CYS', atom1='CA', atom2='CB', sd_limut=5)
+
+.. figure:: ../_images/cys-ca-cb.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive 2D heatmap  <../_static/cys-ca-cb.html>`_
+
+- Example 24: Chemical shift correlation as contour heatmap
+
+
+.. code:: python
+
+    pybmrb.Histogram.hist2d(residue='GLN', atom1='HE21', atom2='HE22',
+    sd_limut=5, plot_type='contour')
+
+.. figure:: ../_images/gln-2d.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive contour plot  <../_static/gln-2d.html>`_
+
+- Example 25: Conditional histogram with chemical shift filtering
+
+You may filter the chemical shift distribution of an atom in a residue based on the chemical shift values of one or
+more atom in the same residue. In the following example CYS-CB values are filtered based on CYS-H=8.9. During the seach
+0.1ppm tolerance for protons and 2.0 ppm tolerance for heavy atoms is used.
+
+.. code:: python
+
+    pybmrb.Histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent'
+    filtering_rules=[('H',8.9)])
+
+.. figure:: ../_images/filt1.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive conditional histogram with one rule  <../_static/filt1.html>`_
+
+- Example 25: Conditional histogram with chemical shift list
+
+
+.. code:: python
+
+    pybmrb.Histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent'
+    filtering_rules=[('H', 8.9), ('CA', 61)])
+
+.. figure:: ../_images/filt2.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive conditional histogram with list of rules  <../_static/filt2.html>`_
