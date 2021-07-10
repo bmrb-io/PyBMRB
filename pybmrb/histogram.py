@@ -328,7 +328,16 @@ class Histogram(object):
                 logging.ERROR('Output file format nor support:{}'.format(output_format))
         return x, tag
 
-# if __name__=="__main__":
+if __name__=="__main__":
+    Histogram.hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'],histnorm='probability density',
+                   output_format='jpg',output_file='../docs/_images/multi_hist')
+    Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], histnorm='probability density',
+                   output_format='html', output_file='../docs/_static/multi_hist')
+    Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], plot_type='violin',
+                   output_format='jpg', output_file='../docs/_images/multi_violin')
+    Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], plot_type='violin',
+                   output_format='html', output_file='../docs/_static/multi_violin')
+
     # Histogram.hist(residue='CYS',atom='CB',output_format='jpg',
     #                output_file='../docs/_images/cys_cb_hist',show_visualization=False)
     # Histogram.hist(residue='CYS', atom='CB', output_format='html',

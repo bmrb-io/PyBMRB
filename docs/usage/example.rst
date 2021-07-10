@@ -237,8 +237,8 @@ or 'probability density' by providing desired value for 'histnorm'. These distri
 can be filtered using temperature range and PH range. Here are some of the examples.
 
 
-Histogram
-^^^^^^^^^^^
+Single distribution
+^^^^^^^^^^^^^^^^^^^^
 
 - Example 15: Chemical shift distribution of CYS-CB
 
@@ -312,7 +312,41 @@ Box plot and Violin plot will show all the statistical properties of the distrib
 
     `Click here for interactive html for CYS-CB violin plot <../_static/cys_cb_violin_sd5.html>`_
 
-- Example 20: Histogram method supports wildcard
+Multiple distribution
+^^^^^^^^^^^^^^^^^^^^^^
+
+- Example 20: Histogram from list of atoms
+
+You may also provide list of atoms as input
+
+.. code:: python
+
+    pybmrb.Histogram.hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'],
+    histnorm='probability density')
+
+.. figure:: ../_images/multi_hist.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for multiple distribution <../_static/multi_hist.html>`_
+
+- Example 21: Violin plot for list of atoms
+
+
+
+.. code:: python
+
+    pybmrb.Histogram.hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'],
+    plot_type='violin')
+
+.. figure:: ../_images/multi_violin.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for violin plot <../_static/multi_violin.html>`_
+
+
+- Example 22: Histogram method supports wildcard
 
 If you want to see the chemical shift distribution of protons in GLN, then you may use the following command.
 You may chose histnorm as 'probability density' to compare distributions
@@ -328,7 +362,7 @@ You may chose histnorm as 'probability density' to compare distributions
 
     `Click here for interactive html for GLN-H* distribution <../_static/gln_h_hist.html>`_
 
-- Example 21: Distribution of all atoms from a residue
+- Example 23: Distribution of all atoms from a residue
 
 If you want to see the chemical shift distribution of all atoms from a residue you may use atom='*' or simply leave out atom.
 
@@ -349,7 +383,7 @@ or
 
     `Click here for interactive html for ASP distribution <../_static/asp_hist.html>`_
 
-- Example 22: Distribution of specific atom type from al residues
+- Example 24: Distribution of specific atom type from al residues
 
 If you want to see the chemical shift distribution CG atoms from all 20 standard residues you may use residue=*' or simply leave out residue.
 
@@ -372,7 +406,10 @@ or
 
     `Click here for interactive html for CG* distribution <../_static/cg_hist.html>`_
 
-- Example 23: Chemical shift correlation as 2d heatmap
+2D Histograms
+^^^^^^^^^^^^^^^^^^^^
+
+- Example 25: Chemical shift correlation as 2d heatmap
 
 
 .. code:: python
@@ -385,7 +422,7 @@ or
 
     `Click here for interactive 2D heatmap  <../_static/cys-ca-cb.html>`_
 
-- Example 24: Chemical shift correlation as contour heatmap
+- Example 26: Chemical shift correlation as contour heatmap
 
 
 .. code:: python
@@ -399,7 +436,10 @@ or
 
     `Click here for interactive contour plot  <../_static/gln-2d.html>`_
 
-- Example 25: Conditional histogram with chemical shift filtering
+Conditional histogram
+^^^^^^^^^^^^^^^^^^^^^^
+
+- Example 27: Conditional histogram with chemical shift filtering
 
 You may filter the chemical shift distribution of an atom in a residue based on the chemical shift values of one or
 more atom in the same residue. In the following example CYS-CB values are filtered based on CYS-H=8.9. During the seach
@@ -416,7 +456,7 @@ more atom in the same residue. In the following example CYS-CB values are filter
 
     `Click here for interactive conditional histogram with one rule  <../_static/filt1.html>`_
 
-- Example 25: Conditional histogram with chemical shift list
+- Example 28: Conditional histogram with chemical shift list
 
 
 .. code:: python
