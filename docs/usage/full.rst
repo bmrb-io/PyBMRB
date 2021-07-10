@@ -24,3 +24,4 @@ ChemicalShiftStatistics Class
 
 .. autoclass:: pybmrb.ChemicalShiftStatistics
    :members:
+

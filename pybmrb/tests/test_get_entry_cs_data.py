@@ -20,18 +20,18 @@ def get_entry_object():
 
 
 def test_from_entry(get_entry_object):
-    assert len(ChemicalShift.from_entry(get_entry_object[0],data_set_id='MyData')) == 1
-    assert type(ChemicalShift.from_entry(get_entry_object[0],data_set_id='MyData')) is dict
-    assert len(ChemicalShift.from_entry(get_entry_object[1], data_set_id='15560')) == 1
-    assert type(ChemicalShift.from_entry(get_entry_object[1], data_set_id='15560')) is dict
-    assert len(ChemicalShift.from_entry(get_entry_object[2], data_set_id='18857')) == 33
-    assert type(ChemicalShift.from_entry(get_entry_object[2], data_set_id='18857')) is dict
-    assert len(ChemicalShift.from_entry(get_entry_object[0], data_set_id='MyData',auth_tag=True)) == 1
-    assert type(ChemicalShift.from_entry(get_entry_object[0], data_set_id='MyData',auth_tag=True)) is dict
-    assert len(ChemicalShift.from_entry(get_entry_object[1], data_set_id='15560',auth_tag=True)) == 1
-    assert type(ChemicalShift.from_entry(get_entry_object[1], data_set_id='15560',auth_tag=True)) is dict
-    assert len(ChemicalShift.from_entry(get_entry_object[2], data_set_id='18857',auth_tag=True)) == 33
-    assert type(ChemicalShift.from_entry(get_entry_object[2], data_set_id='18857',auth_tag=True)) is dict
+    assert len(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[0], data_set_id='MyData')) == 1
+    assert type(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[0], data_set_id='MyData')) is dict
+    assert len(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[1], data_set_id='15560')) == 1
+    assert type(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[1], data_set_id='15560')) is dict
+    assert len(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[2], data_set_id='18857')) == 33
+    assert type(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[2], data_set_id='18857')) is dict
+    assert len(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[0], data_set_id='MyData', auth_tag=True)) == 1
+    assert type(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[0], data_set_id='MyData', auth_tag=True)) is dict
+    assert len(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[1], data_set_id='15560', auth_tag=True)) == 1
+    assert type(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[1], data_set_id='15560', auth_tag=True)) is dict
+    assert len(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[2], data_set_id='18857', auth_tag=True)) == 33
+    assert type(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[2], data_set_id='18857', auth_tag=True)) is dict
 
 
 
