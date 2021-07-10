@@ -11,7 +11,7 @@ import ntpath
 
 
 def test_get_data_from_api():
-    dump=ChemicalShiftStatistics.get_data_from_api('ALA','N')
+    dump=ChemicalShiftStatistics._get_data_from_api('ALA', 'N')
     assert len(dump)==2
     assert type(dump) is dict
     assert len(dump['columns'])==13
@@ -44,7 +44,7 @@ def test_get_data_from_bmrb():
 
 def test_list_do_dict():
     dump = ChemicalShiftStatistics.get_data_from_bmrb(residue='ALA')
-    dump2=ChemicalShiftStatistics.list_do_dict(dump[0],dump[1])
+    dump2=ChemicalShiftStatistics._list_to_dict(dump[0], dump[1])
     assert type(dump2) is dict
 
 
