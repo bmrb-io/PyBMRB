@@ -36,9 +36,9 @@ class ChemicalShiftStatistics(object):
         pass
 
     @staticmethod
-    def get_data_from_api(residue, atom):
+    def _get_data_from_api(residue, atom):
         '''
-        Dumps the BMRB-API return for given residue and atom
+        Dumps the BMRB-API return for given residue and atom. Not intend to call directly
 
         :param residue: Residue name in IUPAC format
         :param atom: Atom name in IUPAC format
@@ -85,7 +85,7 @@ class ChemicalShiftStatistics(object):
                     'VAL', 'THR', 'HIS', 'TRP', 'PHE',
                     'ALA', 'MET', 'LEU', 'ARG', 'TYR',
                     'A', 'C', 'G', 'U', 'DA', 'DC', 'DG', 'DT']
-        api_data=cls.get_data_from_api(residue=residue, atom=atom)
+        api_data=cls._get_data_from_api(residue=residue, atom=atom)
         columns = api_data['columns']
         cs_index = columns.index('Atom_chem_shift.Val')
         ph_index = columns.index('Sample_conditions.pH')
@@ -302,10 +302,10 @@ class ChemicalShiftStatistics(object):
             logging.info('residue and atom values were not provided')
         return columns, out_dat
 
-    @classmethod
-    def list_do_dict(cls,columns,data):
+    @staticmethod
+    def _list_to_dict(columns, data):
         '''
-        Converts the outputs from get_data_from_bmrb into a dictionary
+        Converts the outputs from get_data_from_bmrb into a dictionary. Not intend to call directly
 
         :param columns: Column headers
         :param data: data as list of lists
@@ -365,7 +365,7 @@ class ChemicalShiftStatistics(object):
         y=[]
         cs_data = cls.get_data_from_bmrb(residue=residue,ph_min=ph_min,ph_max=ph_max,
                                           t_min=t_min,t_max=t_max,standard_amino_acids=False)
-        cs_dict = cls.list_do_dict(cs_data[0],cs_data[1])
+        cs_dict = cls._list_to_dict(cs_data[0], cs_data[1])
         for key in cs_dict.keys():
             if atom1 in cs_dict[key].keys() and atom2 in cs_dict[key].keys():
                 if ambiguity1 !='*' or ambiguity2 !='*':
@@ -434,7 +434,7 @@ class ChemicalShiftStatistics(object):
                 except KeyError:
                     pass
             return out_cs_dict
-        cs_dict = cls.list_do_dict(cs_data[0], cs_data[1])
+        cs_dict = cls._list_to_dict(cs_data[0], cs_data[1])
         for rule in filtering_rules:
             cs_dict = filter(cs_dict,rule[0],rule[1])
         x=[]
@@ -511,7 +511,7 @@ class ChemicalShiftStatistics(object):
 # if __name__=="__main__":
 #     # x=ChemicalShiftStatistics.get_data_from_bmrb(list_of_atoms='ALA-N')
 #     # #print (x[0])
-#     # y=ChemicalShiftStatistics.list_do_dict(x[0],x[1])
+#     # y=ChemicalShiftStatistics._list_to_dict(x[0],x[1])
 #     #x=ChemicalShiftStatistics.get_2d_chemical_shifts(residue='ALA',atom1='CA',atom2='CB')
 #     #x=ChemicalShiftStatistics.get_filtered_data_from_bmrb(residue='THR',atom='N',filtering_rules=[('CB',69.51),('CA',60.79),('H',8.13)])
 #     ChemicalShiftStatistics.get_statistics(residue='GLY',atom='XX')
