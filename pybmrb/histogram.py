@@ -13,6 +13,7 @@ class Histogram(object):
     @classmethod
     def hist(self, residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
                            ph_min=None, ph_max=None, t_min=None, t_max=None,
+             histnorm='',
              standard_amino_acids=True,
              plot_type='histogram', output_format='html',
              output_file=None,
@@ -23,8 +24,8 @@ class Histogram(object):
         '''
         plots histogram for a given list of atoms and residues with some filters. One of either residue or atom or list of atoms is required
 
-        :param residue: residue name in IUPAC format; '*' for all standard residues: default None
-        :param atom: atom name in IUPAC format; '*' for all standard atoms; default None
+        :param residue:  residue name in IUPAC format; '*' for all standard residues: default None
+        :param atom:  atom name in IUPAC format; '*' for all standard atoms; default None
         :param list_of_atoms: list of atoms in IUPAC actom; example '['ALA-CA','CYS-CB']'; default None
         :param filtered: Filters values beyond (sd_limt)*(standard deviation) on both sides of the mean; default:True
         :param sd_limit: scaling factor used to filter data based on standard deviation; default 10
@@ -32,6 +33,7 @@ class Histogram(object):
         :param ph_min: PH filter (min);default None
         :param ph_max: PH filter (max); default None
         :param t_min: Temperature filter (min); default None
+        :param histnrom: histnorm for the distribution 'probability','percent','probability density')
         :param t_max: Temperature filter (max); default None
         :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
         :param plot_type: plot type; supported types 'histogram','box','violin' ; default histogram
@@ -59,15 +61,20 @@ class Histogram(object):
         res_index = columns.index('Atom_chem_shift.Comp_ID')
         atm_index = columns.index('Atom_chem_shift.Atom_ID')
         amb_index = columns.index('Atom_chem_shift.Ambiguity_code')
-
+        if len(cs_data)==0:
+            logging.error('No matching atom, or values found in the database')
+            raise ValueError('No matching atom, or values found in the database')
         x=[]
         tag=[]
         for row in cs_data:
             t='{}-{}'.format(row[res_index],row[atm_index])
             tag.append(t)
             x.append(row[cs_index])
+        if len(x)==0:
+            logging.error('No matching atom, or values found in the database')
+            raise ValueError('No matching atom, or values found in the database')
         if plot_type=='histogram':
-            fig = px.histogram(x,color=tag,
+            fig = px.histogram(x,color=tag,histnorm=histnorm,
                                labels={"color": "Atom",
                                          "value": 'Chemical shift (ppm)',
                                          "count": 'Count'},opacity=0.5)
@@ -116,6 +123,7 @@ class Histogram(object):
     def hist2d(cls,residue,atom1,atom2,filtered=True, sd_limit=10,
                                ambiguity1='*', ambiguity2='*',
                                ph_min=None,ph_max=None,t_min=None,t_max=None,
+               histnorm='',
                plot_type='heatmap',output_format='html',
                 output_file=None,
                 output_image_width=800,
@@ -134,6 +142,7 @@ class Histogram(object):
         :param ph_max: PH filter (max); default None
         :param t_min: Temperature filter (min); default None
         :param t_max: Temperature filter (max); default None
+        :param histnrom: histnorm for the distribution 'probability','percent','probability density')
         :param plot_type: plot type; support types 'heatmap','contour'
         :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
         :param output_file: output file name; if provided, the output will be written in a file , otherwise opens is a web browser; default ;None
@@ -153,8 +162,12 @@ class Histogram(object):
                                                              ph_max=ph_max,
                                                              t_min=t_min,
                                                              t_max=t_max)
+        if len(x)==0:
+            logging.error('No matching atom, or values found in the database')
+            raise ValueError('No matching atom, or values found in the database')
         if plot_type == 'heatmap':
             fig = px.density_heatmap(x=x,y=y, marginal_x="histogram", marginal_y="histogram",
+                                     histnorm=histnorm,
                                      labels={
                                              "x": '{} (ppm)'.format(atom1),
                                              "y": '{} (ppm)'.format(atom2)},
@@ -164,7 +177,7 @@ class Histogram(object):
                               xaxis2=dict(showticklabels=True),
                               yaxis3=dict(showticklabels=True))
         elif plot_type == 'contour':
-            fig = px.density_contour(x=x, y=y, marginal_x="histogram", marginal_y="histogram",
+            fig = px.density_contour(x=x, y=y, marginal_x="histogram", marginal_y="histogram",histnorm=histnorm,
                                      labels={
                                          "x": '{} (ppm)'.format(atom1),
                                          "y": '{} (ppm)'.format(atom2)},
@@ -199,7 +212,9 @@ class Histogram(object):
 
     @classmethod
     def conditional_hist(cls, residue, atom, filtering_rules,
-                         ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True,
+                         ph_min=None, ph_max=None, t_min=None, t_max=None,
+                         histnorm='',
+                         standard_amino_acids=True,
                          plot_type='histogram', output_format='html',
                          output_file=None,
                          output_image_width=800,
@@ -217,6 +232,7 @@ class Histogram(object):
         :param ph_max: PH filter (max); default None
         :param t_min: Temperature filter (min); default None
         :param t_max: Temperature filter (max); default None
+        :param histnrom: histnorm for the distribution 'probability','percent','probability density')
         :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
         :param plot_type: plot type; support types 'heatmap','contour'
         :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
@@ -239,6 +255,9 @@ class Histogram(object):
         res_index = columns.index('Atom_chem_shift.Comp_ID')
         atm_index = columns.index('Atom_chem_shift.Atom_ID')
         amb_index = columns.index('Atom_chem_shift.Ambiguity_code')
+        if len(cs_data)==0:
+            logging.error('No matching atom, or values found in the database')
+            raise ValueError('No matching atom, or values found in the database')
         x1=ChemicalShiftStatistics.get_filtered_data_from_bmrb(residue=residue,
                                                               atom=atom,
                                                               filtering_rules=filtering_rules,
@@ -248,6 +267,9 @@ class Histogram(object):
                                                               t_max=t_max,
                                                               standard_amino_acids=standard_amino_acids
                                                               )
+        if len(x1)==0:
+            logging.error('No matching atom, or values found in the database')
+            raise ValueError('No matching atom, or values found in the database')
 
         x = []
         tag = []
@@ -258,8 +280,11 @@ class Histogram(object):
         for i in x1:
             x.append(i)
             tag.append('Filtered')
+        if len(x)==0:
+            logging.error('No matching atom, or values found in the database')
+            raise ValueError('No matching atom, or values found in the database')
         if plot_type == 'histogram':
-            fig = px.histogram(x, color=tag,
+            fig = px.histogram(x, color=tag,histnorm=histnorm,
                                labels={"color": "Atom",
                                        "value": 'Chemical shift (ppm)',
                                        "count": 'Count'}, opacity=0.5)
@@ -304,37 +329,72 @@ class Histogram(object):
         return x, tag
 
 if __name__=="__main__":
-    # Histogram.hist(residue='CYS',atom='CB',output_format='jpg',output_file='../docs/_images/cys_cb_hist')
-    # Histogram.hist(residue='CYS', atom='CB', output_format='html', output_file='../docs/_images/cys_cb_hist')
-    # Histogram.hist(residue='CYS', atom='CB', output_format='jpg',
-    #                sd_limit=5, output_file='../docs/_images/cys_cb_hist_sd5')
-    # Histogram.hist(residue='CYS', atom='CB', output_format='jpg',
-    #                sd_limit=5, output_file='../docs/_images/cys_cb_hist_sd5')
-    # Histogram.hist(residue='CYS', atom='CB', output_format='jpg', plot_type='box',
-    #                 output_file='../docs/_images/cys_cb_box_sd5')
-    # Histogram.hist(residue='CYS', atom='CB', output_format='html', plot_type='box',
-    #                output_file='../docs/_images/cys_cb_box_sd5')
-    # Histogram.hist(residue='CYS', atom='CB', output_format='jpg', plot_type='violin',
-    #                 output_file='../docs/_images/cys_cb_violin_sd5')
-    # Histogram.hist(residue='CYS', atom='CB', output_format='html', plot_type='violin',
-    #                 output_file='../docs/_images/cys_cb_violin_sd5')
-    # Histogram.hist(residue='GLN', atom='H*', output_format='jpg',
-    #                output_file='../docs/_images/gln_h_hist')
-    # Histogram.hist(residue='GLN', atom='H*', output_format='html',
-    #                 output_file='../docs/_images/gln_h_hist')
-    # Histogram.hist(residue='ASP', atom='*', output_format='jpg',
-    #                output_file='../docs/_images/asp_hist')
-    # Histogram.hist(residue='ASP', atom='*', output_format='html',
-    #                output_file='../docs/_images/asp_hist')
-    # Histogram.hist(residue='*', atom='CG*', output_format='jpg',
-    #                output_file='../docs/_images/cg_hist')
-    # Histogram.hist(residue='*', atom='CG*', output_format='html',
-    #                output_file='../docs/_images/cg_hist')
-    #
-    #
-    # Histogram.hist2d(residue='CYS',atom1='CA',atom2='CB',output_format='jpg',
-    #                  output_file='../docs/_images/cys-ca-cb')
-    # Histogram.hist2d(residue='CYS', atom1='CA', atom2='CB', output_format='html',
-    #                  output_file='../docs/_images/cys-ca-cb')
+    Histogram.hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'],histnorm='probability density',
+                   output_format='jpg',output_file='../docs/_images/multi_hist')
+    Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], histnorm='probability density',
+                   output_format='html', output_file='../docs/_static/multi_hist')
+    Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], plot_type='violin',
+                   output_format='jpg', output_file='../docs/_images/multi_violin')
+    Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], plot_type='violin',
+                   output_format='html', output_file='../docs/_static/multi_violin')
 
-    Histogram.hist(residue='CYS',atom='CB',ph_min=7.4)
+    # Histogram.hist(residue='CYS',atom='CB',output_format='jpg',
+    #                output_file='../docs/_images/cys_cb_hist',show_visualization=False)
+    # Histogram.hist(residue='CYS', atom='CB', output_format='html',
+    #                output_file='../docs/_static/cys_cb_hist',show_visualization=False)
+    # Histogram.hist(residue='CYS', atom='CB', output_format='jpg',
+    #                sd_limit=5, output_file='../docs/_images/cys_cb_hist_sd5',show_visualization=False)
+    # Histogram.hist(residue='CYS', atom='CB', output_format='html',
+    #                sd_limit=5, output_file='../docs/_static/cys_cb_hist_sd5',show_visualization=False)
+    # Histogram.hist(residue='CYS', atom='CB', output_format='jpg',
+    #                ph_min=7.0,ph_max=8.2, output_file='../docs/_images/cys_cb_hist_ph',show_visualization=False)
+    # Histogram.hist(residue='CYS', atom='CB', output_format='html',
+    #                ph_min=7.0,ph_max=8.2, output_file='../docs/_static/cys_cb_hist_ph',show_visualization=False)
+    # Histogram.hist(residue='CYS', atom='CB', output_format='jpg', plot_type='box',
+    #                 output_file='../docs/_images/cys_cb_box_sd5',show_visualization=False)
+    # Histogram.hist(residue='CYS', atom='CB', output_format='html', plot_type='box',
+    #                output_file='../docs/_static/cys_cb_box_sd5',show_visualization=False)
+    # Histogram.hist(residue='CYS', atom='CB', output_format='jpg', plot_type='violin',
+    #                 output_file='../docs/_images/cys_cb_violin_sd5',show_visualization=False)
+    # Histogram.hist(residue='CYS', atom='CB', output_format='html', plot_type='violin',
+    #                 output_file='../docs/_static/cys_cb_violin_sd5',show_visualization=False)
+    # Histogram.hist(residue='GLN', atom='H*', output_format='jpg',
+    #                histnorm='probability density',
+    #                output_file='../docs/_images/gln_h_hist',show_visualization=False)
+    # Histogram.hist(residue='GLN', atom='H*', output_format='html',
+    #                histnorm='probability density',
+    #                 output_file='../docs/_static/gln_h_hist',show_visualization=False)
+    # Histogram.hist(residue='ASP', atom='*', output_format='jpg',
+    #                output_file='../docs/_images/asp_hist',show_visualization=False)
+    # Histogram.hist(residue='ASP', atom='*', output_format='html',
+    #                output_file='../docs/_static/asp_hist',show_visualization=False)
+    # Histogram.hist(residue='*', atom='CG*', output_format='jpg',histnorm='percent',
+    #                output_file='../docs/_images/cg_hist',show_visualization=False)
+    # Histogram.hist(residue='*', atom='CG*', output_format='html', histnorm='percent',
+    #                output_file='../docs/_static/cg_hist',show_visualization=False)
+    #
+    #
+    # Histogram.hist2d(residue='CYS',atom1='CA',atom2='CB',output_format='jpg', sd_limit=5,
+    #                  output_file='../docs/_images/cys-ca-cb',show_visualization=False)
+    # Histogram.hist2d(residue='CYS', atom1='CA', atom2='CB', output_format='html', sd_limit=5,
+    #                  output_file='../docs/_static/cys-ca-cb',show_visualization=False)
+    # Histogram.hist2d(residue='GLN',atom1='HE21',atom2='HE22',output_format='jpg', sd_limit=5,
+    #                  plot_type='contour', output_file='../docs/_images/gln-2d',show_visualization=False)
+    # Histogram.hist2d(residue='GLN', atom1='HE21', atom2='HE22', output_format='html', sd_limit=5,
+    #                  plot_type='contour',output_file='../docs/_static/gln-2d',show_visualization=False)
+    #
+    # Histogram.conditional_hist(residue='CYS',atom='CB', histnorm='percent',
+    #                            filtering_rules=[('H',8.9)],output_format='jpg',
+    #                            output_file='../docs/_images/filt1',show_visualization=False)
+    # Histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent',
+    #                            filtering_rules=[('H', 8.9)], output_format='html',
+    #                            output_file='../docs/_static/filt1',show_visualization=False)
+    # Histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent',
+    #                            filtering_rules=[('H', 8.9), ('CA', 61)], output_format='jpg',
+    #                            output_file='../docs/_images/filt2',show_visualization=False)
+    # Histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent',
+    #                            filtering_rules=[('H', 8.9), ('CA', 61)],output_format='html',
+    #                            output_file='../docs/_static/filt2',show_visualization=False)
+    #
+    #
+    #
