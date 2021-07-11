@@ -41,7 +41,7 @@ You may also use residue as legend to turn on and off different residue types
 .. code:: python
 
     pybmrb.Spectra.n15hsqc(bmrb_ids=[17076,17077],
-    file_names='test_data/MyData.str',
+    input_file_names='test_data/MyData.str',
     legend='dataset')
 
 .. figure:: ../_images/multi_n15.jpg
@@ -55,7 +55,7 @@ You may also use residue as legend to turn on and off different residue types
 .. code:: python
 
     pybmrb.Spectra.n15hsqc(bmrb_ids=[17076,17077],
-    file_names='test_data/MyData.str',
+    input_file_names='test_data/MyData.str',
     peak_list='test_data/my_peak_list.csv',
     legend='dataset')
 
@@ -71,7 +71,7 @@ You may also use residue as legend to turn on and off different residue types
 .. code:: python
 
     pybmrb.Spectra.n15hsqc(bmrb_ids=[17076,17077],
-    file_names='test_data/MyData.str',
+    input_file_names='test_data/MyData.str',
     legend='dataset',
     draw_trace=True)
 
