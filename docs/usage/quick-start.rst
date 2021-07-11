@@ -24,7 +24,7 @@ Parameters
 Here is the list of some useful parameters. Full list of parameters are documented in the :ref:`Modules documentation page<Module documentation>`.
 
 * **bmrb_ids**\  either single BMRB id or list of BMRB IDs as a list; example *bmrb_ids = 15060*\  or *bmrb_is = [17074, 17076, 17077]*
-* **file_names**\  local NMR-STAR file or list of files with full path; example *file_names = 'test/test_data/mydata1.str'*\  or *file_names=[''test/test_data/mydata1.str', 'test/test_data/mydata2.str']*\
+* **input_file_names**\  local NMR-STAR file or list of files with full path; example *input_file_names = 'test/test_data/mydata1.str'*\  or *input_file_names=[''test/test_data/mydata1.str', 'test/test_data/mydata2.str']*\
 
 For chemical shift histograms, you need to know the three letter code for the amino acid and its IUPAC atom name
 
@@ -82,7 +82,7 @@ compare your data with BMRB as overlying |n15| - HSQC spectra using the followin
 .. code:: python
 
     peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077],
-                file_names='tests/test_data/MyData.str',
+                input_file_names='tests/test_data/MyData.str',
                 legend='dataset')
 
 This will open the visualization on your default web browser. When you mouseover the tool-tip will show the informatoin
@@ -94,7 +94,7 @@ If you want the output as an image and not to open the visualization on web brow
 .. code:: python
 
     peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077],
-                file_names='tests/test_data/MyData.str',
+                input_file_names='tests/test_data/MyData.str',
                 legend='dataset',
                 output_format='jpg',
                 output_file='../docs/_images/n15hsqc_compare',
@@ -113,7 +113,7 @@ If you want to trace the chemical shift changes, use the following command
 .. code:: python
 
     peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077],
-                file_names='tests/test_data/MyData.str',
+                input_file_names='tests/test_data/MyData.str',
                 legend='dataset',
                 draw_trace = True)
 
@@ -125,7 +125,7 @@ a csv file. You may use the csv file to compare your peak list with any BMRB ent
 .. code:: python
 
     peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077],
-                file_names='tests/test_data/MyData.str',
+                input_file_names='tests/test_data/MyData.str',
                 legend='dataset',
                 draw_trace = True)
 
