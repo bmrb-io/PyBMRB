@@ -10,56 +10,71 @@ import ntpath
 
 
 
-@pytest.fixture
-def get_entry_object():
-        return [pynmrstar.Entry.from_file('{}/test_data/MyData.str'.format(script_path).format(script_path)),
-                pynmrstar.Entry.from_database('15060'),
-                pynmrstar.Entry.from_database('18857')]
 
 
-
-
-def test_from_entry(get_entry_object):
-    assert len(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[0], data_set_id='MyData')) == 1
-    assert type(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[0], data_set_id='MyData')) is dict
-    assert len(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[1], data_set_id='15560')) == 1
-    assert type(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[1], data_set_id='15560')) is dict
-    assert len(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[2], data_set_id='18857')) == 33
-    assert type(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[2], data_set_id='18857')) is dict
-    assert len(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[0], data_set_id='MyData', auth_tag=True)) == 1
-    assert type(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[0], data_set_id='MyData', auth_tag=True)) is dict
-    assert len(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[1], data_set_id='15560', auth_tag=True)) == 1
-    assert type(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[1], data_set_id='15560', auth_tag=True)) is dict
-    assert len(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[2], data_set_id='18857', auth_tag=True)) == 33
-    assert type(ChemicalShift._from_pynmrstar_entry_object(get_entry_object[2], data_set_id='18857', auth_tag=True)) is dict
-
+def test__from_pynmrstar_entry_object():
+    entry_obj1=pynmrstar.Entry.from_file('{}/test_data/MyData.str'.format(script_path))
+    entry_obj2=pynmrstar.Entry.from_database('15060')
+    entry_obj3=pynmrstar.Entry.from_database('18857')
+    assert len(ChemicalShift._from_pynmrstar_entry_object(entry_obj1, data_set_id='MyData')) == 1
+    assert type(ChemicalShift._from_pynmrstar_entry_object(entry_obj1, data_set_id='MyData')) is dict
+    assert len(ChemicalShift._from_pynmrstar_entry_object(entry_obj2, data_set_id='15560')) == 1
+    assert type(ChemicalShift._from_pynmrstar_entry_object(entry_obj2, data_set_id='15560')) is dict
+    assert len(ChemicalShift._from_pynmrstar_entry_object(entry_obj3, data_set_id='18857')) == 33
+    assert type(ChemicalShift._from_pynmrstar_entry_object(entry_obj3, data_set_id='18857')) is dict
+    assert len(
+        ChemicalShift._from_pynmrstar_entry_object(entry_obj1, data_set_id='MyData', auth_tag=True)) == 1
+    assert type(
+        ChemicalShift._from_pynmrstar_entry_object(entry_obj1, data_set_id='MyData', auth_tag=True)) is dict
+    assert len(ChemicalShift._from_pynmrstar_entry_object(entry_obj2, data_set_id='15560', auth_tag=True)) == 1
+    assert type(
+        ChemicalShift._from_pynmrstar_entry_object(entry_obj2, data_set_id='15560', auth_tag=True)) is dict
+    assert len(
+        ChemicalShift._from_pynmrstar_entry_object(entry_obj3, data_set_id='18857', auth_tag=True)) == 33
+    assert type(
+        ChemicalShift._from_pynmrstar_entry_object(entry_obj3, data_set_id='18857', auth_tag=True)) is dict
 
 
 def test_from_file():
-    assert len(ChemicalShift.from_file('{}/test_data/MyData.str'.format(script_path).format(script_path))) == 1
-    assert type(ChemicalShift.from_file('{}/test_data/MyData.str'.format(script_path))) is dict
-    assert len(ChemicalShift.from_file('{}/test_data/bmr18857_3.str'.format(script_path))) == 33
-    assert type(ChemicalShift.from_file('{}/test_data/bmr18857_3.str'.format(script_path))) is dict
-    assert len(ChemicalShift.from_file(['{}/test_data/MyData.str'.format(script_path), '{}/test_data/bmr18857_3.str'.format(script_path)])) == 34
-    assert type(ChemicalShift.from_file(['{}/test_data/MyData.str'.format(script_path), '{}/test_data/bmr18857_3.str'.format(script_path)])) is dict
-    assert len(ChemicalShift.from_file('{}/test_data/MyData.str'.format(script_path), auth_tag=True)) == 1
-    assert type(ChemicalShift.from_file('{}/test_data/MyData.str'.format(script_path), auth_tag=True)) is dict
-    assert len(ChemicalShift.from_file('{}/test_data/bmr18857_3.str'.format(script_path), auth_tag=True)) == 33
-    assert type(ChemicalShift.from_file('{}/test_data/bmr18857_3.str'.format(script_path), auth_tag=True)) is dict
-    assert len(ChemicalShift.from_file(['{}/test_data/MyData.str'.format(script_path), '{}/test_data/bmr18857_3.str'.format(script_path)], auth_tag=True)) == 34
-    assert type(ChemicalShift.from_file(['{}/test_data/MyData.str'.format(script_path), '{}/test_data/bmr18857_3.str'.format(script_path)], auth_tag=True)) is dict
+    cs_data1 = ChemicalShift.from_file('{}/test_data/MyData.str'.format(script_path))
+    cs_data2 = ChemicalShift.from_file('{}/test_data/bmr18857_3.str'.format(script_path))
+    assert len(cs_data1) == 1
+    assert type(cs_data1) is dict
+    assert len(cs_data2) == 33
+    assert type(cs_data2) is dict
+    cs_data3 = ChemicalShift.from_file(
+        ['{}/test_data/MyData.str'.format(script_path), '{}/test_data/bmr18857_3.str'.format(script_path)])
+    assert len(cs_data3) == 34
+    assert type(cs_data3) is dict
+    cs_data1 = ChemicalShift.from_file('{}/test_data/MyData.str'.format(script_path), auth_tag=True)
+    cs_data2 = ChemicalShift.from_file('{}/test_data/bmr18857_3.str'.format(script_path), auth_tag=True)
+    assert len(cs_data1) == 1
+    assert type(cs_data1) is dict
+    assert len(cs_data2) == 33
+    assert type(cs_data2) is dict
+    cs_data3 = ChemicalShift.from_file(
+        ['{}/test_data/MyData.str'.format(script_path), '{}/test_data/bmr18857_3.str'.format(script_path)],
+        auth_tag=True)
+    assert len(cs_data3) == 34
+    assert type(cs_data3) is dict
 
 
 def test_from_bmrb():
-    assert len(ChemicalShift.from_bmrb('15060',auth_tag=True)) == 1
-    assert type(ChemicalShift.from_bmrb(15060,auth_tag=True)) is dict
-    assert len(ChemicalShift.from_bmrb('18857',auth_tag=True)) == 33
-    assert type(ChemicalShift.from_bmrb(18857,auth_tag=True)) is dict
-    assert len(ChemicalShift.from_bmrb(['15060',18857],auth_tag=True)) == 34
-    assert type(ChemicalShift.from_bmrb([15060,18857],auth_tag=True)) is dict
-    assert len(ChemicalShift.from_bmrb('15060')) == 1
-    assert type(ChemicalShift.from_bmrb(15060)) is dict
-    assert len(ChemicalShift.from_bmrb('18857')) == 33
-    assert type(ChemicalShift.from_bmrb(18857)) is dict
-    assert len(ChemicalShift.from_bmrb(['15060', 18857])) == 34
-    assert type(ChemicalShift.from_bmrb([15060, 18857])) is dict
+    cs_data1 = ChemicalShift.from_bmrb('15060', auth_tag=True)
+    cs_data2 = ChemicalShift.from_bmrb('18857', auth_tag=True)
+    assert len(cs_data1) == 1
+    assert type(cs_data1) is dict
+    assert len(cs_data2) == 33
+    assert type(cs_data2) is dict
+    cs_data3 = ChemicalShift.from_bmrb(['15000', 18857], auth_tag=True)
+    assert len(cs_data3) == 34
+    assert type(cs_data3) is dict
+    cs_data1 = ChemicalShift.from_bmrb('50957')
+    cs_data2 = ChemicalShift.from_bmrb('18857')
+    assert len(cs_data1) == 1
+    assert type(cs_data1) is dict
+    assert len(cs_data2) == 33
+    assert type(cs_data2) is dict
+    cs_data3 = ChemicalShift.from_bmrb(['28038', 18857])
+    assert len(cs_data3) == 34
+    assert type(cs_data3) is dict
