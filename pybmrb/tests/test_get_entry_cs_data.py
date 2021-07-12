@@ -14,21 +14,21 @@ import ntpath
 
 def test__from_pynmrstar_entry_object():
     entry_obj1=pynmrstar.Entry.from_file('{}/test_data/MyData.str'.format(script_path))
-    entry_obj2=pynmrstar.Entry.from_database('15060')
+    entry_obj2=pynmrstar.Entry.from_database('19798')
     entry_obj3=pynmrstar.Entry.from_database('18857')
     assert len(ChemicalShift._from_pynmrstar_entry_object(entry_obj1, data_set_id='MyData')) == 1
     assert type(ChemicalShift._from_pynmrstar_entry_object(entry_obj1, data_set_id='MyData')) is dict
-    assert len(ChemicalShift._from_pynmrstar_entry_object(entry_obj2, data_set_id='15560')) == 1
-    assert type(ChemicalShift._from_pynmrstar_entry_object(entry_obj2, data_set_id='15560')) is dict
+    assert len(ChemicalShift._from_pynmrstar_entry_object(entry_obj2, data_set_id='19798')) == 1
+    assert type(ChemicalShift._from_pynmrstar_entry_object(entry_obj2, data_set_id='19798')) is dict
     assert len(ChemicalShift._from_pynmrstar_entry_object(entry_obj3, data_set_id='18857')) == 33
     assert type(ChemicalShift._from_pynmrstar_entry_object(entry_obj3, data_set_id='18857')) is dict
     assert len(
         ChemicalShift._from_pynmrstar_entry_object(entry_obj1, data_set_id='MyData', auth_tag=True)) == 1
     assert type(
         ChemicalShift._from_pynmrstar_entry_object(entry_obj1, data_set_id='MyData', auth_tag=True)) is dict
-    assert len(ChemicalShift._from_pynmrstar_entry_object(entry_obj2, data_set_id='15560', auth_tag=True)) == 1
+    assert len(ChemicalShift._from_pynmrstar_entry_object(entry_obj2, data_set_id='19798', auth_tag=True)) == 1
     assert type(
-        ChemicalShift._from_pynmrstar_entry_object(entry_obj2, data_set_id='15560', auth_tag=True)) is dict
+        ChemicalShift._from_pynmrstar_entry_object(entry_obj2, data_set_id='19798', auth_tag=True)) is dict
     assert len(
         ChemicalShift._from_pynmrstar_entry_object(entry_obj3, data_set_id='18857', auth_tag=True)) == 33
     assert type(
