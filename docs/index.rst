@@ -12,7 +12,7 @@ downloading and parsing the data from the BMRB for visualizations. This package 
 
 
 
-|BuildStatus| |License| | |PythonVersions|
+|BuildStatus| |License| | |PythonVersions| |binder|
 
 Sample visualizations
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,5 +70,8 @@ Click the figure caption for interactive visualization
 
 .. |BuildStatus| image:: https://img.shields.io/github/workflow/status/kumar-physics/PyBMRB/CI/dev
    :target: https://github.com/uwbmrb/PyBMRB
+
+.. |binder| image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/uwbmrb/PyBMRB/v3
 
 .. footbibliography::
