@@ -1,5 +1,7 @@
 Welcome to PyBMRB!
 ======================================
+.. image:: https://mybinder.org/badge_logo.svg
+ :target: https://mybinder.org/v2/gh/uwbmrb/PyBMRB/v3
 
 A Python module for visualizing Nuclear Magnetic Resonance(NMR)  chemical shift data from Biological Magnetic
 Resonance data Bank (`BMRB <http://bmrb.ip>`_) and  from NMR-STAR  format files. PyBMRB helps the

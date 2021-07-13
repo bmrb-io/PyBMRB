@@ -21,12 +21,12 @@ def test_get_data():
     assert len(dump) == 2
     assert len(dump[0]) == 13
     assert len(dump[1]) > 0
-    dump = ChemicalShiftStatistics.get_data(residue='ALA', atom='*',filtered=True)
+    dump = ChemicalShiftStatistics.get_data(residue='ALA', atom='*', filtered=True)
     assert type(dump) is tuple
     assert len(dump) == 2
     assert len(dump[0]) == 13
     assert len(dump[1]) > 0
-    dump = ChemicalShiftStatistics.get_data(residue='ALA', atom='H*',filtered=False)
+    dump = ChemicalShiftStatistics.get_data(residue='ALA', atom='H*', filtered=False)
     assert type(dump) is tuple
     assert len(dump) == 2
     assert len(dump[0]) == 13

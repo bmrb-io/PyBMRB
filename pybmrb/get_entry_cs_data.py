@@ -8,8 +8,6 @@ import pynmrstar
 # Set the log level to INFO
 logging.getLogger().setLevel(logging.INFO)
 
-
-
 three_letter_code = {'I': 'ILE', 'Q': 'GLN', 'G': 'GLY', 'E': 'GLU', 'C': 'CYS',
                      'D': 'ASP', 'S': 'SER', 'K': 'LYS', 'P': 'PRO', 'N': 'ASN',
                      'V': 'VAL', 'T': 'THR', 'H': 'HIS', 'W': 'TRP', 'F': 'PHE',
@@ -18,20 +16,20 @@ one_letter_code = dict([(value, key) for key, value in three_letter_code.items()
 
 
 class ChemicalShift(object):
-    '''
+    """
     Generates chemical shift dictionary from BMRB entry or NMR-STAR file
-    '''
+    """
 
     @staticmethod
     def _from_pynmrstar_entry_object(entry_data, data_set_id, auth_tag=False, ):
-        '''
+        """
         Extracts chemical shift data as dictionary from PyNMRSTAR entry object
 
         :param entry_data: PyNMRSTAR entry object
         :param data_set_id: Data set identifier (bmrb id or filename or user defined id)
         :param auth_tag: Use author sequence numbering True/False default: False
         :return: Chemical shift dictionary {data_set_id:{chain_id:{seq_id:{atom_id:cs_value}},'seq_ids':[1,2,3,4..]}}
-        '''
+        """
         cs_data = {}
         # entry_data = pynmrstar.Entry.from_database(bmrb_id)
         cs_loops = entry_data.get_loops_by_category('Atom_chem_shift')
@@ -85,15 +83,14 @@ class ChemicalShift(object):
 
     @classmethod
     def from_file(cls, input_file_names, auth_tag=False, data_set_id=None):
-        '''
+        """
         Extracts chemical shift information one or more NMR-STAR files
 
         :param input_file_names: list of NMR-STAR file names with full path or single file name with full path
         :param auth_tag: Use author sequence numbering True/False default: False
         :param data_set_id: User defined data set id default: filename
         :return: Chemical shift dictionary {data_set_id:{chain_id:{seq_id:{atom_id:cs_value}},'seq_ids':[1,2,3,4..]}}
-        '''
-        # handle the data_set_id list for more than one files : todo
+        """
         if type(input_file_names) is list:
             all_cs_data = {}
             for file_name in input_file_names:
@@ -101,7 +98,17 @@ class ChemicalShift(object):
                 if os.path.exists(file_name):
                     entry_data = pynmrstar.Entry.from_file(file_name)
                     data_set_id = os.path.splitext(os.path.basename(file_name))[0]
-                    cs_data = cls._from_pynmrstar_entry_object(entry_data, data_set_id, auth_tag)
+                    if data_set_id is not None and type(data_set_id) is list:
+                        if len(input_file_names) != len(data_set_id):
+                            raise ValueError("list of input file names and data set ids didn't match {} input files; "
+                                             "{} data set ids ".format(len(input_file_names), len(data_set_id)))
+                        else:
+                            cs_data = cls._from_pynmrstar_entry_object(entry_data,
+                                                                       data_set_id[input_file_names.index(file_name)],
+                                                                       auth_tag)
+                    else:
+                        cs_data = cls._from_pynmrstar_entry_object(entry_data, data_set_id, auth_tag)
+                    # cs_data = cls._from_pynmrstar_entry_object(entry_data, data_set_id, auth_tag)
                 else:
                     logging.error('File not found {}'.format(file_name))
                     raise IOError('File not found : {}'.format(file_name))
@@ -120,34 +127,33 @@ class ChemicalShift(object):
 
     @classmethod
     def from_bmrb(cls, bmrb_ids, auth_tag=False):
-        '''
+        """
         Extracts chemical shift information directly from BMRB database for a given BMRB entry or list of entries
 
         :param bmrb_ids: List of BMRB entries ids or single BMRB ID
         :param auth_tag: Use author sequence numbering True/False default: False
         :return: Chemical shift dictionary {data_set_id:{chain_id:{seq_id:{atom_id:cs_value}},'seq_ids':[1,2,3,4..]}}
-        '''
+        """
         if type(bmrb_ids) is list:
-            all_cs_data={}
+            all_cs_data = {}
             for bmrb_id in bmrb_ids:
                 try:
                     logging.debug('Getting entry {} from BMRB'.format(bmrb_id))
                     entry_data = pynmrstar.Entry.from_database(bmrb_id)
-                except OSError as e:
+                except OSError:
                     entry_data = None
-                except KeyError as e:
+                except KeyError:
                     entry_data = None
-                except IOError as e:
+                except IOError:
                     entry_data = None
                 if entry_data is not None:
                     cs_data = cls._from_pynmrstar_entry_object(entry_data, bmrb_id, auth_tag)
                 else:
 
-                    logging.error('Entry {} not found in public database{}'.format(bmrb_id,e))
-                    raise IOError('Entry not found in public database: {}{}'.format(bmrb_id,e))
+                    logging.error('Entry {} not found in public database'.format(bmrb_id))
+                    raise IOError('Entry not found in public database: {}'.format(bmrb_id))
                 all_cs_data.update(cs_data)
         else:
-
             try:
                 logging.debug('Getting entry {} from BMRB'.format(bmrb_ids))
                 entry_data = pynmrstar.Entry.from_database(bmrb_ids)
