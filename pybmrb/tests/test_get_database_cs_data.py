@@ -7,7 +7,7 @@ import ntpath
 (script_path, script_name) = ntpath.split(os.path.realpath(__file__))
 
 
-def test_0get_data_from_api():
+def test_get_data_from_api():
     dump = ChemicalShiftStatistics._get_data_from_api('ALA', 'N')
     assert len(dump) == 2
     assert type(dump) is dict

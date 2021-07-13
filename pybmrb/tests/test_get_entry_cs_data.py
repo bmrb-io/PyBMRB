@@ -32,23 +32,23 @@ def test__from_pynmrstar_entry_object():
 
 
 def test_from_file():
-    cs_data1 = ChemicalShift.from_file('{}/test_data/MyData.str'.format(script_path))
-    cs_data2 = ChemicalShift.from_file('{}/test_data/bmr18857_3.str'.format(script_path))
+    cs_data1 = ChemicalShift.from_file(input_file_names='{}/test_data/MyData.str'.format(script_path))
+    cs_data2 = ChemicalShift.from_file(input_file_names='{}/test_data/bmr18857_3.str'.format(script_path))
     assert len(cs_data1) == 1
     assert type(cs_data1) is dict
     assert len(cs_data2) == 33
     assert type(cs_data2) is dict
-    cs_data3 = ChemicalShift.from_file(
+    cs_data3 = ChemicalShift.from_file(input_file_names =
         ['{}/test_data/MyData.str'.format(script_path), '{}/test_data/bmr18857_3.str'.format(script_path)])
     assert len(cs_data3) == 34
     assert type(cs_data3) is dict
-    cs_data1 = ChemicalShift.from_file('{}/test_data/MyData.str'.format(script_path), auth_tag=True)
-    cs_data2 = ChemicalShift.from_file('{}/test_data/bmr18857_3.str'.format(script_path), auth_tag=True)
+    cs_data1 = ChemicalShift.from_file(input_file_names='{}/test_data/MyData.str'.format(script_path), auth_tag=True)
+    cs_data2 = ChemicalShift.from_file(input_file_names='{}/test_data/bmr18857_3.str'.format(script_path), auth_tag=True)
     assert len(cs_data1) == 1
     assert type(cs_data1) is dict
     assert len(cs_data2) == 33
     assert type(cs_data2) is dict
-    cs_data3 = ChemicalShift.from_file(
+    cs_data3 = ChemicalShift.from_file(input_file_names =
         ['{}/test_data/MyData.str'.format(script_path), '{}/test_data/bmr18857_3.str'.format(script_path)],
         auth_tag=True)
     assert len(cs_data3) == 34
@@ -56,21 +56,21 @@ def test_from_file():
 
 
 def test_from_bmrb():
-    cs_data1 = ChemicalShift.from_bmrb('15060', auth_tag=True)
-    cs_data2 = ChemicalShift.from_bmrb('18857', auth_tag=True)
+    cs_data1 = ChemicalShift.from_bmrb(bmrb_ids='15060', auth_tag=True)
+    cs_data2 = ChemicalShift.from_bmrb(bmrb_ids='18857', auth_tag=True)
     assert len(cs_data1) == 1
     assert type(cs_data1) is dict
     assert len(cs_data2) == 33
     assert type(cs_data2) is dict
-    cs_data3 = ChemicalShift.from_bmrb(['15000', 18857], auth_tag=True)
+    cs_data3 = ChemicalShift.from_bmrb(bmrb_ids=['15000', 18857], auth_tag=True)
     assert len(cs_data3) == 34
     assert type(cs_data3) is dict
-    cs_data1 = ChemicalShift.from_bmrb('50957')
-    cs_data2 = ChemicalShift.from_bmrb('18857')
+    cs_data1 = ChemicalShift.from_bmrb(bmrb_ids='50957')
+    cs_data2 = ChemicalShift.from_bmrb(bmrb_ids='18857')
     assert len(cs_data1) == 1
     assert type(cs_data1) is dict
     assert len(cs_data2) == 33
     assert type(cs_data2) is dict
-    cs_data3 = ChemicalShift.from_bmrb(['28038', 18857])
+    cs_data3 = ChemicalShift.from_bmrb(bmrb_ids=['28038', 18857])
     assert len(cs_data3) == 34
     assert type(cs_data3) is dict
