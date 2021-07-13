@@ -22,7 +22,8 @@ class Spectra(object):
         :param input_file_names: Input NMR-STAR file name
         :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
-        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
+        cs_track is a dictionary { matching atoms:[cs_values]}
         """
         ch_atoms = {'ALA': [('HA', 'CA'), ('HB*', 'CB')],
                     'ARG': [('HA', 'CA'), ('HB*', 'CB'), ('HG*', 'CG'), ('HD*', 'CD')],
@@ -105,7 +106,8 @@ class Spectra(object):
         :param input_file_names: Input NMR-STAR file name
         :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
-        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
+        cs_track is a dictionary { matching atoms:[cs_values]}
         """
         cs_data = {}
         cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
@@ -166,7 +168,8 @@ class Spectra(object):
         :param input_file_names: Input NMR-STAR file name
         :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
-        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
+        cs_track is a dictionary { matching atoms:[cs_values]}
         """
         cs_data = {}
         cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
@@ -226,7 +229,8 @@ class Spectra(object):
         :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
         :param include_sidechain: include side chain NHs ; default: True
-        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
+        cs_track is a dictionary { matching atoms:[cs_values]}
         """
         atom_x = 'H'
         atom_y = 'N'
@@ -333,7 +337,7 @@ class Spectra(object):
         :param bmrb_ids: list of BMRB IDs or single BMRB ID default None
         :param input_file_names: list of NMR-STAR files ; default None
         :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
-        :param legend: legend based on residue name or data set id; values: None, residue, datase ; default None
+        :param legend: legend based on residue name or data set id; values: None, residue, dataset ; default None
         :param draw_trace: Connect matching residues by list
         :param include_sidechain: include side-chain NH peaks
         :param peak_list: optionally peak list as csv file cam be provided
@@ -342,11 +346,12 @@ class Spectra(object):
         :param output_image_width: output image width; default 800
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
-        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
+        cs_track is a dictionary { matching atoms:[cs_values]}
         """
+        x1 = []
+        y1 = []
         if peak_list is not None:
-            x1 = []
-            y1 = []
             with open(peak_list) as csvfile:
                 spamreader = csv.reader(csvfile, delimiter=',')
                 for row in spamreader:
@@ -364,7 +369,7 @@ class Spectra(object):
         res = peak_list_2d[4]
         cs_track = peak_list_2d[5]
         if len(x) == 0 or len(y) == 0:
-            logging.error('Resuired chemical shifts not found')
+            logging.error('Required chemical shifts not found')
             raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
@@ -415,7 +420,11 @@ class Spectra(object):
                 fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-        if show_visualization: fig.show()
+        else:
+            raise ValueError('legend type not supported')
+
+        if show_visualization:
+            fig.show()
         if output_file is not None:
             if output_format == 'html':
                 if output_file.split(".")[-1] == 'html':
@@ -478,15 +487,16 @@ class Spectra(object):
         :param output_image_width: output image width; default 800
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
-        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
+        cs_track is a dictionary { matching atoms:[cs_values]}
         """
         peak_list_2d = cls.create_c13hsqc_peaklist(bmrb_ids,
                                                    input_file_names=input_file_names,
                                                    auth_tag=auth_tag,
                                                    draw_trace=draw_trace)
+        x1 = []
+        y1 = []
         if peak_list is not None:
-            x1 = []
-            y1 = []
             with open(peak_list) as csvfile:
                 spamreader = csv.reader(csvfile, delimiter=',')
                 for row in spamreader:
@@ -551,7 +561,11 @@ class Spectra(object):
                 fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-        if show_visualization: fig.show()
+        else:
+            raise ValueError('legend type not supported')
+
+        if show_visualization:
+            fig.show()
         if output_file is not None:
             if output_format == 'html':
                 if output_file.split(".")[-1] == 'html':
@@ -606,7 +620,7 @@ class Spectra(object):
         :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
         :param input_file_names: list of NMR-STAR files : default: None
         :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
-        :param legend: legend based on residue name or data set id; values: None, residue, datase ; default None
+        :param legend: legend based on residue name or data set id; values: None, residue, dataset ; default None
         :param draw_trace: Connect matching residues by list
         :param peak_list: optionally peak list as csv file cam be provided
         :param output_format: html,jpg,png,pdf,wabp,None; default None opens figure in default web browser
@@ -614,15 +628,16 @@ class Spectra(object):
         :param output_image_width: output image width; default 800
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
-        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
+        cs_track is a dictionary { matching atoms:[cs_values]}
         """
         peak_list_2d = cls.create_tocsy_peaklist(bmrb_ids,
                                                  input_file_names=input_file_names,
                                                  auth_tag=auth_tag,
                                                  draw_trace=draw_trace)
+        x1 = []
+        y1 = []
         if peak_list is not None:
-            x1 = []
-            y1 = []
             with open(peak_list) as csvfile:
                 spamreader = csv.reader(csvfile, delimiter=',')
                 for row in spamreader:
@@ -686,7 +701,10 @@ class Spectra(object):
                 fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-        if show_visualization: fig.show()
+        else:
+            raise ValueError('legend type not supported')
+        if show_visualization:
+            fig.show()
         if output_file is not None:
             if output_format == 'html':
                 if output_file.split(".")[-1] == 'html':
@@ -752,15 +770,16 @@ class Spectra(object):
         :param output_image_width: output image width; default 800
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
-        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
+        :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
+        cs_track is a dictionary { matching atoms:[cs_values]}
         """
         peak_list_2d = cls.create_2d_peaklist(bmrb_ids, atom_x=atom_x, atom_y=atom_y,
                                               input_file_names=input_file_names,
                                               auth_tag=auth_tag,
                                               draw_trace=draw_trace)
+        x1 = []
+        y1 = []
         if peak_list is not None:
-            x1 = []
-            y1 = []
             with open(peak_list) as csvfile:
                 spamreader = csv.reader(csvfile, delimiter=',')
                 for row in spamreader:
@@ -824,7 +843,10 @@ class Spectra(object):
                 fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
             fig.update_xaxes(autorange="reversed")
             fig.update_yaxes(autorange="reversed")
-        if show_visualization: fig.show()
+        else:
+            raise ValueError('legend type not supported')
+        if show_visualization:
+            fig.show()
         if output_file is not None:
             if output_format == 'html':
                 if output_file.split(".")[-1] == 'html':

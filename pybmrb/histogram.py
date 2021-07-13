@@ -22,11 +22,12 @@ class Histogram(object):
              show_visualization=True
              ):
         """
-        plots histogram for a given list of atoms and residues with some filters. One of either residue or atom or list of atoms is required
+        plots histogram for a given list of atoms and residues with some filters. One of either residue or atom or list
+        of atoms is required
 
         :param residue:  residue name in IUPAC format; '*' for all standard residues: default None
         :param atom:  atom name in IUPAC format; '*' for all standard atoms; default None
-        :param list_of_atoms: list of atoms in IUPAC actom; example '['ALA-CA','CYS-CB']'; default None
+        :param list_of_atoms: list of atoms in IUPAC atom; example '['ALA-CA','CYS-CB']'; default None
         :param filtered: Filters values beyond (sd_limt)*(standard deviation) on both sides of the mean; default:True
         :param sd_limit: scaling factor used to filter data based on standard deviation; default 10
         :param ambiguity: ambiguity filter; default '*' => no filter
@@ -35,10 +36,11 @@ class Histogram(object):
         :param t_min: Temperature filter (min); default None
         :param histnorm: histnorm for the distribution 'probability','percent','probability density')
         :param t_max: Temperature filter (max); default None
-        :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
+        :param standard_amino_acids: get data only form standard amino acids and nucleic acids; default:True
         :param plot_type: plot type; supported types 'histogram','box','violin' ; default histogram
         :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
-        :param output_file: output file name; if provided, the output will be written in a file , otherwise opens is a web browser; default ;None
+        :param output_file: output file name; if provided, the output will be written in a file ,
+        otherwise opens in a web browser; default ;None
         :param output_image_width: output image width to write in a file; default:800
         :param output_image_height: output image height to write in a file; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
@@ -97,7 +99,8 @@ class Histogram(object):
         else:
             logging.error('Plot type not supported : {}'.format(plot_type))
             raise TypeError('Plot type not supported : {}'.format(plot_type))
-        if show_visualization: fig.show()
+        if show_visualization:
+            fig.show()
         if output_file is not None:
             if output_format == 'html':
                 if output_file.split(".")[-1] == 'html':
@@ -154,7 +157,7 @@ class Histogram(object):
         :param residue: residue name in IUPAC format
         :param atom1: atom name in IUPAC format
         :param atom2: atom name in IUPAC format
-        :param filtered: Filters values beyond (sd_limt)*(standard deviation) on both sides of the mean; default:True
+        :param filtered: Filters values beyond (sd_limit)*(standard deviation) on both sides of the mean; default:True
         :param sd_limit: scaling factor used to filter data based on standard deviation; default 10
         :param ambiguity1: ambiguity filter; default '*' => no filter
         :param ambiguity2: ambiguity filter; default '*' => no filter
@@ -165,7 +168,8 @@ class Histogram(object):
         :param histnorm: histnorm for the distribution 'probability','percent','probability density')
         :param plot_type: plot type; support types 'heatmap','contour'
         :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
-        :param output_file: output file name; if provided, the output will be written in a file , otherwise opens is a web browser; default ;None
+        :param output_file: output file name; if provided, the output will be written in a file ,
+        otherwise opens in a web browser; default ;None
         :param output_image_width: output image width to write in a file; default:800
         :param output_image_height: output image height to write in a file; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
@@ -209,7 +213,8 @@ class Histogram(object):
         else:
             logging.error('Plot type not supported : {}'.format(plot_type))
             raise TypeError('Plot type not supported : {}'.format(plot_type))
-        if show_visualization: fig.show()
+        if show_visualization:
+            fig.show()
         if output_file is not None:
             if output_format == 'html':
                 if output_file.split(".")[-1] == 'html':
@@ -273,10 +278,11 @@ class Histogram(object):
         :param t_min: Temperature filter (min); default None
         :param t_max: Temperature filter (max); default None
         :param histnorm: histnorm for the distribution 'probability','percent','probability density')
-        :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
+        :param standard_amino_acids: get data only form standard amino acids and nucleic acids; default:True
         :param plot_type: plot type; support types 'heatmap','contour'
         :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
-        :param output_file: output file name; if provided, the output will be written in a file , otherwise opens is a web browser; default ;None
+        :param output_file: output file name; if provided, the output will be written in a file ,
+        otherwise opens in a web browser; default ;None
         :param output_image_width: output image width to write in a file; default:800
         :param output_image_height: output image height to write in a file; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
@@ -347,7 +353,8 @@ class Histogram(object):
             logging.error('Plot type not supported : {}'.format(plot_type))
             raise TypeError('Plot type not supported : {}'.format(plot_type))
         fig.update_layout(barmode='overlay')
-        if show_visualization: fig.show()
+        if show_visualization:
+            fig.show()
         if output_file is not None:
             if output_format == 'html':
                 if output_file.split(".")[-1] == 'html':

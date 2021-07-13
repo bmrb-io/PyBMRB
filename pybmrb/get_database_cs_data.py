@@ -66,7 +66,7 @@ class ChemicalShiftStatistics(object):
         :param ph_max: PH filter (max); default None
         :param t_min: Temperature filter (min); default None
         :param t_max: Temperature filter (max); default None
-        :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
+        :param standard_amino_acids: get data only form standard amino acids and nucleic acids; default:True
         :return: column names and data as tuple (columns,data)
         """
         standard = ['ILE', 'GLN', 'GLY', 'GLU', 'CYS',
@@ -124,7 +124,7 @@ class ChemicalShiftStatistics(object):
         :param ph_max: PH filter (max); default None
         :param t_min: Temperature filter (min); default None
         :param t_max: Temperature filter (max); default None
-        :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
+        :param standard_amino_acids: get data only form standard amino acids and nucleic acids; default:True
         :return: column names and data as tuple (columns,data)
         """
         if residue is None and atom is None and list_of_atoms is None:
@@ -299,7 +299,8 @@ class ChemicalShiftStatistics(object):
 
         :param columns: Column headers
         :param data: data as list of lists
-        :return: chemical shift dictionary; { entry_id-entity_id-seq_id-residue-chemical_shift_list_id:{atom:(chemical shift, ambiguity code}}
+        :return: chemical shift dictionary; { entry_id-entity_id-seq_id-residue-chemical_shift_list_id:
+        {atom:(chemical shift, ambiguity code}}
         """
         # entity_index = columns.index('Atom_chem_shift.Entity_ID')
         entity_assembly_index = columns.index('Atom_chem_shift.Entity_assembly_ID')
@@ -340,7 +341,7 @@ class ChemicalShiftStatistics(object):
 
         :param residue: residue name in IUPAC format
         :param atom1: atom name in IUPAC format
-        :param atom2: atom name in IPUPAC format
+        :param atom2: atom name in IUPAC format
         :param filtered: Filters values beyond (sd_limt)*(standard deviation) on both sides of the mean; default:True
         :param sd_limit: scaling factor used to filter data based on standard deviation; default 10
         :param ambiguity1: ambiguity filter; default '*' (no filter)
@@ -404,7 +405,7 @@ class ChemicalShiftStatistics(object):
         :param ph_max: PH cs_filt (max); default None
         :param t_min: Temperature cs_filt (min); default None
         :param t_max: Temperature cs_filt (max); default None
-        :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
+        :param standard_amino_acids: get data only form  standard amino acids and nucleic acids; default:True
         :return: chemical shift values as list
         """
         cs_data = cls.get_data_from_bmrb(residue=residue, ph_min=ph_min, ph_max=ph_max,
@@ -441,19 +442,19 @@ class ChemicalShiftStatistics(object):
     def get_statistics(cls, residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
                        ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True, verbose=False):
         """
-        Provides chemical shift statistics like Mean, Median, Standard deviation for a given residue / atom /list of atoms
+        Provides chemical shift statistics like Mean, Median, Standard deviation for a given residue/atom/list of atoms
 
         :param residue: Single residue name or list of residue names  in IUPAC format
         :param atom: Single atom name or list of atom names in IUPAC format
         :param list_of_atoms: list of atoms; example ['ALA-CB','CYS-N','TYR-CB']
-        :param filtered: Filters values beyond (sd_limt)*(standard deviation) on both sides of the mean; default:True
+        :param filtered: Filters values beyond (sd_limit)*(standard deviation) on both sides of the mean; default:True
         :param sd_limit: scaling factor used to filter data based on standard deviation; default 10
         :param ambiguity: ambiguity filter; default '*' => no filter
         :param ph_min: PH filter (min);default None
         :param ph_max: PH filter (max); default None
         :param t_min: Temperature filter (min); default None
         :param t_max: Temperature filter (max); default None
-        :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
+        :param standard_amino_acids: get data only form standard amino acids and nucleic acids; default:True
         :param verbose: display the statistics on screen; default False
         :return: chemical shift statistics as a dictionary
         """
@@ -483,9 +484,9 @@ class ChemicalShiftStatistics(object):
             at = atm.split("-")[1]
             x = [i[cs_index] for i in data if i[res_index] == res and i[atm_index] == at]
             cs_stat[atm]['cs'] = x
-            cs_stat[atm]['mean'] = round(numpy.mean(x), 3)
-            cs_stat[atm]['median'] = round(numpy.median(x), 3)
-            cs_stat[atm]['std'] = round(numpy.std(x), 3)
+            cs_stat[atm]['mean'] = round(float(numpy.mean(x)), 3)
+            cs_stat[atm]['median'] = round(float(numpy.median(x)), 3)
+            cs_stat[atm]['std'] = round(float(numpy.std(x)), 3)
             cs_stat[atm]['min'] = min(x)
             cs_stat[atm]['max'] = max(x)
             cs_stat[atm]['count'] = len(x)

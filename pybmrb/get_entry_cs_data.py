@@ -98,17 +98,7 @@ class ChemicalShift(object):
                 if os.path.exists(file_name):
                     entry_data = pynmrstar.Entry.from_file(file_name)
                     data_set_id = os.path.splitext(os.path.basename(file_name))[0]
-                    if data_set_id is not None and type(data_set_id) is list:
-                        if len(input_file_names) != len(data_set_id):
-                            raise ValueError("list of input file names and data set ids didn't match {} input files; "
-                                             "{} data set ids ".format(len(input_file_names), len(data_set_id)))
-                        else:
-                            cs_data = cls._from_pynmrstar_entry_object(entry_data,
-                                                                       data_set_id[input_file_names.index(file_name)],
-                                                                       auth_tag)
-                    else:
-                        cs_data = cls._from_pynmrstar_entry_object(entry_data, data_set_id, auth_tag)
-                    # cs_data = cls._from_pynmrstar_entry_object(entry_data, data_set_id, auth_tag)
+                    cs_data = cls._from_pynmrstar_entry_object(entry_data, data_set_id, auth_tag)
                 else:
                     logging.error('File not found {}'.format(file_name))
                     raise IOError('File not found : {}'.format(file_name))
@@ -144,8 +134,6 @@ class ChemicalShift(object):
                     entry_data = None
                 except KeyError:
                     entry_data = None
-                except IOError:
-                    entry_data = None
                 if entry_data is not None:
                     cs_data = cls._from_pynmrstar_entry_object(entry_data, bmrb_id, auth_tag)
                 else:
@@ -154,14 +142,13 @@ class ChemicalShift(object):
                     raise IOError('Entry not found in public database: {}'.format(bmrb_id))
                 all_cs_data.update(cs_data)
         else:
+
             try:
                 logging.debug('Getting entry {} from BMRB'.format(bmrb_ids))
                 entry_data = pynmrstar.Entry.from_database(bmrb_ids)
             except OSError:
                 entry_data = None
             except KeyError:
-                entry_data = None
-            except IOError:
                 entry_data = None
             if entry_data is not None:
                 all_cs_data = cls._from_pynmrstar_entry_object(entry_data, bmrb_ids, auth_tag)
