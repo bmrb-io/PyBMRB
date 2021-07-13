@@ -8,14 +8,14 @@ import plotly.express as px
 
 
 class Spectra(object):
-    '''
+    """
     Converts one dimensional chemical shift list into multidimensional peak list and generates interactive plots
-    '''
+    """
 
     @classmethod
-    def create_c13hsqc_peaklist(self, bmrb_ids, input_file_names=None, auth_tag=False,
+    def create_c13hsqc_peaklist(cls, bmrb_ids, input_file_names=None, auth_tag=False,
                                 draw_trace=False):
-        '''
+        """
         Converts one dimensional chemical shifts from list of BMRB entries into CHSQC peak list
 
         :param bmrb_ids: BMRB entry ID or list of entry ids
@@ -23,7 +23,7 @@ class Spectra(object):
         :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
-        '''
+        """
         ch_atoms = {'ALA': [('HA', 'CA'), ('HB*', 'CB')],
                     'ARG': [('HA', 'CA'), ('HB*', 'CB'), ('HG*', 'CG'), ('HD*', 'CD')],
                     'ASN': [('HA', 'CA'), ('HB*', 'CB')],
@@ -96,7 +96,7 @@ class Spectra(object):
         return x, y, data_set, info, res, cs_track
 
     @classmethod
-    def create_tocsy_peaklist(self, bmrb_ids, input_file_names=None, auth_tag=False,
+    def create_tocsy_peaklist(cls, bmrb_ids, input_file_names=None, auth_tag=False,
                               draw_trace=False):
         """
         Converts one dimensional chemical shifts from list of BMRB entries into TOCSY peak list
@@ -155,7 +155,7 @@ class Spectra(object):
         return x, y, data_set, info, res, cs_track
 
     @classmethod
-    def create_2d_peaklist(self, bmrb_ids, atom_x, atom_y, input_file_names=None, auth_tag=False,
+    def create_2d_peaklist(cls, bmrb_ids, atom_x, atom_y, input_file_names=None, auth_tag=False,
                            draw_trace=False):
         """
          Converts one dimensional chemical shifts from list of BMRB entries into generic 2D peak list
@@ -216,9 +216,9 @@ class Spectra(object):
         return x, y, data_set, info, res, cs_track
 
     @classmethod
-    def create_n15hsqc_peaklist(self, bmrb_ids, input_file_names=None, auth_tag=False, draw_trace=False,
+    def create_n15hsqc_peaklist(cls, bmrb_ids, input_file_names=None, auth_tag=False, draw_trace=False,
                                 include_sidechain=True):
-        '''
+        """
         Converts one dimensional chemical shifts from list of BMRB entries into NHSQC peak list
 
         :param bmrb_ids: BMRB entry ID or list of entry ids
@@ -227,7 +227,7 @@ class Spectra(object):
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
         :param include_sidechain: include side chain NHs ; default: True
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
-        '''
+        """
         atom_x = 'H'
         atom_y = 'N'
         sidechain_nh_atoms = {'ARG': {
@@ -319,7 +319,7 @@ class Spectra(object):
         return x, y, data_set, info, res, cs_track
 
     @classmethod
-    def n15hsqc(self, bmrb_ids=None, input_file_names=None, auth_tag=False, legend=None, draw_trace=False,
+    def n15hsqc(cls, bmrb_ids=None, input_file_names=None, auth_tag=False, legend=None, draw_trace=False,
                 include_sidechain=True,
                 peak_list=None,
                 output_format='html',
@@ -327,7 +327,7 @@ class Spectra(object):
                 output_image_width=800,
                 output_image_height=600,
                 show_visualization=True):
-        '''
+        """
         Plots NHSQC spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
         :param bmrb_ids: list of BMRB IDs or single BMRB ID default None
@@ -343,7 +343,7 @@ class Spectra(object):
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
-        '''
+        """
         if peak_list is not None:
             x1 = []
             y1 = []
@@ -352,13 +352,11 @@ class Spectra(object):
                 for row in spamreader:
                     x1.append(float(row[0]))
                     y1.append(float(row[1]))
-        atom_x = 'H'
-        atom_y = 'N'
-        peak_list_2d = self.create_n15hsqc_peaklist(bmrb_ids,
-                                                    input_file_names=input_file_names,
-                                                    auth_tag=auth_tag,
-                                                    draw_trace=draw_trace,
-                                                    include_sidechain=include_sidechain)
+        peak_list_2d = cls.create_n15hsqc_peaklist(bmrb_ids,
+                                                   input_file_names=input_file_names,
+                                                   auth_tag=auth_tag,
+                                                   draw_trace=draw_trace,
+                                                   include_sidechain=include_sidechain)
         x = peak_list_2d[0]
         y = peak_list_2d[1]
         data_set = peak_list_2d[2]
@@ -455,18 +453,18 @@ class Spectra(object):
                     fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
                     logging.info('Successfully written {}.wepb'.format(output_file))
             else:
-                logging.ERROR('Output file format nor support:{}'.format(output_format))
+                logging.error('Output file format not support:{}'.format(output_format))
         return x, y, data_set, info, res, cs_track
 
     @classmethod
-    def c13hsqc(self, bmrb_ids, input_file_names=None, auth_tag=False, legend=None, draw_trace=False,
+    def c13hsqc(cls, bmrb_ids, input_file_names=None, auth_tag=False, legend=None, draw_trace=False,
                 peak_list=None,
                 output_format=None,
                 output_file=None,
                 output_image_width=800,
                 output_image_height=600,
                 show_visualization=True):
-        '''
+        """
         Plots CHSQC spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
         :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
@@ -481,11 +479,11 @@ class Spectra(object):
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
-        '''
-        peak_list_2d = self.create_c13hsqc_peaklist(bmrb_ids,
-                                                    input_file_names=input_file_names,
-                                                    auth_tag=auth_tag,
-                                                    draw_trace=draw_trace)
+        """
+        peak_list_2d = cls.create_c13hsqc_peaklist(bmrb_ids,
+                                                   input_file_names=input_file_names,
+                                                   auth_tag=auth_tag,
+                                                   draw_trace=draw_trace)
         if peak_list is not None:
             x1 = []
             y1 = []
@@ -591,18 +589,18 @@ class Spectra(object):
                     fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
                     logging.info('Successfully written {}.wepb'.format(output_file))
             else:
-                logging.ERROR('Output file format nor support:{}'.format(output_format))
+                logging.error('Output file format not support:{}'.format(output_format))
         return x, y, data_set, info, res, cs_track
 
     @classmethod
-    def tocsy(self, bmrb_ids, input_file_names=None, auth_tag=False, legend=None, draw_trace=False,
+    def tocsy(cls, bmrb_ids, input_file_names=None, auth_tag=False, legend=None, draw_trace=False,
               peak_list=None,
               output_format=None,
               output_file=None,
               output_image_width=800,
               output_image_height=600,
               show_visualization=True):
-        '''
+        """
         Plots TOCSY spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
         :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
@@ -617,11 +615,11 @@ class Spectra(object):
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
-        '''
-        peak_list_2d = self.create_tocsy_peaklist(bmrb_ids,
-                                                  input_file_names=input_file_names,
-                                                  auth_tag=auth_tag,
-                                                  draw_trace=draw_trace)
+        """
+        peak_list_2d = cls.create_tocsy_peaklist(bmrb_ids,
+                                                 input_file_names=input_file_names,
+                                                 auth_tag=auth_tag,
+                                                 draw_trace=draw_trace)
         if peak_list is not None:
             x1 = []
             y1 = []
@@ -637,7 +635,7 @@ class Spectra(object):
         res = peak_list_2d[4]
         cs_track = peak_list_2d[5]
         if len(x) == 0 or len(y) == 0:
-            logging.error('Resuired chemical shifts not found')
+            logging.error('Required chemical shifts not found')
             raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
@@ -726,11 +724,11 @@ class Spectra(object):
                     fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
                     logging.info('Successfully written {}.wepb'.format(output_file))
             else:
-                logging.ERROR('Output file format nor support:{}'.format(output_format))
+                logging.error('Output file format not support:{}'.format(output_format))
         return x, y, data_set, info, res, cs_track
 
     @classmethod
-    def generic_2d(self, bmrb_ids, input_file_names=None, atom_x='H', atom_y='N', auth_tag=False, legend=None,
+    def generic_2d(cls, bmrb_ids, input_file_names=None, atom_x='H', atom_y='N', auth_tag=False, legend=None,
                    draw_trace=False,
                    peak_list=None,
                    output_format=None,
@@ -738,7 +736,7 @@ class Spectra(object):
                    output_image_width=800,
                    output_image_height=600,
                    show_visualization=True):
-        '''
+        """
         Plots generic 2D spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
         :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
@@ -748,7 +746,6 @@ class Spectra(object):
         :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
         :param legend: legend based on residue name or data set id; values: None, residue, datase ; default None
         :param draw_trace: Connect matching residues by list
-        :param include_sidechain: include side-chain NH peaks
         :param peak_list: optionally peak list as csv file cam be provided
         :param output_format: html,jpg,png,pdf,wabp,None; default None opens figure in default web browser
         :param output_file: output file name default None
@@ -756,11 +753,11 @@ class Spectra(object):
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);cs_track is a dictionary { matching atoms:[cs_values]}
-        '''
-        peak_list_2d = self.create_2d_peaklist(bmrb_ids, atom_x=atom_x, atom_y=atom_y,
-                                               input_file_names=input_file_names,
-                                               auth_tag=auth_tag,
-                                               draw_trace=draw_trace)
+        """
+        peak_list_2d = cls.create_2d_peaklist(bmrb_ids, atom_x=atom_x, atom_y=atom_y,
+                                              input_file_names=input_file_names,
+                                              auth_tag=auth_tag,
+                                              draw_trace=draw_trace)
         if peak_list is not None:
             x1 = []
             y1 = []
@@ -776,7 +773,7 @@ class Spectra(object):
         res = peak_list_2d[4]
         cs_track = peak_list_2d[5]
         if len(x) == 0 or len(y) == 0:
-            logging.error('Resuired chemical shifts not found')
+            logging.error('Required chemical shifts not found')
             raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
@@ -865,7 +862,7 @@ class Spectra(object):
                     fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
                     logging.info('Successfully written {}.wepb'.format(output_file))
             else:
-                logging.ERROR('Output file format nor support:{}'.format(output_format))
+                logging.error('Output file format not support:{}'.format(output_format))
         return x, y, data_set, info, res, cs_track
 
 # if __name__ == "__main__":

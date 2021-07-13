@@ -252,9 +252,9 @@ Single distribution
 
     `Click here for interactive html for CYS-CB histogram <../_static/cys_cb_hist.html>`_
 
-- Example 16: Chemical shift distribution of CYS-CB with standard deviation filter
+- Example 16: Chemical shift distribution of CYS-CB with standard deviation cs_filt
 
-You may exclude extreme values by using the filter based on standard deviation. sd_limit=5 would  exclude
+You may exclude extreme values by using the cs_filt based on standard deviation. sd_limit=5 would  exclude
 the values beyond 5 times standard deviation on moth sides of the mean
 
 .. code:: python
@@ -267,9 +267,9 @@ the values beyond 5 times standard deviation on moth sides of the mean
 
     `Click here for interactive html for CYS-CB histogram with in 5 std on both sides of the mean <../_static/cys_cb_hist_sd5.html>`_
 
-- Example 17: Chemical shift distribution of CYS-CB with Ph filter
+- Example 17: Chemical shift distribution of CYS-CB with Ph cs_filt
 
-You may use experimental conditions like  Ph or temperature values as a filter
+You may use experimental conditions like  Ph or temperature values as a cs_filt
 
 .. code:: python
 
@@ -280,7 +280,7 @@ You may use experimental conditions like  Ph or temperature values as a filter
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for CYS-CB histogram with Ph filter <../_static/cys_cb_hist_ph.html>`_
+    `Click here for interactive html for CYS-CB histogram with Ph cs_filt <../_static/cys_cb_hist_ph.html>`_
 
 - Example 18: Chemical shift distribution of CYS-CB as box plot
 
@@ -441,7 +441,7 @@ Conditional histogram
 
 - Example 27: Conditional histogram with chemical shift filtering
 
-You may filter the chemical shift distribution of an atom in a residue based on the chemical shift values of one or
+You may cs_filt the chemical shift distribution of an atom in a residue based on the chemical shift values of one or
 more atom in the same residue. In the following example CYS-CB values are filtered based on CYS-H=8.9. During the seach
 0.1ppm tolerance for protons and 2.0 ppm tolerance for heavy atoms is used.
 

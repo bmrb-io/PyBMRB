@@ -17,22 +17,22 @@ one_letter_code = dict([(value, key) for key, value in three_letter_code.items()
 
 
 class ChemicalShiftStatistics(object):
-    '''
+    """
     Fetches chemical shift data from BMRB using BMRB-API
-    '''
+    """
 
     def __init__(self):
         pass
 
     @staticmethod
     def _get_data_from_api(residue, atom):
-        '''
+        """
         Dumps the BMRB-API return for given residue and atom. Not intend to call directly
 
         :param residue: Residue name in IUPAC format
         :param atom: Atom name in IUPAC format
         :return: API dump
-        '''
+        """
         # logging.info('Fetching chemical shift data for {}-{}'.format(residue,atom))
         if residue == "*" and atom == "*":
             logging.error("Getting full database will overload the memory! Please chose a residue or atom.")
@@ -53,8 +53,9 @@ class ChemicalShiftStatistics(object):
     @classmethod
     def get_data(cls, residue, atom, filtered=True, sd_limit=10, ambiguity='*',
                  ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True):
-        '''
-        Fetches the data from BMRB-API for given residue and atom and filters based of the values provided in the parameters
+        """
+        Fetches the data from BMRB-API for given residue and atom and filters based of the values provided in the
+        parameters
 
         :param residue: Residue name in IPUPAC format; use '*' for any residue
         :param atom: Atom name in IUPAC format; Wild card supported '*' for any atom
@@ -67,7 +68,7 @@ class ChemicalShiftStatistics(object):
         :param t_max: Temperature filter (max); default None
         :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
         :return: column names and data as tuple (columns,data)
-        '''
+        """
         standard = ['ILE', 'GLN', 'GLY', 'GLU', 'CYS',
                     'ASP', 'SER', 'LYS', 'PRO', 'ASN',
                     'VAL', 'THR', 'HIS', 'TRP', 'PHE',
@@ -79,7 +80,7 @@ class ChemicalShiftStatistics(object):
         ph_index = columns.index('Sample_conditions.pH')
         temp_index = columns.index('Sample_conditions.Temperature_K')
         res_index = columns.index('Atom_chem_shift.Comp_ID')
-        atm_index = columns.index('Atom_chem_shift.Atom_ID')
+        # atm_index = columns.index('Atom_chem_shift.Atom_ID')
         amb_index = columns.index('Atom_chem_shift.Ambiguity_code')
         data = api_data['data']
         if len(data):
@@ -109,7 +110,7 @@ class ChemicalShiftStatistics(object):
     @classmethod
     def get_data_from_bmrb(cls, residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
                            ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True):
-        '''
+        """
         Fetches the data from BMRB-API for given residue/list of residues (and/or)  atom/list of atoms and
          filters based of the values provided in the parameters
 
@@ -125,7 +126,7 @@ class ChemicalShiftStatistics(object):
         :param t_max: Temperature filter (max); default None
         :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
         :return: column names and data as tuple (columns,data)
-        '''
+        """
         if residue is None and atom is None and list_of_atoms is None:
             logging.error('Please provide residue name or atom name or list of atoms as a list ')
             raise TypeError(
@@ -293,14 +294,14 @@ class ChemicalShiftStatistics(object):
 
     @staticmethod
     def _list_to_dict(columns, data):
-        '''
+        """
         Converts the outputs from get_data_from_bmrb into a dictionary. Not intend to call directly
 
         :param columns: Column headers
         :param data: data as list of lists
         :return: chemical shift dictionary; { entry_id-entity_id-seq_id-residue-chemical_shift_list_id:{atom:(chemical shift, ambiguity code}}
-        '''
-        entity_index = columns.index('Atom_chem_shift.Entity_ID')
+        """
+        # entity_index = columns.index('Atom_chem_shift.Entity_ID')
         entity_assembly_index = columns.index('Atom_chem_shift.Entity_assembly_ID')
         entry_index = columns.index('Atom_chem_shift.Entry_ID')
         cs_index = columns.index('Atom_chem_shift.Val')
@@ -312,7 +313,7 @@ class ChemicalShiftStatistics(object):
         cs_dict = {}
         for dat in data:
             entry_id = dat[entry_index]
-            entity_id = dat[entity_index]
+            # entity_id = dat[entity_index]
             entity_assembly_id = dat[entity_assembly_index]
             res = dat[res_index]
             seq = dat[seq_index]
@@ -333,7 +334,7 @@ class ChemicalShiftStatistics(object):
     def get_2d_chemical_shifts(cls, residue, atom1, atom2, filtered=True, sd_limit=10,
                                ambiguity1='*', ambiguity2='*',
                                ph_min=None, ph_max=None, t_min=None, t_max=None):
-        '''
+        """
         Fetches chemical shift data for a given residue and combines the desired two atoms chemical shift value from the
         same residue as two dimensional list
 
@@ -349,7 +350,7 @@ class ChemicalShiftStatistics(object):
         :param t_min: Temperature filter (min); default None
         :param t_max: Temperature filter (max); default None
         :return: tuple of lists (atom1_cs,atom2_cs as list)
-        '''
+        """
         x = []
         y = []
         cs_data = cls.get_data_from_bmrb(residue=residue, ph_min=ph_min, ph_max=ph_max,
@@ -393,41 +394,42 @@ class ChemicalShiftStatistics(object):
     @classmethod
     def get_filtered_data_from_bmrb(cls, residue, atom, filtering_rules,
                                     ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True):
-        '''
+        """
         Fetches the chemical shift data for a given residue and filters them using filtering rules
 
         :param residue: residue name in IUPAC format; example 'CYS'
         :param atom: atom name in IUPAC format; example 'CB'
         :param filtering_rules: list of atoms and chemical shift values as tuples; example[('CA',64.5),('H',7.8)]
-        :param ph_min: PH filter (min);default None
-        :param ph_max: PH filter (max); default None
-        :param t_min: Temperature filter (min); default None
-        :param t_max: Temperature filter (max); default None
+        :param ph_min: PH cs_filt (min);default None
+        :param ph_max: PH cs_filt (max); default None
+        :param t_min: Temperature cs_filt (min); default None
+        :param t_max: Temperature cs_filt (max); default None
         :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
         :return: chemical shift values as list
-        '''
+        """
         cs_data = cls.get_data_from_bmrb(residue=residue, ph_min=ph_min, ph_max=ph_max,
                                          t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
 
-        def filter(cs_dict, atm, cs_val):
-            if 'H' in atm:
+        def cs_filt(cs_dict2, atm2, cs_val):
+            cs_width = 0.5
+            if 'H' in atm2:
                 cs_width = 0.1
-            if 'C' in atm:
+            if 'C' in atm2:
                 cs_width = 2.0
-            if 'N' in atm:
+            if 'N' in atm2:
                 cs_width = 2.0
             out_cs_dict = {}
-            for key in cs_dict.keys():
+            for key2 in cs_dict2.keys():
                 try:
-                    if cs_val - cs_width <= cs_dict[key][atm][0] <= cs_val + cs_width:
-                        out_cs_dict[key] = cs_dict[key]
+                    if cs_val - cs_width <= cs_dict2[key2][atm2][0] <= cs_val + cs_width:
+                        out_cs_dict[key2] = cs_dict2[key2]
                 except KeyError:
                     pass
             return out_cs_dict
 
         cs_dict = cls._list_to_dict(cs_data[0], cs_data[1])
         for rule in filtering_rules:
-            cs_dict = filter(cs_dict, rule[0], rule[1])
+            cs_dict = cs_filt(cs_dict, rule[0], rule[1])
         x = []
         for key in cs_dict.keys():
             for atm in cs_dict[key].keys():
@@ -438,7 +440,7 @@ class ChemicalShiftStatistics(object):
     @classmethod
     def get_statistics(cls, residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
                        ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True, verbose=False):
-        '''
+        """
         Provides chemical shift statistics like Mean, Median, Standard deviation for a given residue / atom /list of atoms
 
         :param residue: Single residue name or list of residue names  in IUPAC format
@@ -453,12 +455,12 @@ class ChemicalShiftStatistics(object):
         :param t_max: Temperature filter (max); default None
         :param standard_amino_acids: get data only form 20 natural amino acids,4 standard DNA and 4 standard RNA; default:True
         :param verbose: display the statistics on screen; default False
-        :return: chemcial shift statistics as a dictionary
-        '''
+        :return: chemical shift statistics as a dictionary
+        """
         if residue is None and atom is None and list_of_atoms is None:
             logging.error('Please provide residue name or atom name or list of atoms as a list ')
             raise TypeError(
-                'Please provide at leaset one of the three positional arguments: residue (or) atom (or) list_of_atoms')
+                'Please provide at least one of the three positional arguments: residue (or) atom (or) list_of_atoms')
         columns, data = cls.get_data_from_bmrb(residue=residue,
                                                atom=atom,
                                                list_of_atoms=list_of_atoms,

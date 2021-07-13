@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import pytest
 import pynmrstar
 from pybmrb.get_entry_cs_data import ChemicalShift
 import os
@@ -9,13 +8,10 @@ import ntpath
 (script_path, script_name) = ntpath.split(os.path.realpath(__file__))
 
 
-
-
-
 def test__from_pynmrstar_entry_object():
-    entry_obj1=pynmrstar.Entry.from_file('{}/test_data/MyData.str'.format(script_path))
-    entry_obj2=pynmrstar.Entry.from_database('19798')
-    entry_obj3=pynmrstar.Entry.from_database('18857')
+    entry_obj1 = pynmrstar.Entry.from_file('{}/test_data/MyData.str'.format(script_path))
+    entry_obj2 = pynmrstar.Entry.from_database('19798')
+    entry_obj3 = pynmrstar.Entry.from_database('18857')
     assert len(ChemicalShift._from_pynmrstar_entry_object(entry_obj1, data_set_id='MyData')) == 1
     assert type(ChemicalShift._from_pynmrstar_entry_object(entry_obj1, data_set_id='MyData')) is dict
     assert len(ChemicalShift._from_pynmrstar_entry_object(entry_obj2, data_set_id='19798')) == 1
