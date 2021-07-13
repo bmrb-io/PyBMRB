@@ -76,8 +76,8 @@ class Histogram(object):
         if plot_type=='histogram':
             fig = px.histogram(x,color=tag,histnorm=histnorm,
                                labels={"color": "Atom",
-                                         "value": 'Chemical shift (ppm)',
-                                         "count": 'Count'},opacity=0.5)
+                                         "value": 'Chemical shift (ppm)'
+                                         },opacity=0.5).update_layout(yaxis_title ='Count')
             fig.update_xaxes(autorange="reversed")
             fig.update_layout(barmode='overlay')
         elif plot_type=='box':
@@ -100,20 +100,40 @@ class Histogram(object):
         if show_visualization: fig.show()
         if output_file is not None:
             if output_format == 'html':
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Sucessfully written {}.html'.format(output_file))
+                if output_file.split(".")[-1] == 'html':
+                    fig.write_html('{}'.format(output_file))
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_html('{}.html'.format(output_file))
+                    logging.info('Successfully written {}.html'.format(output_file))
             elif output_format == 'jpg':
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.jpg'.format(output_file))
+                if output_file.split(".")[-1] == 'jpg':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.jpg'.format(output_file))
             elif output_format == 'png':
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.png'.format(output_file))
+                if output_file.split(".")[-1] == 'png':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.png'.format(output_file))
             elif output_format == 'pdf':
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.pdf'.format(output_file))
+                if output_file.split(".")[-1] == 'pdf':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.pdf'.format(output_file))
             elif output_format == 'webp':
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.wepb'.format(output_file))
+                if output_file.split(".")[-1] == 'webp':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.wepb'.format(output_file))
             else:
                 logging.ERROR('Output file format nor support:{}'.format(output_format))
         return x,tag
@@ -192,20 +212,40 @@ class Histogram(object):
         if show_visualization: fig.show()
         if output_file is not None:
             if output_format == 'html':
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Sucessfully written {}.html'.format(output_file))
+                if output_file.split(".")[-1] == 'html':
+                    fig.write_html('{}'.format(output_file))
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_html('{}.html'.format(output_file))
+                    logging.info('Successfully written {}.html'.format(output_file))
             elif output_format == 'jpg':
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.jpg'.format(output_file))
+                if output_file.split(".")[-1] == 'jpg':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.jpg'.format(output_file))
             elif output_format == 'png':
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.png'.format(output_file))
+                if output_file.split(".")[-1] == 'png':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.png'.format(output_file))
             elif output_format == 'pdf':
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.pdf'.format(output_file))
+                if output_file.split(".")[-1] == 'pdf':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.pdf'.format(output_file))
             elif output_format == 'webp':
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.wepb'.format(output_file))
+                if output_file.split(".")[-1] == 'webp':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.wepb'.format(output_file))
             else:
                 logging.ERROR('Output file format nor support:{}'.format(output_format))
         return x,y
@@ -307,36 +347,60 @@ class Histogram(object):
             logging.error('Plot type not supported : {}'.format(plot_type))
             raise TypeError('Plot type not supported : {}'.format(plot_type))
         fig.update_layout(barmode='overlay')
-        if show_visualization: fig.show()
         if output_file is not None:
             if output_format == 'html':
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Sucessfully written {}.html'.format(output_file))
+                if output_file.split(".")[-1] == 'html':
+                    fig.write_html('{}'.format(output_file))
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_html('{}.html'.format(output_file))
+                    logging.info('Successfully written {}.html'.format(output_file))
             elif output_format == 'jpg':
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.jpg'.format(output_file))
+                if output_file.split(".")[-1] == 'jpg':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.jpg'.format(output_file))
             elif output_format == 'png':
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.png'.format(output_file))
+                if output_file.split(".")[-1] == 'png':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.png'.format(output_file))
             elif output_format == 'pdf':
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.pdf'.format(output_file))
+                if output_file.split(".")[-1] == 'pdf':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.pdf'.format(output_file))
             elif output_format == 'webp':
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.wepb'.format(output_file))
+                if output_file.split(".")[-1] == 'webp':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.wepb'.format(output_file))
             else:
                 logging.ERROR('Output file format nor support:{}'.format(output_format))
         return x, tag
 
-if __name__=="__main__":
-    Histogram.hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'],histnorm='probability density',
-                   output_format='jpg',output_file='../docs/_images/multi_hist')
-    Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], histnorm='probability density',
-                   output_format='html', output_file='../docs/_static/multi_hist')
-    Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], plot_type='violin',
-                   output_format='jpg', output_file='../docs/_images/multi_violin')
-    Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], plot_type='violin',
-                   output_format='html', output_file='../docs/_static/multi_violin')
+# if __name__=="__main__":
+    # Histogram.hist(residue='ALA',atom='N', output_format='webp',output_file='test1',
+    #                show_visualization=False)
+    # Histogram.hist(residue='ALA', atom='N', output_format='webp', output_file='test2.webp',
+    #                show_visualization=False)
+
+    # Histogram.hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'],histnorm='probability density',
+    #                output_format='jpg',output_file='../docs/_images/multi_hist')
+    # Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], histnorm='probability density',
+    #                output_format='html', output_file='../docs/_static/multi_hist')
+    # Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], plot_type='violin',
+    #                output_format='jpg', output_file='../docs/_images/multi_violin')
+    # Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], plot_type='violin',
+    #                output_format='html', output_file='../docs/_static/multi_violin')
 
     # Histogram.hist(residue='CYS',atom='CB',output_format='jpg',
     #                output_file='../docs/_images/cys_cb_hist',show_visualization=False)
