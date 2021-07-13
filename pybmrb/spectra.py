@@ -420,20 +420,40 @@ class Spectra(object):
         if show_visualization: fig.show()
         if output_file is not None:
             if output_format == 'html':
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Sucessfully written {}.html'.format(output_file))
+                if output_file.split(".")[-1] == 'html':
+                    fig.write_html('{}'.format(output_file))
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_html('{}.html'.format(output_file))
+                    logging.info('Successfully written {}.html'.format(output_file))
             elif output_format == 'jpg':
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.jpg'.format(output_file))
+                if output_file.split(".")[-1] == 'jpg':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.jpg'.format(output_file))
             elif output_format == 'png':
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.png'.format(output_file))
+                if output_file.split(".")[-1] == 'png':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.png'.format(output_file))
             elif output_format == 'pdf':
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.pdf'.format(output_file))
+                if output_file.split(".")[-1] == 'pdf':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.pdf'.format(output_file))
             elif output_format == 'webp':
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.wepb'.format(output_file))
+                if output_file.split(".")[-1] == 'webp':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.wepb'.format(output_file))
             else:
                 logging.ERROR('Output file format nor support:{}'.format(output_format))
         return x, y, data_set, info, res, cs_track
@@ -536,20 +556,40 @@ class Spectra(object):
         if show_visualization: fig.show()
         if output_file is not None:
             if output_format == 'html':
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Sucessfully written {}.html'.format(output_file))
+                if output_file.split(".")[-1] == 'html':
+                    fig.write_html('{}'.format(output_file))
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_html('{}.html'.format(output_file))
+                    logging.info('Successfully written {}.html'.format(output_file))
             elif output_format == 'jpg':
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.jpg'.format(output_file))
+                if output_file.split(".")[-1] == 'jpg':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.jpg'.format(output_file))
             elif output_format == 'png':
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.png'.format(output_file))
+                if output_file.split(".")[-1] == 'png':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.png'.format(output_file))
             elif output_format == 'pdf':
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.pdf'.format(output_file))
+                if output_file.split(".")[-1] == 'pdf':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.pdf'.format(output_file))
             elif output_format == 'webp':
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.wepb'.format(output_file))
+                if output_file.split(".")[-1] == 'webp':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.wepb'.format(output_file))
             else:
                 logging.ERROR('Output file format nor support:{}'.format(output_format))
         return x, y, data_set, info, res, cs_track
@@ -651,20 +691,40 @@ class Spectra(object):
         if show_visualization: fig.show()
         if output_file is not None:
             if output_format == 'html':
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Sucessfully written {}.html'.format(output_file))
+                if output_file.split(".")[-1] == 'html':
+                    fig.write_html('{}'.format(output_file))
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_html('{}.html'.format(output_file))
+                    logging.info('Successfully written {}.html'.format(output_file))
             elif output_format == 'jpg':
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.jpg'.format(output_file))
+                if output_file.split(".")[-1] == 'jpg':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.jpg'.format(output_file))
             elif output_format == 'png':
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.png'.format(output_file))
+                if output_file.split(".")[-1] == 'png':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.png'.format(output_file))
             elif output_format == 'pdf':
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.pdf'.format(output_file))
+                if output_file.split(".")[-1] == 'pdf':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.pdf'.format(output_file))
             elif output_format == 'webp':
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.wepb'.format(output_file))
+                if output_file.split(".")[-1] == 'webp':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.wepb'.format(output_file))
             else:
                 logging.ERROR('Output file format nor support:{}'.format(output_format))
         return x, y, data_set, info, res, cs_track
@@ -770,20 +830,40 @@ class Spectra(object):
         if show_visualization: fig.show()
         if output_file is not None:
             if output_format == 'html':
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Sucessfully written {}.html'.format(output_file))
+                if output_file.split(".")[-1] == 'html':
+                    fig.write_html('{}'.format(output_file))
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_html('{}.html'.format(output_file))
+                    logging.info('Successfully written {}.html'.format(output_file))
             elif output_format == 'jpg':
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.jpg'.format(output_file))
+                if output_file.split(".")[-1] == 'jpg':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.jpg'.format(output_file))
             elif output_format == 'png':
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.png'.format(output_file))
+                if output_file.split(".")[-1] == 'png':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.png'.format(output_file))
             elif output_format == 'pdf':
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.pdf'.format(output_file))
+                if output_file.split(".")[-1] == 'pdf':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.pdf'.format(output_file))
             elif output_format == 'webp':
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Sucessfully written {}.wepb'.format(output_file))
+                if output_file.split(".")[-1] == 'webp':
+                    fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}'.format(output_file))
+                else:
+                    fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
+                    logging.info('Successfully written {}.wepb'.format(output_file))
             else:
                 logging.ERROR('Output file format nor support:{}'.format(output_format))
         return x, y, data_set, info, res, cs_track

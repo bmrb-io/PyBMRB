@@ -1,6 +1,6 @@
-## 3.0.1
+3.0.2
+------
 
-    - Documentation improved
-    - added few more tests
-    - pytest timeout issue fixed
+    - Missing y axis label on histogram fixed
+    - Output file name extensions are added after checking
 
