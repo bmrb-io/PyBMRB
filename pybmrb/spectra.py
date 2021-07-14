@@ -417,13 +417,15 @@ class Spectra(object):
             raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
+                             title = 'Simulated <sup>1</sup>H-<sup>15</sup>N HSQC peak positions',
                              symbol=data_set,
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>15</sup>N (ppm)'}, opacity=0.7)
+                                     "y": '<sup>15</sup>N (ppm)',
+                                     }, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -435,12 +437,14 @@ class Spectra(object):
 
         elif legend == 'residue':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>15</sup>N HSQC peak positions',
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>15</sup>N (ppm)'}, opacity=0.7)
+                                     "y": '<sup>15</sup>N (ppm)',
+                                     }, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines', opacity=0.7)
@@ -451,12 +455,14 @@ class Spectra(object):
 
         elif legend == 'dataset':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>15</sup>N HSQC peak positions',
                              hover_name=info,
                              color=data_set,
                              labels={"color": "Data set",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>15</sup>N (ppm)'}, opacity=0.7)
+                                     "y": '<sup>15</sup>N (ppm)',
+                                     }, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -564,13 +570,14 @@ class Spectra(object):
             raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>13</sup>C HSQC peak positions',
                              symbol=data_set,
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>13</sup>C (ppm)'}, opacity=0.7)
+                                     "y": '<sup>13</sup>C (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -582,12 +589,13 @@ class Spectra(object):
 
         elif legend == 'residue':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>13</sup>C HSQC peak positions',
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>13</sup>C (ppm)'}, opacity=0.7)
+                                     "y": '<sup>13</sup>C (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines', opacity=0.7)
@@ -598,12 +606,13 @@ class Spectra(object):
 
         elif legend == 'dataset':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>13</sup>C HSQC peak positions',
                              hover_name=info,
                              color=data_set,
                              labels={"color": "Data set",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>13</sup>C (ppm)'}, opacity=0.7)
+                                     "y": '<sup>13</sup>C (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -710,13 +719,14 @@ class Spectra(object):
             raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>1</sup>H TOCSY peak positions',
                              symbol=data_set,
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>1</sup>H (ppm)'}, opacity=0.7)
+                                     "y": '<sup>1</sup>H (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -728,12 +738,13 @@ class Spectra(object):
 
         elif legend == 'residue':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>1</sup>H TOCSY peak positions',
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>1</sup>H (ppm)'}, opacity=0.7)
+                                     "y": '<sup>1</sup>H (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines', opacity=0.7)
@@ -744,12 +755,13 @@ class Spectra(object):
 
         elif legend == 'dataset':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>1</sup>H TOCSY peak positions',
                              hover_name=info,
                              color=data_set,
                              labels={"color": "Data set",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>1</sup>H (ppm)'}, opacity=0.7)
+                                     "y": '<sup>1</sup>H (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -859,13 +871,14 @@ class Spectra(object):
             raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
+                             title='Simulated {}-{} COSY peak positions'.format(atom_x,atom_y),
                              symbol=data_set,
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      "symbol": "Data set",
                                      "x": '{} (ppm)'.format(atom_x),
-                                     "y": '{} (ppm)'.format(atom_y)}, opacity=0.7)
+                                     "y": '{} (ppm)'.format(atom_y)}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -877,12 +890,13 @@ class Spectra(object):
 
         elif legend == 'residue':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated {}-{} COSY peak positions'.format(atom_x, atom_y),
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      # "symbol": "Data set",
                                      "x": '{} (ppm)'.format(atom_x),
-                                     "y": '{} (ppm)'.format(atom_y)}, opacity=0.7)
+                                     "y": '{} (ppm)'.format(atom_y)}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines', opacity=0.7)
@@ -893,12 +907,13 @@ class Spectra(object):
 
         elif legend == 'dataset':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated {}-{} COSY peak positions'.format(atom_x, atom_y),
                              hover_name=info,
                              color=data_set,
                              labels={"color": "Data set",
                                      # "symbol": "Data set",
                                      "x": '{} (ppm)'.format(atom_x),
-                                     "y": '{} (ppm)'.format(atom_y)}, opacity=0.7)
+                                     "y": '{} (ppm)'.format(atom_y)}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -951,6 +966,7 @@ class Spectra(object):
         return x, y, data_set, info, res, cs_track
 
 # if __name__ == "__main__":
+#     p=Spectra().generic_2d(bmrb_ids=15060,atom_x='CA',atom_y='HA*',legend='residue')
 # # Generating examples for documentation
 # Spectra.n15hsqc(bmrb_ids=15060,output_format='jpg',legend='residue',output_file='../docs/_images/15060_n15',
 #                 show_visualization=False)

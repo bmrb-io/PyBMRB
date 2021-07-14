@@ -78,24 +78,28 @@ class Histogram(object):
             raise ValueError('No matching atom, or values found in the database')
         if plot_type == 'histogram':
             fig = px.histogram(x, color=tag, histnorm=histnorm,
+                               title='Chemical shift statistics from BMRB',
                                labels={"color": "Atom",
                                        "value": 'Chemical shift (ppm)'
                                        }, opacity=0.5).update_layout(yaxis_title='Count')
             fig.update_xaxes(autorange="reversed")
             fig.update_layout(barmode='overlay')
+            fig.update(layout=dict(title=dict(x=0.5)))
         elif plot_type == 'box':
             fig = px.box(x=tag, y=x, color=tag,
+                         title='Chemical shift statistics from BMRB',
                          labels={"color": "Atom",
                                  "x": "",
                                  "y": 'Chemical shift (ppm)'
-                                 })
+                                 }).update(layout=dict(title=dict(x=0.5)))
             fig.update_xaxes(tickangle=90)
         elif plot_type == 'violin':
             fig = px.violin(x=tag, y=x, color=tag,
+                            title='Chemical shift statistics from BMRB',
                             labels={"color": "Atom",
                                     "x": "",
                                     "y": 'Chemical shift (ppm)'
-                                    })
+                                    }).update(layout=dict(title=dict(x=0.5)))
             fig.update_xaxes(tickangle=90)
         else:
             logging.error('Plot type not supported : {}'.format(plot_type))
@@ -193,21 +197,23 @@ class Histogram(object):
             raise ValueError('No matching atom, or values found in the database')
         if plot_type == 'heatmap':
             fig = px.density_heatmap(x=x, y=y, marginal_x="histogram", marginal_y="histogram",
+                                     title='Chemical shift statistics from BMRB',
                                      histnorm=histnorm,
                                      labels={
                                          "x": '{} (ppm)'.format(atom1),
                                          "y": '{} (ppm)'.format(atom2)},
-                                     )
+                                     ).update(layout=dict(title=dict(x=0.5)))
             fig.update_layout(xaxis=dict(autorange='reversed'),
                               yaxis=dict(autorange='reversed'),
                               xaxis2=dict(showticklabels=True),
                               yaxis3=dict(showticklabels=True))
         elif plot_type == 'contour':
             fig = px.density_contour(x=x, y=y, marginal_x="histogram", marginal_y="histogram", histnorm=histnorm,
+                                     title='Chemical shift statistics from BMRB',
                                      labels={
                                          "x": '{} (ppm)'.format(atom1),
                                          "y": '{} (ppm)'.format(atom2)},
-                                     )
+                                     ).update(layout=dict(title=dict(x=0.5)))
             fig.update_layout(xaxis=dict(autorange='reversed'),
                               yaxis=dict(autorange='reversed'),
                               xaxis2=dict(showticklabels=True),
@@ -333,23 +339,26 @@ class Histogram(object):
             raise ValueError('No matching atom, or values found in the database')
         if plot_type == 'histogram':
             fig = px.histogram(x, color=tag, histnorm=histnorm,
+                               title='Chemical shift statistics from BMRB',
                                labels={"color": "Atom",
                                        "value": 'Chemical shift (ppm)',
-                                       "count": 'Count'}, opacity=0.5)
+                                       "count": 'Count'}, opacity=0.5).update(layout=dict(title=dict(x=0.5)))
             fig.update_xaxes(autorange="reversed")
         elif plot_type == 'box':
             fig = px.box(x=tag, y=x, color=tag,
+                         title='Chemical shift statistics from BMRB',
                          labels={"color": "Atom",
                                  "x": "",
                                  "y": 'Chemical shift (ppm)'
-                                 })
+                                 }).update(layout=dict(title=dict(x=0.5)))
             fig.update_xaxes(tickangle=90)
         elif plot_type == 'violin':
             fig = px.violin(x=tag, y=x, color=tag,
+                            title='Chemical shift statistics from BMRB',
                             labels={"color": "Atom",
                                     "x": "",
                                     "y": 'Chemical shift (ppm)'
-                                    })
+                                    }).update(layout=dict(title=dict(x=0.5)))
             fig.update_xaxes(tickangle=90)
         else:
             logging.error('Plot type not supported : {}'.format(plot_type))
@@ -397,7 +406,9 @@ class Histogram(object):
                 logging.error('Output file format not support:{}'.format(output_format))
         return x, tag
 
-# if __name__=="__main__":
+if __name__=="__main__":
+
+    Histogram().hist(residue='ALA',atom='N')
 # Histogram.hist(residue='ALA',atom='N', output_format='webp',output_file='test1',
 #                show_visualization=False)
 # Histogram.hist(residue='ALA', atom='N', output_format='webp', output_file='test2.webp',
