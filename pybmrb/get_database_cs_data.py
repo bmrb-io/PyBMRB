@@ -3,6 +3,7 @@ import json
 import logging
 from urllib.request import urlopen, Request
 import numpy
+
 # Set the log level to INFO
 logging.getLogger().setLevel(logging.INFO)
 
@@ -20,9 +21,6 @@ class ChemicalShiftStatistics(object):
     """
     Fetches chemical shift data from BMRB using BMRB-API
     """
-
-    def __init__(self):
-        pass
 
     @staticmethod
     def _get_data_from_api(residue, atom):
@@ -50,8 +48,7 @@ class ChemicalShiftStatistics(object):
         dump = json.loads(r.read())
         return dump
 
-    @classmethod
-    def get_data(cls, residue, atom, filtered=True, sd_limit=10, ambiguity='*',
+    def get_data(self, residue, atom, filtered=True, sd_limit=10, ambiguity='*',
                  ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True):
         """
         Fetches the data from BMRB-API for given residue and atom and filters based of the values provided in the
@@ -74,7 +71,7 @@ class ChemicalShiftStatistics(object):
                     'VAL', 'THR', 'HIS', 'TRP', 'PHE',
                     'ALA', 'MET', 'LEU', 'ARG', 'TYR',
                     'A', 'C', 'G', 'U', 'DA', 'DC', 'DG', 'DT']
-        api_data = cls._get_data_from_api(residue=residue, atom=atom)
+        api_data = self._get_data_from_api(residue=residue, atom=atom)
         columns = api_data['columns']
         cs_index = columns.index('Atom_chem_shift.Val')
         ph_index = columns.index('Sample_conditions.pH')
@@ -107,8 +104,7 @@ class ChemicalShiftStatistics(object):
             logging.info('Data for {}-{} not found in BMRB database'.format(residue, atom))
         return columns, data
 
-    @classmethod
-    def get_data_from_bmrb(cls, residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
+    def get_data_from_bmrb(self, residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
                            ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True):
         """
         Fetches the data from BMRB-API for given residue/list of residues (and/or)  atom/list of atoms and
@@ -138,10 +134,10 @@ class ChemicalShiftStatistics(object):
                 for atoms in list_of_atoms:
                     res = atoms.split("-")[0]
                     atm = atoms.split("-")[1]
-                    cs_dat = cls.get_data(residue=res, atom=atm, filtered=filtered,
-                                          sd_limit=sd_limit,
-                                          ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                          t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                    cs_dat = self.get_data(residue=res, atom=atm, filtered=filtered,
+                                           sd_limit=sd_limit,
+                                           ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                                           t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
                     if len(columns):
                         if cs_dat[0] == columns:
                             out_dat += cs_dat[1]
@@ -153,10 +149,10 @@ class ChemicalShiftStatistics(object):
             else:
                 res = list_of_atoms.split("-")[0]
                 atm = list_of_atoms.split("-")[1]
-                cs_dat = cls.get_data(residue=res, atom=atm, filtered=filtered,
-                                      sd_limit=sd_limit,
-                                      ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                      t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                cs_dat = self.get_data(residue=res, atom=atm, filtered=filtered,
+                                       sd_limit=sd_limit,
+                                       ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                                       t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
                 if len(columns):
                     if cs_dat[0] == columns:
                         out_dat += cs_dat[1]
@@ -171,10 +167,10 @@ class ChemicalShiftStatistics(object):
         if type(residue) is list and type(atom) is list:
             for res in residue:
                 for atm in atom:
-                    cs_dat = cls.get_data(residue=res, atom=atm, filtered=filtered,
-                                          sd_limit=sd_limit,
-                                          ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                          t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                    cs_dat = self.get_data(residue=res, atom=atm, filtered=filtered,
+                                           sd_limit=sd_limit,
+                                           ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                                           t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
                     if len(columns):
                         if cs_dat[0] == columns:
                             out_dat += cs_dat[1]
@@ -186,10 +182,10 @@ class ChemicalShiftStatistics(object):
         elif type(residue) is list and atom is None:
             for res in residue:
                 atm = '*'
-                cs_dat = cls.get_data(residue=res, atom=atm, filtered=filtered,
-                                      sd_limit=sd_limit,
-                                      ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                      t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                cs_dat = self.get_data(residue=res, atom=atm, filtered=filtered,
+                                       sd_limit=sd_limit,
+                                       ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                                       t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
                 if len(columns):
                     if cs_dat[0] == columns:
                         out_dat += cs_dat[1]
@@ -201,10 +197,10 @@ class ChemicalShiftStatistics(object):
         elif type(residue) is list and atom is not None:
             for res in residue:
                 atm = atom
-                cs_dat = cls.get_data(residue=res, atom=atm, filtered=filtered,
-                                      sd_limit=sd_limit,
-                                      ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                      t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                cs_dat = self.get_data(residue=res, atom=atm, filtered=filtered,
+                                       sd_limit=sd_limit,
+                                       ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                                       t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
                 if len(columns):
                     if cs_dat[0] == columns:
                         out_dat += cs_dat[1]
@@ -216,10 +212,10 @@ class ChemicalShiftStatistics(object):
         elif residue is None and type(atom) is list:
             for atm in atom:
                 res = '*'
-                cs_dat = cls.get_data(residue=res, atom=atm, filtered=filtered,
-                                      sd_limit=sd_limit,
-                                      ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                      t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                cs_dat = self.get_data(residue=res, atom=atm, filtered=filtered,
+                                       sd_limit=sd_limit,
+                                       ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                                       t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
                 if len(columns):
                     if cs_dat[0] == columns:
                         out_dat += cs_dat[1]
@@ -231,10 +227,10 @@ class ChemicalShiftStatistics(object):
         elif residue is not None and type(atom) is list:
             for atm in atom:
                 res = residue
-                cs_dat = cls.get_data(residue=res, atom=atm, filtered=filtered,
-                                      sd_limit=sd_limit,
-                                      ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                      t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                cs_dat = self.get_data(residue=res, atom=atm, filtered=filtered,
+                                       sd_limit=sd_limit,
+                                       ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                                       t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
                 if len(columns):
                     if cs_dat[0] == columns:
                         out_dat += cs_dat[1]
@@ -246,10 +242,10 @@ class ChemicalShiftStatistics(object):
         elif residue is not None and atom is not None:
             res = residue
             atm = atom
-            cs_dat = cls.get_data(residue=res, atom=atm, filtered=filtered,
-                                  sd_limit=sd_limit,
-                                  ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                  t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+            cs_dat = self.get_data(residue=res, atom=atm, filtered=filtered,
+                                   sd_limit=sd_limit,
+                                   ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                                   t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
             if len(columns):
                 if cs_dat[0] == columns:
                     out_dat += cs_dat[1]
@@ -261,10 +257,10 @@ class ChemicalShiftStatistics(object):
         elif residue is None and atom is not None:
             res = '*'
             atm = atom
-            cs_dat = cls.get_data(residue=res, atom=atm, filtered=filtered,
-                                  sd_limit=sd_limit,
-                                  ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                  t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+            cs_dat = self.get_data(residue=res, atom=atm, filtered=filtered,
+                                   sd_limit=sd_limit,
+                                   ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                                   t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
             if len(columns):
                 if cs_dat[0] == columns:
                     out_dat += cs_dat[1]
@@ -276,10 +272,10 @@ class ChemicalShiftStatistics(object):
         elif residue is not None and atom is None:
             res = residue
             atm = '*'
-            cs_dat = cls.get_data(residue=res, atom=atm, filtered=filtered,
-                                  sd_limit=sd_limit,
-                                  ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                  t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+            cs_dat = self.get_data(residue=res, atom=atm, filtered=filtered,
+                                   sd_limit=sd_limit,
+                                   ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                                   t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
             if len(columns):
                 if cs_dat[0] == columns:
                     out_dat += cs_dat[1]
@@ -331,8 +327,7 @@ class ChemicalShiftStatistics(object):
                 logging.warning('Duplicate key found {}'.format(dat))
         return cs_dict
 
-    @classmethod
-    def get_2d_chemical_shifts(cls, residue, atom1, atom2, filtered=True, sd_limit=10,
+    def get_2d_chemical_shifts(self, residue, atom1, atom2, filtered=True, sd_limit=10,
                                ambiguity1='*', ambiguity2='*',
                                ph_min=None, ph_max=None, t_min=None, t_max=None):
         """
@@ -354,9 +349,9 @@ class ChemicalShiftStatistics(object):
         """
         x = []
         y = []
-        cs_data = cls.get_data_from_bmrb(residue=residue, ph_min=ph_min, ph_max=ph_max,
-                                         t_min=t_min, t_max=t_max, standard_amino_acids=False)
-        cs_dict = cls._list_to_dict(cs_data[0], cs_data[1])
+        cs_data = self.get_data_from_bmrb(residue=residue, ph_min=ph_min, ph_max=ph_max,
+                                          t_min=t_min, t_max=t_max, standard_amino_acids=False)
+        cs_dict = self._list_to_dict(cs_data[0], cs_data[1])
         for key in cs_dict.keys():
             if atom1 in cs_dict[key].keys() and atom2 in cs_dict[key].keys():
                 if ambiguity1 != '*' or ambiguity2 != '*':
@@ -392,8 +387,7 @@ class ChemicalShiftStatistics(object):
                     cs_y.append(y[i])
         return cs_x, cs_y
 
-    @classmethod
-    def get_filtered_data_from_bmrb(cls, residue, atom, filtering_rules,
+    def get_filtered_data_from_bmrb(self, residue, atom, filtering_rules,
                                     ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True):
         """
         Fetches the chemical shift data for a given residue and filters them using filtering rules
@@ -408,8 +402,8 @@ class ChemicalShiftStatistics(object):
         :param standard_amino_acids: get data only form  standard amino acids and nucleic acids; default:True
         :return: chemical shift values as list
         """
-        cs_data = cls.get_data_from_bmrb(residue=residue, ph_min=ph_min, ph_max=ph_max,
-                                         t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+        cs_data = self.get_data_from_bmrb(residue=residue, ph_min=ph_min, ph_max=ph_max,
+                                          t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
 
         def cs_filt(cs_dict2, atm2, cs_val):
             cs_width = 0.5
@@ -428,7 +422,7 @@ class ChemicalShiftStatistics(object):
                     pass
             return out_cs_dict
 
-        cs_dict = cls._list_to_dict(cs_data[0], cs_data[1])
+        cs_dict = self._list_to_dict(cs_data[0], cs_data[1])
         for rule in filtering_rules:
             cs_dict = cs_filt(cs_dict, rule[0], rule[1])
         x = []
@@ -438,8 +432,7 @@ class ChemicalShiftStatistics(object):
                     x.append(cs_dict[key][atm][0])
         return x
 
-    @classmethod
-    def get_statistics(cls, residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
+    def get_statistics(self, residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
                        ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True, verbose=False):
         """
         Provides chemical shift statistics like Mean, Median, Standard deviation for a given residue/atom/list of atoms
@@ -462,17 +455,17 @@ class ChemicalShiftStatistics(object):
             logging.error('Please provide residue name or atom name or list of atoms as a list ')
             raise TypeError(
                 'Please provide at least one of the three positional arguments: residue (or) atom (or) list_of_atoms')
-        columns, data = cls.get_data_from_bmrb(residue=residue,
-                                               atom=atom,
-                                               list_of_atoms=list_of_atoms,
-                                               filtered=filtered,
-                                               sd_limit=sd_limit,
-                                               ambiguity=ambiguity,
-                                               ph_min=ph_min,
-                                               ph_max=ph_max,
-                                               t_min=t_min,
-                                               t_max=t_max,
-                                               standard_amino_acids=standard_amino_acids)
+        columns, data = self.get_data_from_bmrb(residue=residue,
+                                                atom=atom,
+                                                list_of_atoms=list_of_atoms,
+                                                filtered=filtered,
+                                                sd_limit=sd_limit,
+                                                ambiguity=ambiguity,
+                                                ph_min=ph_min,
+                                                ph_max=ph_max,
+                                                t_min=t_min,
+                                                t_max=t_max,
+                                                standard_amino_acids=standard_amino_acids)
         res_index = columns.index('Atom_chem_shift.Comp_ID')
         atm_index = columns.index('Atom_chem_shift.Atom_ID')
         cs_index = columns.index('Atom_chem_shift.Val')
