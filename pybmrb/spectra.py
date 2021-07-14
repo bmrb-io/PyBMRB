@@ -3,8 +3,12 @@
 
 import logging
 import csv
+
+import pynmrstar
+
 from pybmrb.get_entry_cs_data import ChemicalShift
 import plotly.express as px
+from typing import TextIO, BinaryIO, Union, List, Optional, Dict, Any, Tuple
 
 
 class Spectra(object):
@@ -12,19 +16,24 @@ class Spectra(object):
     Converts one dimensional chemical shift list into multidimensional peak list and generates interactive plots
     """
 
-    @classmethod
-    def create_c13hsqc_peaklist(cls, bmrb_ids, input_file_names=None, auth_tag=False,
-                                draw_trace=False):
+    @staticmethod
+    def create_c13hsqc_peaklist(bmrb_ids: Union[str, List[str]],
+                                entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
+                                input_file_names: Union[str, List[str]] = None,
+                                auth_tag: bool = False,
+                                draw_trace: bool = False):
         """
         Converts one dimensional chemical shifts from list of BMRB entries into CHSQC peak list
 
         :param bmrb_ids: BMRB entry ID or list of entry ids
         :param input_file_names: Input NMR-STAR file name
+        :param entry_objects: One of more PyNMRSTAR entry objects
         :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+            cs_track is a dictionary { matching atoms:[cs_values]}
         """
+        cs = ChemicalShift()
         ch_atoms = {'ALA': [('HA', 'CA'), ('HB*', 'CB')],
                     'ARG': [('HA', 'CA'), ('HB*', 'CB'), ('HG*', 'CG'), ('HD*', 'CD')],
                     'ASN': [('HA', 'CA'), ('HB*', 'CB')],
@@ -50,11 +59,14 @@ class Spectra(object):
                     'VAL': [('HA', 'CA'), ('HB', 'CB'), ('HG1*', 'CG1'), ('HG2*', 'CG2')],
                     }
         cs_data = {}
-        cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
+        cs_data_bmrb = cs.from_bmrb(bmrb_ids=bmrb_ids, auth_tag=auth_tag)
         cs_data.update(cs_data_bmrb)
         if input_file_names is not None:
-            cs_data_file = ChemicalShift.from_file(input_file_names, auth_tag=auth_tag)
+            cs_data_file = cs.from_file(input_file_names=input_file_names, auth_tag=auth_tag)
             cs_data.update(cs_data_file)
+        if entry_objects is not None:
+            cs_data_obj = cs.from_entry_object(entry_objects=entry_objects, auth_tag=auth_tag)
+            cs_data.update(cs_data_obj)
         data_set = []
         x = []
         y = []
@@ -96,25 +108,33 @@ class Spectra(object):
                     cs_track[k] = atom_ids[k]
         return x, y, data_set, info, res, cs_track
 
-    @classmethod
-    def create_tocsy_peaklist(cls, bmrb_ids, input_file_names=None, auth_tag=False,
-                              draw_trace=False):
+    @staticmethod
+    def create_tocsy_peaklist(bmrb_ids: Union[str, List[str]],
+                              entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
+                              input_file_names: Union[str, List[str]] = None,
+                              auth_tag: bool = False,
+                              draw_trace: bool = False):
         """
         Converts one dimensional chemical shifts from list of BMRB entries into TOCSY peak list
 
         :param bmrb_ids: BMRB entry ID or list of entry ids
         :param input_file_names: Input NMR-STAR file name
+        :param entry_objects: One of more PyNMRSTAR entry objects
         :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+            cs_track is a dictionary { matching atoms:[cs_values]}
         """
+        cs = ChemicalShift()
         cs_data = {}
-        cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
+        cs_data_bmrb = cs.from_bmrb(bmrb_ids=bmrb_ids, auth_tag=auth_tag)
         cs_data.update(cs_data_bmrb)
         if input_file_names is not None:
-            cs_data_file = ChemicalShift.from_file(input_file_names, auth_tag=auth_tag)
+            cs_data_file = cs.from_file(input_file_names=input_file_names, auth_tag=auth_tag)
             cs_data.update(cs_data_file)
+        if entry_objects is not None:
+            cs_data_obj = cs.from_entry_object(entry_objects=entry_objects, auth_tag=auth_tag)
+            cs_data.update(cs_data_obj)
         data_set = []
         x = []
         y = []
@@ -156,9 +176,12 @@ class Spectra(object):
                     cs_track[k] = atom_ids[k]
         return x, y, data_set, info, res, cs_track
 
-    @classmethod
-    def create_2d_peaklist(cls, bmrb_ids, atom_x, atom_y, input_file_names=None, auth_tag=False,
-                           draw_trace=False):
+    @staticmethod
+    def create_2d_peaklist(bmrb_ids: Union[str, List[str]],
+                           atom_x: str, atom_y: str, input_file_names: Union[str, List[str]] = None,
+                           entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
+                           auth_tag: bool = False,
+                           draw_trace: bool = False):
         """
          Converts one dimensional chemical shifts from list of BMRB entries into generic 2D peak list
 
@@ -166,17 +189,22 @@ class Spectra(object):
         :param atom_x: atom for x coordinate in IUPAC format
         :param atom_y: atom for y coordinate in IUPAC format
         :param input_file_names: Input NMR-STAR file name
+        :param entry_objects: One of more PyNMRSTAR entry objects
         :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+            cs_track is a dictionary { matching atoms:[cs_values]}
         """
+        cs = ChemicalShift()
         cs_data = {}
-        cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
+        cs_data_bmrb = cs.from_bmrb(bmrb_ids, auth_tag=auth_tag)
         cs_data.update(cs_data_bmrb)
         if input_file_names is not None:
-            cs_data_file = ChemicalShift.from_file(input_file_names, auth_tag=auth_tag)
+            cs_data_file = cs.from_file(input_file_names, auth_tag=auth_tag)
             cs_data.update(cs_data_file)
+        if entry_objects is not None:
+            cs_data_obj = cs.from_entry_object(entry_objects=entry_objects, auth_tag=auth_tag)
+            cs_data.update(cs_data_obj)
         data_set = []
         x = []
         y = []
@@ -218,20 +246,27 @@ class Spectra(object):
                     cs_track[k] = atom_ids[k]
         return x, y, data_set, info, res, cs_track
 
-    @classmethod
-    def create_n15hsqc_peaklist(cls, bmrb_ids, input_file_names=None, auth_tag=False, draw_trace=False,
-                                include_sidechain=True):
+    @staticmethod
+    def create_n15hsqc_peaklist(bmrb_ids: Union[str, List[str]],
+                                input_file_names: Union[str, List[str]] = None,
+                                entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
+                                auth_tag: bool = False,
+                                draw_trace: bool = False,
+                                include_sidechain: bool = True):
         """
         Converts one dimensional chemical shifts from list of BMRB entries into NHSQC peak list
 
+        :param entry_objects: One of more PyNMRSTAR entry objects
         :param bmrb_ids: BMRB entry ID or list of entry ids
         :param input_file_names: Input NMR-STAR file name
+        :param entry_objects: One of more PyNMRSTAR entry objects
         :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
         :param draw_trace: Connect the matching residues using sequence numbering; default: False
         :param include_sidechain: include side chain NHs ; default: True
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+            cs_track is a dictionary { matching atoms:[cs_values]}
         """
+        cs = ChemicalShift()
         atom_x = 'H'
         atom_y = 'N'
         sidechain_nh_atoms = {'ARG': {
@@ -259,11 +294,14 @@ class Spectra(object):
         }
         cs_data = {}
         if bmrb_ids is not None:
-            cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
+            cs_data_bmrb = cs.from_bmrb(bmrb_ids=bmrb_ids, auth_tag=auth_tag)
             cs_data.update(cs_data_bmrb)
         if input_file_names is not None:
-            cs_data_file = ChemicalShift.from_file(input_file_names, auth_tag=auth_tag)
+            cs_data_file = cs.from_file(input_file_names=input_file_names, auth_tag=auth_tag)
             cs_data.update(cs_data_file)
+        if entry_objects is not None:
+            cs_data_obj = cs.from_entry_object(entry_objects=entry_objects, auth_tag=auth_tag)
+            cs_data.update(cs_data_obj)
         data_set = []
         x = []
         y = []
@@ -322,20 +360,25 @@ class Spectra(object):
                     cs_track[k] = atom_ids[k]
         return x, y, data_set, info, res, cs_track
 
-    @classmethod
-    def n15hsqc(cls, bmrb_ids=None, input_file_names=None, auth_tag=False, legend=None, draw_trace=False,
-                include_sidechain=True,
-                peak_list=None,
-                output_format='html',
-                output_file=None,
-                output_image_width=800,
-                output_image_height=600,
-                show_visualization=True):
+    def n15hsqc(self, bmrb_ids: Union[str, List[str]] = None,
+                input_file_names: Union[str, List[str]] = None,
+                entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
+                auth_tag: bool = False,
+                legend: str = None,
+                draw_trace: bool = False,
+                include_sidechain: bool = True,
+                peak_list: str = None,
+                output_format: str = 'html',
+                output_file: str = None,
+                output_image_width: int = 800,
+                output_image_height: int = 600,
+                show_visualization: bool = True):
         """
         Plots NHSQC spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
         :param bmrb_ids: list of BMRB IDs or single BMRB ID default None
         :param input_file_names: list of NMR-STAR files ; default None
+        :param entry_objects: One of more PyNMRSTAR entry objects
         :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
         :param legend: legend based on residue name or data set id; values: None, residue, dataset ; default None
         :param draw_trace: Connect matching residues by list
@@ -347,7 +390,7 @@ class Spectra(object):
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+            cs_track is a dictionary { matching atoms:[cs_values]}
         """
         x1 = []
         y1 = []
@@ -357,11 +400,12 @@ class Spectra(object):
                 for row in spamreader:
                     x1.append(float(row[0]))
                     y1.append(float(row[1]))
-        peak_list_2d = cls.create_n15hsqc_peaklist(bmrb_ids,
-                                                   input_file_names=input_file_names,
-                                                   auth_tag=auth_tag,
-                                                   draw_trace=draw_trace,
-                                                   include_sidechain=include_sidechain)
+        peak_list_2d = self.create_n15hsqc_peaklist(bmrb_ids,
+                                                    input_file_names=input_file_names,
+                                                    entry_objects=entry_objects,
+                                                    auth_tag=auth_tag,
+                                                    draw_trace=draw_trace,
+                                                    include_sidechain=include_sidechain)
         x = peak_list_2d[0]
         y = peak_list_2d[1]
         data_set = peak_list_2d[2]
@@ -373,13 +417,15 @@ class Spectra(object):
             raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
+                             title = 'Simulated <sup>1</sup>H-<sup>15</sup>N HSQC peak positions',
                              symbol=data_set,
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>15</sup>N (ppm)'}, opacity=0.7)
+                                     "y": '<sup>15</sup>N (ppm)',
+                                     }, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -391,12 +437,14 @@ class Spectra(object):
 
         elif legend == 'residue':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>15</sup>N HSQC peak positions',
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>15</sup>N (ppm)'}, opacity=0.7)
+                                     "y": '<sup>15</sup>N (ppm)',
+                                     }, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines', opacity=0.7)
@@ -407,12 +455,14 @@ class Spectra(object):
 
         elif legend == 'dataset':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>15</sup>N HSQC peak positions',
                              hover_name=info,
                              color=data_set,
                              labels={"color": "Data set",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>15</sup>N (ppm)'}, opacity=0.7)
+                                     "y": '<sup>15</sup>N (ppm)',
+                                     }, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -465,19 +515,24 @@ class Spectra(object):
                 logging.error('Output file format not support:{}'.format(output_format))
         return x, y, data_set, info, res, cs_track
 
-    @classmethod
-    def c13hsqc(cls, bmrb_ids, input_file_names=None, auth_tag=False, legend=None, draw_trace=False,
-                peak_list=None,
-                output_format=None,
-                output_file=None,
-                output_image_width=800,
-                output_image_height=600,
-                show_visualization=True):
+    def c13hsqc(self, bmrb_ids: Union[str, List[str]],
+                input_file_names: Union[str, List[str]] = None,
+                entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
+                auth_tag: bool = False,
+                legend: str = None,
+                draw_trace: bool = False,
+                peak_list: str = None,
+                output_format: str = None,
+                output_file: str = None,
+                output_image_width: int = 800,
+                output_image_height: int = 600,
+                show_visualization: bool = True):
         """
         Plots CHSQC spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
         :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
         :param input_file_names: list of NMR-STAR files : default: None
+        :param entry_objects: One of more PyNMRSTAR entry objects
         :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
         :param legend: legend based on residue name or data set id; values: None, residue, datase ; default None
         :param draw_trace: Connect matching residues by list
@@ -488,12 +543,13 @@ class Spectra(object):
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+            cs_track is a dictionary { matching atoms:[cs_values]}
         """
-        peak_list_2d = cls.create_c13hsqc_peaklist(bmrb_ids,
-                                                   input_file_names=input_file_names,
-                                                   auth_tag=auth_tag,
-                                                   draw_trace=draw_trace)
+        peak_list_2d = self.create_c13hsqc_peaklist(bmrb_ids,
+                                                    input_file_names=input_file_names,
+                                                    entry_objects=entry_objects,
+                                                    auth_tag=auth_tag,
+                                                    draw_trace=draw_trace)
         x1 = []
         y1 = []
         if peak_list is not None:
@@ -514,13 +570,14 @@ class Spectra(object):
             raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>13</sup>C HSQC peak positions',
                              symbol=data_set,
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>13</sup>C (ppm)'}, opacity=0.7)
+                                     "y": '<sup>13</sup>C (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -532,12 +589,13 @@ class Spectra(object):
 
         elif legend == 'residue':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>13</sup>C HSQC peak positions',
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>13</sup>C (ppm)'}, opacity=0.7)
+                                     "y": '<sup>13</sup>C (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines', opacity=0.7)
@@ -548,12 +606,13 @@ class Spectra(object):
 
         elif legend == 'dataset':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>13</sup>C HSQC peak positions',
                              hover_name=info,
                              color=data_set,
                              labels={"color": "Data set",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>13</sup>C (ppm)'}, opacity=0.7)
+                                     "y": '<sup>13</sup>C (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -606,19 +665,24 @@ class Spectra(object):
                 logging.error('Output file format not support:{}'.format(output_format))
         return x, y, data_set, info, res, cs_track
 
-    @classmethod
-    def tocsy(cls, bmrb_ids, input_file_names=None, auth_tag=False, legend=None, draw_trace=False,
-              peak_list=None,
-              output_format=None,
-              output_file=None,
-              output_image_width=800,
-              output_image_height=600,
-              show_visualization=True):
+    def tocsy(self, bmrb_ids: Union[str, List[str]],
+              input_file_names: Union[str, List[str]] = None,
+              entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
+              auth_tag: bool = False,
+              legend: str = None,
+              draw_trace: bool = False,
+              peak_list: str = None,
+              output_format: str = None,
+              output_file: str = None,
+              output_image_width: int = 800,
+              output_image_height: int = 600,
+              show_visualization: bool = True):
         """
         Plots TOCSY spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
         :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
         :param input_file_names: list of NMR-STAR files : default: None
+        :param entry_objects: One of more PyNMRSTAR entry objects
         :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
         :param legend: legend based on residue name or data set id; values: None, residue, dataset ; default None
         :param draw_trace: Connect matching residues by list
@@ -629,12 +693,13 @@ class Spectra(object):
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+            cs_track is a dictionary { matching atoms:[cs_values]}
         """
-        peak_list_2d = cls.create_tocsy_peaklist(bmrb_ids,
-                                                 input_file_names=input_file_names,
-                                                 auth_tag=auth_tag,
-                                                 draw_trace=draw_trace)
+        peak_list_2d = self.create_tocsy_peaklist(bmrb_ids,
+                                                  input_file_names=input_file_names,
+                                                  entry_objects=entry_objects,
+                                                  auth_tag=auth_tag,
+                                                  draw_trace=draw_trace)
         x1 = []
         y1 = []
         if peak_list is not None:
@@ -654,13 +719,14 @@ class Spectra(object):
             raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>1</sup>H TOCSY peak positions',
                              symbol=data_set,
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>1</sup>H (ppm)'}, opacity=0.7)
+                                     "y": '<sup>1</sup>H (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -672,12 +738,13 @@ class Spectra(object):
 
         elif legend == 'residue':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>1</sup>H TOCSY peak positions',
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>1</sup>H (ppm)'}, opacity=0.7)
+                                     "y": '<sup>1</sup>H (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines', opacity=0.7)
@@ -688,12 +755,13 @@ class Spectra(object):
 
         elif legend == 'dataset':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>1</sup>H TOCSY peak positions',
                              hover_name=info,
                              color=data_set,
                              labels={"color": "Data set",
                                      # "symbol": "Data set",
                                      "x": '<sup>1</sup>H (ppm)',
-                                     "y": '<sup>1</sup>H (ppm)'}, opacity=0.7)
+                                     "y": '<sup>1</sup>H (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -745,20 +813,26 @@ class Spectra(object):
                 logging.error('Output file format not support:{}'.format(output_format))
         return x, y, data_set, info, res, cs_track
 
-    @classmethod
-    def generic_2d(cls, bmrb_ids, input_file_names=None, atom_x='H', atom_y='N', auth_tag=False, legend=None,
-                   draw_trace=False,
-                   peak_list=None,
-                   output_format=None,
-                   output_file=None,
-                   output_image_width=800,
-                   output_image_height=600,
-                   show_visualization=True):
+    def generic_2d(self, bmrb_ids: Union[str, List[str]],
+                   input_file_names: Union[str, List[str]] = None,
+                   entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
+                   atom_x: str = 'H',
+                   atom_y: str = 'N',
+                   auth_tag: bool = False,
+                   legend: str = None,
+                   draw_trace: bool = False,
+                   peak_list: str = None,
+                   output_format: str = None,
+                   output_file: str = None,
+                   output_image_width: int = 800,
+                   output_image_height: int = 600,
+                   show_visualization: bool = True):
         """
         Plots generic 2D spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
         :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
         :param input_file_names: list of NMR-STAR files : default: None
+        :param entry_objects: One of more PyNMRSTAR entry objects
         :param atom_x: atom name for x coordinate in IUPAC format; default : 'H
         :param atom_y: atom name for y coordinate in IUPAC format; default :'N'
         :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
@@ -771,12 +845,13 @@ class Spectra(object):
         :param output_image_height: output image height; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+            cs_track is a dictionary { matching atoms:[cs_values]}
         """
-        peak_list_2d = cls.create_2d_peaklist(bmrb_ids, atom_x=atom_x, atom_y=atom_y,
-                                              input_file_names=input_file_names,
-                                              auth_tag=auth_tag,
-                                              draw_trace=draw_trace)
+        peak_list_2d = self.create_2d_peaklist(bmrb_ids, atom_x=atom_x, atom_y=atom_y,
+                                               input_file_names=input_file_names,
+                                               entry_objects=entry_objects,
+                                               auth_tag=auth_tag,
+                                               draw_trace=draw_trace)
         x1 = []
         y1 = []
         if peak_list is not None:
@@ -796,13 +871,14 @@ class Spectra(object):
             raise ValueError('Required chemical shifts not found')
         if legend is None:
             fig = px.scatter(x=x, y=y,
+                             title='Simulated {}-{} COSY peak positions'.format(atom_x,atom_y),
                              symbol=data_set,
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      "symbol": "Data set",
                                      "x": '{} (ppm)'.format(atom_x),
-                                     "y": '{} (ppm)'.format(atom_y)}, opacity=0.7)
+                                     "y": '{} (ppm)'.format(atom_y)}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -814,12 +890,13 @@ class Spectra(object):
 
         elif legend == 'residue':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated {}-{} COSY peak positions'.format(atom_x, atom_y),
                              hover_name=info,
                              color=res,
                              labels={"color": "Residue",
                                      # "symbol": "Data set",
                                      "x": '{} (ppm)'.format(atom_x),
-                                     "y": '{} (ppm)'.format(atom_y)}, opacity=0.7)
+                                     "y": '{} (ppm)'.format(atom_y)}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines', opacity=0.7)
@@ -830,12 +907,13 @@ class Spectra(object):
 
         elif legend == 'dataset':
             fig = px.scatter(x=x, y=y,
+                             title='Simulated {}-{} COSY peak positions'.format(atom_x, atom_y),
                              hover_name=info,
                              color=data_set,
                              labels={"color": "Data set",
                                      # "symbol": "Data set",
                                      "x": '{} (ppm)'.format(atom_x),
-                                     "y": '{} (ppm)'.format(atom_y)}, opacity=0.7)
+                                     "y": '{} (ppm)'.format(atom_y)}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
             if draw_trace:
                 for k in cs_track.keys():
                     fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
@@ -888,6 +966,7 @@ class Spectra(object):
         return x, y, data_set, info, res, cs_track
 
 # if __name__ == "__main__":
+#     p=Spectra().generic_2d(bmrb_ids=15060,atom_x='CA',atom_y='HA*',legend='residue')
 # # Generating examples for documentation
 # Spectra.n15hsqc(bmrb_ids=15060,output_format='jpg',legend='residue',output_file='../docs/_images/15060_n15',
 #                 show_visualization=False)

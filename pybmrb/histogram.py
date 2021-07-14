@@ -10,8 +10,8 @@ class Histogram(object):
     Fetches chemical shift records from BMRB, plots histograms and calculates statistical properties.
     """
 
-    @classmethod
-    def hist(cls, residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
+    @staticmethod
+    def hist(residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
              ph_min=None, ph_max=None, t_min=None, t_max=None,
              histnorm='',
              standard_amino_acids=True,
@@ -40,23 +40,24 @@ class Histogram(object):
         :param plot_type: plot type; supported types 'histogram','box','violin' ; default histogram
         :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
         :param output_file: output file name; if provided, the output will be written in a file ,
-        otherwise opens in a web browser; default ;None
+            otherwise opens in a web browser; default ;None
         :param output_image_width: output image width to write in a file; default:800
         :param output_image_height: output image height to write in a file; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: chemical shift data and tags as tuple (chemical shifts, tags)
         """
-        columns, cs_data = ChemicalShiftStatistics.get_data_from_bmrb(residue=residue,
-                                                                      atom=atom,
-                                                                      list_of_atoms=list_of_atoms,
-                                                                      filtered=filtered,
-                                                                      sd_limit=sd_limit,
-                                                                      ambiguity=ambiguity,
-                                                                      ph_min=ph_min,
-                                                                      ph_max=ph_max,
-                                                                      t_min=t_min,
-                                                                      t_max=t_max,
-                                                                      standard_amino_acids=standard_amino_acids)
+        css = ChemicalShiftStatistics()
+        columns, cs_data = css.get_data_from_bmrb(residue=residue,
+                                                  atom=atom,
+                                                  list_of_atoms=list_of_atoms,
+                                                  filtered=filtered,
+                                                  sd_limit=sd_limit,
+                                                  ambiguity=ambiguity,
+                                                  ph_min=ph_min,
+                                                  ph_max=ph_max,
+                                                  t_min=t_min,
+                                                  t_max=t_max,
+                                                  standard_amino_acids=standard_amino_acids)
         cs_index = columns.index('Atom_chem_shift.Val')
         # ph_index = columns.index('Sample_conditions.pH')
         # temp_index = columns.index('Sample_conditions.Temperature_K')
@@ -77,24 +78,28 @@ class Histogram(object):
             raise ValueError('No matching atom, or values found in the database')
         if plot_type == 'histogram':
             fig = px.histogram(x, color=tag, histnorm=histnorm,
+                               title='Chemical shift statistics from BMRB',
                                labels={"color": "Atom",
                                        "value": 'Chemical shift (ppm)'
                                        }, opacity=0.5).update_layout(yaxis_title='Count')
             fig.update_xaxes(autorange="reversed")
             fig.update_layout(barmode='overlay')
+            fig.update(layout=dict(title=dict(x=0.5)))
         elif plot_type == 'box':
             fig = px.box(x=tag, y=x, color=tag,
+                         title='Chemical shift statistics from BMRB',
                          labels={"color": "Atom",
                                  "x": "",
                                  "y": 'Chemical shift (ppm)'
-                                 })
+                                 }).update(layout=dict(title=dict(x=0.5)))
             fig.update_xaxes(tickangle=90)
         elif plot_type == 'violin':
             fig = px.violin(x=tag, y=x, color=tag,
+                            title='Chemical shift statistics from BMRB',
                             labels={"color": "Atom",
                                     "x": "",
                                     "y": 'Chemical shift (ppm)'
-                                    })
+                                    }).update(layout=dict(title=dict(x=0.5)))
             fig.update_xaxes(tickangle=90)
         else:
             logging.error('Plot type not supported : {}'.format(plot_type))
@@ -141,8 +146,8 @@ class Histogram(object):
                 logging.error('Output file format not support:{}'.format(output_format))
         return x, tag
 
-    @classmethod
-    def hist2d(cls, residue, atom1, atom2, filtered=True, sd_limit=10,
+    @staticmethod
+    def hist2d(residue, atom1, atom2, filtered=True, sd_limit=10,
                ambiguity1='*', ambiguity2='*',
                ph_min=None, ph_max=None, t_min=None, t_max=None,
                histnorm='',
@@ -169,43 +174,46 @@ class Histogram(object):
         :param plot_type: plot type; support types 'heatmap','contour'
         :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
         :param output_file: output file name; if provided, the output will be written in a file ,
-        otherwise opens in a web browser; default ;None
+            otherwise opens in a web browser; default ;None
         :param output_image_width: output image width to write in a file; default:800
         :param output_image_height: output image height to write in a file; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: tuple (chemical shift list of atom1, chemical shift list of atom2)
         """
-        x, y = ChemicalShiftStatistics.get_2d_chemical_shifts(residue=residue,
-                                                              atom1=atom1,
-                                                              atom2=atom2,
-                                                              filtered=filtered,
-                                                              sd_limit=sd_limit,
-                                                              ambiguity1=ambiguity1,
-                                                              ambiguity2=ambiguity2,
-                                                              ph_min=ph_min,
-                                                              ph_max=ph_max,
-                                                              t_min=t_min,
-                                                              t_max=t_max)
+        css = ChemicalShiftStatistics()
+        x, y = css.get_2d_chemical_shifts(residue=residue,
+                                          atom1=atom1,
+                                          atom2=atom2,
+                                          filtered=filtered,
+                                          sd_limit=sd_limit,
+                                          ambiguity1=ambiguity1,
+                                          ambiguity2=ambiguity2,
+                                          ph_min=ph_min,
+                                          ph_max=ph_max,
+                                          t_min=t_min,
+                                          t_max=t_max)
         if len(x) == 0:
             logging.error('No matching atom, or values found in the database')
             raise ValueError('No matching atom, or values found in the database')
         if plot_type == 'heatmap':
             fig = px.density_heatmap(x=x, y=y, marginal_x="histogram", marginal_y="histogram",
+                                     title='Chemical shift statistics from BMRB',
                                      histnorm=histnorm,
                                      labels={
                                          "x": '{} (ppm)'.format(atom1),
                                          "y": '{} (ppm)'.format(atom2)},
-                                     )
+                                     ).update(layout=dict(title=dict(x=0.5)))
             fig.update_layout(xaxis=dict(autorange='reversed'),
                               yaxis=dict(autorange='reversed'),
                               xaxis2=dict(showticklabels=True),
                               yaxis3=dict(showticklabels=True))
         elif plot_type == 'contour':
             fig = px.density_contour(x=x, y=y, marginal_x="histogram", marginal_y="histogram", histnorm=histnorm,
+                                     title='Chemical shift statistics from BMRB',
                                      labels={
                                          "x": '{} (ppm)'.format(atom1),
                                          "y": '{} (ppm)'.format(atom2)},
-                                     )
+                                     ).update(layout=dict(title=dict(x=0.5)))
             fig.update_layout(xaxis=dict(autorange='reversed'),
                               yaxis=dict(autorange='reversed'),
                               xaxis2=dict(showticklabels=True),
@@ -255,8 +263,7 @@ class Histogram(object):
                 logging.error('Output file format not support:{}'.format(output_format))
         return x, y
 
-    @classmethod
-    def conditional_hist(cls, residue, atom, filtering_rules,
+    def conditional_hist(self, residue, atom, filtering_rules,
                          ph_min=None, ph_max=None, t_min=None, t_max=None,
                          histnorm='',
                          standard_amino_acids=True,
@@ -282,19 +289,20 @@ class Histogram(object):
         :param plot_type: plot type; support types 'heatmap','contour'
         :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
         :param output_file: output file name; if provided, the output will be written in a file ,
-        otherwise opens in a web browser; default ;None
+            otherwise opens in a web browser; default ;None
         :param output_image_width: output image width to write in a file; default:800
         :param output_image_height: output image height to write in a file; default 600
         :param show_visualization: Automatically opens the visualization on a web browser; default True
         :return: chemical shift data and tags as tuple (chemical shifts, tags)
         """
-        columns, cs_data = ChemicalShiftStatistics.get_data_from_bmrb(residue=residue,
-                                                                      atom=atom,
-                                                                      ph_min=ph_min,
-                                                                      ph_max=ph_max,
-                                                                      t_min=t_min,
-                                                                      t_max=t_max,
-                                                                      standard_amino_acids=standard_amino_acids)
+        css = ChemicalShiftStatistics()
+        columns, cs_data = css.get_data_from_bmrb(residue=residue,
+                                                  atom=atom,
+                                                  ph_min=ph_min,
+                                                  ph_max=ph_max,
+                                                  t_min=t_min,
+                                                  t_max=t_max,
+                                                  standard_amino_acids=standard_amino_acids)
         cs_index = columns.index('Atom_chem_shift.Val')
         # ph_index = columns.index('Sample_conditions.pH')
         # temp_index = columns.index('Sample_conditions.Temperature_K')
@@ -304,15 +312,15 @@ class Histogram(object):
         if len(cs_data) == 0:
             logging.error('No matching atom, or values found in the database')
             raise ValueError('No matching atom, or values found in the database')
-        x1 = ChemicalShiftStatistics.get_filtered_data_from_bmrb(residue=residue,
-                                                                 atom=atom,
-                                                                 filtering_rules=filtering_rules,
-                                                                 ph_min=ph_min,
-                                                                 ph_max=ph_max,
-                                                                 t_min=t_min,
-                                                                 t_max=t_max,
-                                                                 standard_amino_acids=standard_amino_acids
-                                                                 )
+        x1 = css.get_filtered_data_from_bmrb(residue=residue,
+                                             atom=atom,
+                                             filtering_rules=filtering_rules,
+                                             ph_min=ph_min,
+                                             ph_max=ph_max,
+                                             t_min=t_min,
+                                             t_max=t_max,
+                                             standard_amino_acids=standard_amino_acids
+                                             )
         if len(x1) == 0:
             logging.error('No matching atom, or values found in the database')
             raise ValueError('No matching atom, or values found in the database')
@@ -331,23 +339,26 @@ class Histogram(object):
             raise ValueError('No matching atom, or values found in the database')
         if plot_type == 'histogram':
             fig = px.histogram(x, color=tag, histnorm=histnorm,
+                               title='Chemical shift statistics from BMRB',
                                labels={"color": "Atom",
                                        "value": 'Chemical shift (ppm)',
-                                       "count": 'Count'}, opacity=0.5)
+                                       "count": 'Count'}, opacity=0.5).update(layout=dict(title=dict(x=0.5)))
             fig.update_xaxes(autorange="reversed")
         elif plot_type == 'box':
             fig = px.box(x=tag, y=x, color=tag,
+                         title='Chemical shift statistics from BMRB',
                          labels={"color": "Atom",
                                  "x": "",
                                  "y": 'Chemical shift (ppm)'
-                                 })
+                                 }).update(layout=dict(title=dict(x=0.5)))
             fig.update_xaxes(tickangle=90)
         elif plot_type == 'violin':
             fig = px.violin(x=tag, y=x, color=tag,
+                            title='Chemical shift statistics from BMRB',
                             labels={"color": "Atom",
                                     "x": "",
                                     "y": 'Chemical shift (ppm)'
-                                    })
+                                    }).update(layout=dict(title=dict(x=0.5)))
             fig.update_xaxes(tickangle=90)
         else:
             logging.error('Plot type not supported : {}'.format(plot_type))
@@ -395,7 +406,9 @@ class Histogram(object):
                 logging.error('Output file format not support:{}'.format(output_format))
         return x, tag
 
-# if __name__=="__main__":
+if __name__=="__main__":
+
+    Histogram().hist(residue='ALA',atom='N')
 # Histogram.hist(residue='ALA',atom='N', output_format='webp',output_file='test1',
 #                show_visualization=False)
 # Histogram.hist(residue='ALA', atom='N', output_format='webp', output_file='test2.webp',

@@ -5,7 +5,9 @@ Load the package into your python environment using the following command
 
 .. code:: python
 
-    import pybmrb
+    from pybmrb import Spectra, Histogram
+    spectra=Spectra()
+    histogram=Histogram()
 
 .. |n15| replace:: :sup:`1` H - :sup:`15` N
 .. |c13| replace:: :sup:`1` H - :sup:`13` C
@@ -25,7 +27,7 @@ be on X axis and which atom to be on Y axis to generate through bond correlation
 
 .. code:: python
 
-    pybmrb.Spectra.n15hsqc(bmrb_ids=15060, legend='residue')
+    spectra.n15hsqc(bmrb_ids=15060, legend='residue')
 
 .. figure:: ../_images/15060_n15.jpg
     :alt: n15hsqc
@@ -40,7 +42,7 @@ You may also use residue as legend to turn on and off different residue types
 
 .. code:: python
 
-    pybmrb.Spectra.n15hsqc(bmrb_ids=[17076,17077],
+    spectra.n15hsqc(bmrb_ids=[17076,17077],
     input_file_names='test_data/MyData.str',
     legend='dataset')
 
@@ -54,7 +56,7 @@ You may also use residue as legend to turn on and off different residue types
 
 .. code:: python
 
-    pybmrb.Spectra.n15hsqc(bmrb_ids=[17076,17077],
+    spectra.n15hsqc(bmrb_ids=[17076,17077],
     input_file_names='test_data/MyData.str',
     peak_list='test_data/my_peak_list.csv',
     legend='dataset')
@@ -70,7 +72,7 @@ You may also use residue as legend to turn on and off different residue types
 
 .. code:: python
 
-    pybmrb.Spectra.n15hsqc(bmrb_ids=[17076,17077],
+    spectra.n15hsqc(bmrb_ids=[17076,17077],
     input_file_names='test_data/MyData.str',
     legend='dataset',
     draw_trace=True)
@@ -89,7 +91,7 @@ You may also use residue as legend to turn on and off different residue types
 
 .. code:: python
 
-    pybmrb.Spectra.c13hsqc(bmrb_ids=15060, legend='residue')
+    spectra.c13hsqc(bmrb_ids=15060, legend='residue')
 
 .. figure:: ../_images/15060_c13.jpg
     :alt: n15hsqc
@@ -101,7 +103,7 @@ You may also use residue as legend to turn on and off different residue types
 
 .. code:: python
 
-    pybmrb.Spectra.c13hsqc(bmrb_ids=[17074,17076,17077], legend='dataset')
+    spectra.c13hsqc(bmrb_ids=[17074,17076,17077], legend='dataset')
 
 .. figure:: ../_images/multi_c13.jpg
     :alt: n15hsqc
@@ -113,7 +115,7 @@ You may also use residue as legend to turn on and off different residue types
 
 .. code:: python
 
-    pybmrb.Spectra.c13hsqc(bmrb_ids=[17074,17076,17077], legend='dataset', draw_trace=True)
+    spectra.c13hsqc(bmrb_ids=[17074,17076,17077], legend='dataset', draw_trace=True)
 
 .. figure:: ../_images/multi2_c13.jpg
     :alt: n15hsqc
@@ -129,7 +131,7 @@ You may also use residue as legend to turn on and off different residue types
 
 .. code:: python
 
-    pybmrb.Spectra.tocsy(bmrb_ids=15060, legend='residue')
+    spectra.tocsy(bmrb_ids=15060, legend='residue')
 
 .. figure:: ../_images/15060_tocsy.jpg
     :alt: n15hsqc
@@ -141,7 +143,7 @@ You may also use residue as legend to turn on and off different residue types
 
 .. code:: python
 
-    pybmrb.Spectra.tocsy(bmrb_ids=[17074,17076,17077], legend='dataset')
+    spectra.tocsy(bmrb_ids=[17074,17076,17077], legend='dataset')
 
 .. figure:: ../_images/multi_tocsy.jpg
     :alt: n15hsqc
@@ -153,7 +155,7 @@ You may also use residue as legend to turn on and off different residue types
 
 .. code:: python
 
-    pybmrb.Spectra.tocsy(bmrb_ids=[17074,17076,17077], legend='residue')
+    spectra.tocsy(bmrb_ids=[17074,17076,17077], legend='residue')
 
 .. figure:: ../_images/multi_tocsy2.jpg
     :alt: n15hsqc
@@ -165,7 +167,7 @@ You may also use residue as legend to turn on and off different residue types
 
 .. code:: python
 
-    pybmrb.Spectra.tocsy(bmrb_ids=[17074,17076,17077], legend='dataset', draw_trace=True)
+    spectra.tocsy(bmrb_ids=[17074,17076,17077], legend='dataset', draw_trace=True)
 
 .. figure:: ../_images/multi2_tocsy.jpg
     :alt: n15hsqc
@@ -186,7 +188,7 @@ were used as  x axis and CB chemical shifts were was used a Y axis.
 
 .. code:: python
 
-    pybmrb.Spectra.c13hsqc(bmrb_ids=15060,
+    spectra.c13hsqc(bmrb_ids=15060,
     atom_x='N',
     atom_y='CB',
     legend='residue')
@@ -201,7 +203,7 @@ were used as  x axis and CB chemical shifts were was used a Y axis.
 
 .. code:: python
 
-    pybmrb.Spectra.c13hsqc(bmrb_ids=[17074,17076,17077],
+    spectra.c13hsqc(bmrb_ids=[17074,17076,17077],
     atom_x='N',
     atom_y='CB',
     legend='dataset')
@@ -216,7 +218,7 @@ were used as  x axis and CB chemical shifts were was used a Y axis.
 
 .. code:: python
 
-    pybmrb.Spectra.c13hsqc(bmrb_ids=[17074,17076,17077],
+    spectra.c13hsqc(bmrb_ids=[17074,17076,17077],
     atom_x='N',
     atom_y='CB',
     legend='dataset',
@@ -244,7 +246,7 @@ Single distribution
 
 .. code:: python
 
-    pybmrb.Histogram.hist(residue='CYS', atom='CB')
+    histogram.hist(residue='CYS', atom='CB')
 
 .. figure:: ../_images/cys_cb_hist.jpg
     :alt: n15hsqc
@@ -259,7 +261,7 @@ the values beyond 5 times standard deviation on moth sides of the mean
 
 .. code:: python
 
-    pybmrb.Histogram.hist(residue='CYS', atom='CB', sd_limt=5 )
+    histogram.hist(residue='CYS', atom='CB', sd_limt=5 )
 
 .. figure:: ../_images/cys_cb_hist_sd5.jpg
     :alt: n15hsqc
@@ -273,7 +275,7 @@ You may use experimental conditions like  Ph or temperature values as a cs_filt
 
 .. code:: python
 
-    pybmrb.Histogram.hist(residue='CYS', atom='CB', sd_limt=5,
+    histogram.hist(residue='CYS', atom='CB', sd_limt=5,
     ph_min=7.0, ph_max=8.2)
 
 .. figure:: ../_images/cys_cb_hist_ph.jpg
@@ -288,7 +290,7 @@ Box plot and Violin plot will show all the statistical properties of the distrib
 
 .. code:: python
 
-    pybmrb.Histogram.hist(residue='CYS', atom='CB',
+    histogram.hist(residue='CYS', atom='CB',
     plot_type='box')
 
 .. figure:: ../_images/cys_cb_box_sd5.jpg
@@ -303,7 +305,7 @@ Box plot and Violin plot will show all the statistical properties of the distrib
 
 .. code:: python
 
-    pybmrb.Histogram.hist(residue='CYS', atom='CB',
+    histogram.hist(residue='CYS', atom='CB',
     plot_type='violin')
 
 .. figure:: ../_images/cys_cb_violin_sd5.jpg
@@ -321,7 +323,7 @@ You may also provide list of atoms as input
 
 .. code:: python
 
-    pybmrb.Histogram.hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'],
+    histogram.hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'],
     histnorm='probability density')
 
 .. figure:: ../_images/multi_hist.jpg
@@ -336,7 +338,7 @@ You may also provide list of atoms as input
 
 .. code:: python
 
-    pybmrb.Histogram.hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'],
+    histogram.hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'],
     plot_type='violin')
 
 .. figure:: ../_images/multi_violin.jpg
@@ -353,7 +355,7 @@ You may chose histnorm as 'probability density' to compare distributions
 
 .. code:: python
 
-    pybmrb.Histogram.hist(residue='GLN', atom='H*',
+    histogram.hist(residue='GLN', atom='H*',
     hist_norm='probability density')
 
 .. figure:: ../_images/gln_h_hist.jpg
@@ -368,13 +370,13 @@ If you want to see the chemical shift distribution of all atoms from a residue y
 
 .. code:: python
 
-    pybmrb.Histogram.hist(residue='ASP', atom='*')
+    histogram.hist(residue='ASP', atom='*')
 
 or
 
 .. code:: python
 
-    pybmrb.Histogram.hist(residue='ASP')
+    histogram.hist(residue='ASP')
 
 
 .. figure:: ../_images/asp_hist.jpg
@@ -389,14 +391,14 @@ If you want to see the chemical shift distribution CG atoms from all 20 standard
 
 .. code:: python
 
-    pybmrb.Histogram.hist(residue='*', atom='CG*',
+    histogram.hist(residue='*', atom='CG*',
     hist_norm='percent')
 
 or
 
 .. code:: python
 
-    pybmrb.Histogram.hist(atom='CG*',
+    histogram.hist(atom='CG*',
     hist_norm='percent')
 
 
@@ -414,7 +416,7 @@ or
 
 .. code:: python
 
-    pybmrb.Histogram.hist2d(residue='CYS', atom1='CA', atom2='CB', sd_limut=5)
+    histogram.hist2d(residue='CYS', atom1='CA', atom2='CB', sd_limut=5)
 
 .. figure:: ../_images/cys-ca-cb.jpg
     :alt: n15hsqc
@@ -427,7 +429,7 @@ or
 
 .. code:: python
 
-    pybmrb.Histogram.hist2d(residue='GLN', atom1='HE21', atom2='HE22',
+    histogram.hist2d(residue='GLN', atom1='HE21', atom2='HE22',
     sd_limut=5, plot_type='contour')
 
 .. figure:: ../_images/gln-2d.jpg
@@ -447,7 +449,7 @@ more atom in the same residue. In the following example CYS-CB values are filter
 
 .. code:: python
 
-    pybmrb.Histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent'
+    histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent'
     filtering_rules=[('H',8.9)])
 
 .. figure:: ../_images/filt1.jpg
@@ -461,7 +463,7 @@ more atom in the same residue. In the following example CYS-CB values are filter
 
 .. code:: python
 
-    pybmrb.Histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent'
+    histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent'
     filtering_rules=[('H', 8.9), ('CA', 61)])
 
 .. figure:: ../_images/filt2.jpg
