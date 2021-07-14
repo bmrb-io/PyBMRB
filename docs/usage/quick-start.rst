@@ -70,6 +70,8 @@ you may also import specific modules as follows
 .. code:: python
 
     from pybmrb import Spectra, Histogram
+    spectra=Spectra()
+    histogram=Histogram()
 
 
 View BMRB entry or NMR-STAR file as spectra
@@ -81,7 +83,7 @@ compare your data with BMRB as overlying |n15| - HSQC spectra using the followin
 
 .. code:: python
 
-    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077],
+    peak_list = spectra.n15hsqc(bmrb_ids=[17076,17077],
                 input_file_names='tests/test_data/MyData.str',
                 legend='dataset')
 
@@ -93,7 +95,7 @@ If you want the output as an image and not to open the visualization on web brow
 
 .. code:: python
 
-    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077],
+    peak_list = spectra.n15hsqc(bmrb_ids=[17076,17077],
                 input_file_names='tests/test_data/MyData.str',
                 legend='dataset',
                 output_format='jpg',
@@ -112,7 +114,7 @@ If you want to trace the chemical shift changes, use the following command
 
 .. code:: python
 
-    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077],
+    peak_list = spectra.n15hsqc(bmrb_ids=[17076,17077],
                 input_file_names='tests/test_data/MyData.str',
                 legend='dataset',
                 draw_trace = True)
@@ -124,7 +126,7 @@ a csv file. You may use the csv file to compare your peak list with any BMRB ent
 
 .. code:: python
 
-    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077],
+    peak_list = spectra.n15hsqc(bmrb_ids=[17076,17077],
                 input_file_names='tests/test_data/MyData.str',
                 legend='dataset',
                 draw_trace = True)
@@ -143,7 +145,7 @@ same set of above parameters can be used to write output as static image
 
 .. code:: python
 
-    cs_data = Histogram.hist(residue='TYR', atom='CB')
+    cs_data = histogram.hist(residue='TYR', atom='CB')
 
 .. figure:: ../_images/tyr-cb.jpg
     :alt: tyr-cb
@@ -156,7 +158,7 @@ box and violin plots, it will show the statistical properties of the distributio
 
 .. code:: python
 
-    cs_data = Histogram.hist(residue='CYS', atom='CB',plot_type='box')
+    cs_data = histogram.hist(residue='CYS', atom='CB',plot_type='box')
 
 .. figure:: ../_images/cys-cb-box.jpg
     :alt: tyr-cb
@@ -166,7 +168,7 @@ box and violin plots, it will show the statistical properties of the distributio
 
 .. code:: python
 
-    cs_data = Histogram.hist(residue='CYS', atom='CB',plot_type='violin')
+    cs_data = histogram.hist(residue='CYS', atom='CB',plot_type='violin')
 
 .. figure:: ../_images/cys-cb-violin.jpg
     :alt: tyr-cb
@@ -179,7 +181,7 @@ You may also use the wildcard
 
 .. code:: python
 
-    cs_data = Histogram.hist(residue='TYR', atom='H*')
+    cs_data = histogram.hist(residue='TYR', atom='H*')
 
 .. figure:: ../_images/tyr-h.jpg
     :alt: tyr-cb
@@ -192,7 +194,7 @@ Leaving out the residue will plot CB chemical shift distribution of all 20 stand
 
 .. code:: python
 
-    cs_data = Histogram.hist( atom='CB')
+    cs_data = histogram.hist( atom='CB')
 
 .. figure:: ../_images/cb.jpg
     :alt: tyr-cb
@@ -204,7 +206,7 @@ You may also plot 2D chemical shift correlation plot for two atoms in the same r
 
 .. code:: python
 
-    cs_data = Histogram.hist2d(residue='CYS',atom1='N', atom2='CB')
+    cs_data = histogram.hist2d(residue='CYS',atom1='N', atom2='CB')
 
 .. figure:: ../_images/cys-n-cb.jpg
     :alt: tyr-cb
