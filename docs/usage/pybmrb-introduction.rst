@@ -1,10 +1,10 @@
-Introduction to PyBMRB
-------------------------
+Introduction to PyBMRB :footcite:`Baskaran2021`
+-----------------------------------------------
 
 Biological Magnetic Resonance data Bank (BMRB)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-`BMRB <http://bmrb.ip>`_ is the global archive of NMR spectroscopic derived from biological
+`BMRB <http://bmrb.ip>`_ :footcite:`Ulrich2007` is the global archive of NMR spectroscopic derived from biological
 molecules like proteins, nucleic acids and metabolites. BMRB collects, annotates, archives,
 and disseminates (worldwide in the public domain) the important spectral and quantitative data
 derived from NMR spectroscopic investigations of biologically relevant molecules. The goal is
@@ -37,7 +37,7 @@ to quickly and easily compare their data with any BMRB entry and  visualizing th
 
 How does it work?
 ~~~~~~~~~~~~~~~~~~~
-PyBMRB extracts the assigned chemical shift list from NMR-STAR files and combines them with certain rules
+PyBMRB extracts the assigned chemical shift list from NMR-STAR files and combines them using certain rules
 defined by the NMR experiment to generate the peak positions. This peak list is displayed on a 2D plane using
 interactive data visualization tool `plotly <https://plotly.com>`_ . It can also generate chemical shift histograms
 by fetching the data directly from BMRB through BMRB-API.
