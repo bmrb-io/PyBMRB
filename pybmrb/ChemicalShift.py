@@ -199,10 +199,10 @@ def from_bmrb(bmrb_ids: Union[str, List[str]],
             raise IOError('Entry not found in public database: {}'.format(bmrb_ids))
     return all_cs_data
 
-
-if __name__ == "__main__":
-    p = ChemicalShift().from_bmrb(bmrb_ids='15060')
-    print(p)
-#     # p.from_file('/Users/kumaran/MyData.str',data_set_id='test')
-#     # p.
 #
+# if __name__ == "__main__":
+#     p = ChemicalShift().from_bmrb(bmrb_ids='15060')
+#     print(p)
+# #     # p.from_file('/Users/kumaran/MyData.str',data_set_id='test')
+# #     # p.
+# #

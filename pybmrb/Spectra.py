@@ -424,7 +424,7 @@ def n15hsqc(bmrb_ids: Union[str, List[str]] = None,
                                  }, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
         if peak_list is not None:
             fig.add_scatter(x1, y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_layout(showlegend=False)
@@ -443,7 +443,8 @@ def n15hsqc(bmrb_ids: Union[str, List[str]] = None,
                                  }, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines', opacity=0.7)
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines',
+                                opacity=0.7,hover_name=k)
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_xaxes(autorange="reversed")
@@ -461,7 +462,11 @@ def n15hsqc(bmrb_ids: Union[str, List[str]] = None,
                                  }, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
+                fig.add_scatter(x=cs_track[k][0],
+                                y=cs_track[k][1],
+                                name=k,
+                                opacity=0.7,
+                                mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_xaxes(autorange="reversed")
@@ -578,7 +583,8 @@ def c13hsqc(bmrb_ids: Union[str, List[str]],
                                  "y": '<sup>13</sup>C (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1],
+                                name=k, opacity=0.7,mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_layout(showlegend=False)
@@ -613,7 +619,7 @@ def c13hsqc(bmrb_ids: Union[str, List[str]],
                                  "y": '<sup>13</sup>C (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_xaxes(autorange="reversed")
@@ -729,7 +735,7 @@ def tocsy(bmrb_ids: Union[str, List[str]],
                                  "y": '<sup>1</sup>H (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_layout(showlegend=False)
@@ -747,7 +753,8 @@ def tocsy(bmrb_ids: Union[str, List[str]],
                                  "y": '<sup>1</sup>H (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines', opacity=0.7)
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines',
+                                opacity=0.7)
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_xaxes(autorange="reversed")
@@ -764,7 +771,7 @@ def tocsy(bmrb_ids: Union[str, List[str]],
                                  "y": '<sup>1</sup>H (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_xaxes(autorange="reversed")
@@ -884,7 +891,7 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
             layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_layout(showlegend=False)
@@ -903,7 +910,7 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
             layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines', opacity=0.7)
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_xaxes(autorange="reversed")
@@ -921,7 +928,7 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
             layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7)
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_xaxes(autorange="reversed")
@@ -969,9 +976,9 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
         else:
             logging.error('Output file format not support:{}'.format(output_format))
     return x, y, data_set, info, res, cs_track
-
-if __name__ == "__main__":
-    p=generic_2d(bmrb_ids=15060,atom_x='CA',atom_y='HA*',legend='residue')
+#
+# if __name__ == "__main__":
+#     p=n15hsqc(bmrb_ids=[17300,17299],draw_trace=True)
 # # Generating examples for documentation
 # n15hsqc(bmrb_ids=15060,output_format='jpg',legend='residue',output_file='../docs/_images/15060_n15',
 #                 show_visualization=False)
