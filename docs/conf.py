@@ -12,8 +12,8 @@
 #
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('..'))
-import pybmrb
 # -- Project information -----------------------------------------------------
 
 
@@ -23,7 +23,6 @@ author = 'Kumaran Baksaran'
 
 # The full version, including alpha/beta/rc tags
 release = '3.0'
-
 
 # -- General configuration ---------------------------------------------------
 
@@ -48,16 +47,15 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-#html_theme = 'alabaster'
+# html_theme = 'alabaster'
 html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
-    'analytics_id': 'G-CH3JS5076R',  #  Provided by Google in your dashboard
+    'analytics_id': 'G-CH3JS5076R',  # Provided by Google in your dashboard
     # 'analytics_anonymize_ip': False,
     # 'logo_only': False,
     # 'display_version': True,

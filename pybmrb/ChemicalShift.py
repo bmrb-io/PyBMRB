@@ -4,7 +4,7 @@ from __future__ import print_function
 import logging
 import os
 import pynmrstar
-from typing import TextIO, BinaryIO, Union, List, Optional, Dict, Any, Tuple
+from typing import Union, List
 
 # Set the log level to INFO
 logging.getLogger().setLevel(logging.INFO)
@@ -14,8 +14,6 @@ three_letter_code = {'I': 'ILE', 'Q': 'GLN', 'G': 'GLY', 'E': 'GLU', 'C': 'CYS',
                      'V': 'VAL', 'T': 'THR', 'H': 'HIS', 'W': 'TRP', 'F': 'PHE',
                      'A': 'ALA', 'M': 'MET', 'L': 'LEU', 'R': 'ARG', 'Y': 'TYR'}
 one_letter_code = dict([(value, key) for key, value in three_letter_code.items()])
-
-
 
 
 def _from_pynmrstar_entry_object(entry_data: pynmrstar.Entry,
@@ -92,7 +90,7 @@ def from_entry_object(entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry
     :param data_set_id: User defined data set id default: filename
     :return: Chemical shift dictionary {data_set_id:{chain_id:{seq_id:{atom_id:cs_value}},'seq_ids':[1,2,3,4..]}}
     """
-    
+
     all_cs_data = {}
     if type(entry_objects) is list:
         if type(data_set_id) is list:
@@ -102,19 +100,19 @@ def from_entry_object(entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry
                 for ent in entry_objects:
                     data_id = data_set_id[entry_objects.index(ent)]
                     cs_data = _from_pynmrstar_entry_object(entry_data=ent, data_set_id=data_id,
-                                                                    auth_tag=auth_tag)
+                                                           auth_tag=auth_tag)
                     all_cs_data.update(cs_data)
         for ent in entry_objects:
             ent_id = entry_objects.index(ent)
             cs_data = _from_pynmrstar_entry_object(entry_data=ent,
-                                                            data_set_id='{}_{}'.format(data_set_id, ent_id),
-                                                            auth_tag=auth_tag)
+                                                   data_set_id='{}_{}'.format(data_set_id, ent_id),
+                                                   auth_tag=auth_tag)
             all_cs_data.update(cs_data)
     else:
         if data_set_id is None:
             data_set_id = entry_objects.entry_id
         cs_data = _from_pynmrstar_entry_object(entry_data=entry_objects, data_set_id=data_set_id,
-                                                        auth_tag=auth_tag)
+                                               auth_tag=auth_tag)
         all_cs_data.update(cs_data)
     return all_cs_data
 
@@ -130,7 +128,7 @@ def from_file(input_file_names: Union[str, List[str]],
     :param data_set_id: User defined data set id default: filename
     :return: Chemical shift dictionary {data_set_id:{chain_id:{seq_id:{atom_id:cs_value}},'seq_ids':[1,2,3,4..]}}
     """
-    
+
     if type(input_file_names) is list:
         all_cs_data = {}
         for file_name in input_file_names:
@@ -165,7 +163,7 @@ def from_bmrb(bmrb_ids: Union[str, List[str]],
     :param auth_tag: Use author sequence numbering True/False default: False
     :return: Chemical shift dictionary {data_set_id:{chain_id:{seq_id:{atom_id:cs_value}},'seq_ids':[1,2,3,4..]}}
     """
-    
+
     if type(bmrb_ids) is list:
         all_cs_data = {}
         for bmrb_id in bmrb_ids:

@@ -17,7 +17,6 @@ three_letter_code = {'I': 'ILE', 'Q': 'GLN', 'G': 'GLY', 'E': 'GLU', 'C': 'CYS',
 one_letter_code = dict([(value, key) for key, value in three_letter_code.items()])
 
 
-
 def _get_data_from_api(residue, atom):
     """
     Dumps the BMRB-API return for given residue and atom. Not intend to call directly
@@ -62,7 +61,7 @@ def get_data(residue, atom, filtered=True, sd_limit=10, ambiguity='*',
     :param standard_amino_acids: get data only form standard amino acids and nucleic acids; default:True
     :return: column names and data as tuple (columns,data)
     """
-    
+
     standard = ['ILE', 'GLN', 'GLY', 'GLU', 'CYS',
                 'ASP', 'SER', 'LYS', 'PRO', 'ASN',
                 'VAL', 'THR', 'HIS', 'TRP', 'PHE',
@@ -121,7 +120,7 @@ def get_data_from_bmrb(residue=None, atom=None, list_of_atoms=None, filtered=Tru
     :param standard_amino_acids: get data only form standard amino acids and nucleic acids; default:True
     :return: column names and data as tuple (columns,data)
     """
-    
+
     if residue is None and atom is None and list_of_atoms is None:
         logging.error('Please provide residue name or atom name or list of atoms as a list ')
         raise TypeError(
@@ -134,9 +133,9 @@ def get_data_from_bmrb(residue=None, atom=None, list_of_atoms=None, filtered=Tru
                 res = atoms.split("-")[0]
                 atm = atoms.split("-")[1]
                 cs_dat = get_data(residue=res, atom=atm, filtered=filtered,
-                                              sd_limit=sd_limit,
-                                              ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                              t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                                  sd_limit=sd_limit,
+                                  ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                                  t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
                 if len(columns):
                     if cs_dat[0] == columns:
                         out_dat += cs_dat[1]
@@ -149,9 +148,9 @@ def get_data_from_bmrb(residue=None, atom=None, list_of_atoms=None, filtered=Tru
             res = list_of_atoms.split("-")[0]
             atm = list_of_atoms.split("-")[1]
             cs_dat = get_data(residue=res, atom=atm, filtered=filtered,
-                                          sd_limit=sd_limit,
-                                          ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                          t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                              sd_limit=sd_limit,
+                              ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                              t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
             if len(columns):
                 if cs_dat[0] == columns:
                     out_dat += cs_dat[1]
@@ -167,9 +166,9 @@ def get_data_from_bmrb(residue=None, atom=None, list_of_atoms=None, filtered=Tru
         for res in residue:
             for atm in atom:
                 cs_dat = get_data(residue=res, atom=atm, filtered=filtered,
-                                              sd_limit=sd_limit,
-                                              ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                              t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                                  sd_limit=sd_limit,
+                                  ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                                  t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
                 if len(columns):
                     if cs_dat[0] == columns:
                         out_dat += cs_dat[1]
@@ -182,9 +181,9 @@ def get_data_from_bmrb(residue=None, atom=None, list_of_atoms=None, filtered=Tru
         for res in residue:
             atm = '*'
             cs_dat = get_data(residue=res, atom=atm, filtered=filtered,
-                                          sd_limit=sd_limit,
-                                          ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                          t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                              sd_limit=sd_limit,
+                              ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                              t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
             if len(columns):
                 if cs_dat[0] == columns:
                     out_dat += cs_dat[1]
@@ -197,9 +196,9 @@ def get_data_from_bmrb(residue=None, atom=None, list_of_atoms=None, filtered=Tru
         for res in residue:
             atm = atom
             cs_dat = get_data(residue=res, atom=atm, filtered=filtered,
-                                          sd_limit=sd_limit,
-                                          ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                          t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                              sd_limit=sd_limit,
+                              ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                              t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
             if len(columns):
                 if cs_dat[0] == columns:
                     out_dat += cs_dat[1]
@@ -212,9 +211,9 @@ def get_data_from_bmrb(residue=None, atom=None, list_of_atoms=None, filtered=Tru
         for atm in atom:
             res = '*'
             cs_dat = get_data(residue=res, atom=atm, filtered=filtered,
-                                          sd_limit=sd_limit,
-                                          ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                          t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                              sd_limit=sd_limit,
+                              ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                              t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
             if len(columns):
                 if cs_dat[0] == columns:
                     out_dat += cs_dat[1]
@@ -227,9 +226,9 @@ def get_data_from_bmrb(residue=None, atom=None, list_of_atoms=None, filtered=Tru
         for atm in atom:
             res = residue
             cs_dat = get_data(residue=res, atom=atm, filtered=filtered,
-                                          sd_limit=sd_limit,
-                                          ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                          t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                              sd_limit=sd_limit,
+                              ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                              t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
             if len(columns):
                 if cs_dat[0] == columns:
                     out_dat += cs_dat[1]
@@ -242,9 +241,9 @@ def get_data_from_bmrb(residue=None, atom=None, list_of_atoms=None, filtered=Tru
         res = residue
         atm = atom
         cs_dat = get_data(residue=res, atom=atm, filtered=filtered,
-                                      sd_limit=sd_limit,
-                                      ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                      t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                          sd_limit=sd_limit,
+                          ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                          t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
         if len(columns):
             if cs_dat[0] == columns:
                 out_dat += cs_dat[1]
@@ -257,9 +256,9 @@ def get_data_from_bmrb(residue=None, atom=None, list_of_atoms=None, filtered=Tru
         res = '*'
         atm = atom
         cs_dat = get_data(residue=res, atom=atm, filtered=filtered,
-                                      sd_limit=sd_limit,
-                                      ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                      t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                          sd_limit=sd_limit,
+                          ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                          t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
         if len(columns):
             if cs_dat[0] == columns:
                 out_dat += cs_dat[1]
@@ -272,9 +271,9 @@ def get_data_from_bmrb(residue=None, atom=None, list_of_atoms=None, filtered=Tru
         res = residue
         atm = '*'
         cs_dat = get_data(residue=res, atom=atm, filtered=filtered,
-                                      sd_limit=sd_limit,
-                                      ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
-                                      t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                          sd_limit=sd_limit,
+                          ambiguity=ambiguity, ph_min=ph_min, ph_max=ph_max,
+                          t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
         if len(columns):
             if cs_dat[0] == columns:
                 out_dat += cs_dat[1]
@@ -347,11 +346,11 @@ def get_2d_chemical_shifts(residue, atom1, atom2, filtered=True, sd_limit=10,
     :param t_max: Temperature filter (max); default None
     :return: tuple of lists (atom1_cs,atom2_cs as list)
     """
-    
+
     x = []
     y = []
     cs_data = get_data_from_bmrb(residue=residue, ph_min=ph_min, ph_max=ph_max,
-                                             t_min=t_min, t_max=t_max, standard_amino_acids=False)
+                                 t_min=t_min, t_max=t_max, standard_amino_acids=False)
     cs_dict = _list_to_dict(cs_data[0], cs_data[1])
     for key in cs_dict.keys():
         if atom1 in cs_dict[key].keys() and atom2 in cs_dict[key].keys():
@@ -404,9 +403,9 @@ def get_filtered_data_from_bmrb(residue, atom, filtering_rules,
     :param standard_amino_acids: get data only form  standard amino acids and nucleic acids; default:True
     :return: chemical shift values as list
     """
-    
+
     cs_data = get_data_from_bmrb(residue=residue, ph_min=ph_min, ph_max=ph_max,
-                                             t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
+                                 t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
 
     def cs_filt(cs_dict2, atm2, cs_val):
         cs_width = 0.5
@@ -455,22 +454,22 @@ def get_statistics(residue=None, atom=None, list_of_atoms=None, filtered=True, s
     :param verbose: display the statistics on screen; default False
     :return: chemical shift statistics as a dictionary
     """
-    
+
     if residue is None and atom is None and list_of_atoms is None:
         logging.error('Please provide residue name or atom name or list of atoms as a list ')
         raise TypeError(
             'Please provide at least one of the three positional arguments: residue (or) atom (or) list_of_atoms')
     columns, data = get_data_from_bmrb(residue=residue,
-                                                   atom=atom,
-                                                   list_of_atoms=list_of_atoms,
-                                                   filtered=filtered,
-                                                   sd_limit=sd_limit,
-                                                   ambiguity=ambiguity,
-                                                   ph_min=ph_min,
-                                                   ph_max=ph_max,
-                                                   t_min=t_min,
-                                                   t_max=t_max,
-                                                   standard_amino_acids=standard_amino_acids)
+                                       atom=atom,
+                                       list_of_atoms=list_of_atoms,
+                                       filtered=filtered,
+                                       sd_limit=sd_limit,
+                                       ambiguity=ambiguity,
+                                       ph_min=ph_min,
+                                       ph_max=ph_max,
+                                       t_min=t_min,
+                                       t_max=t_max,
+                                       standard_amino_acids=standard_amino_acids)
     res_index = columns.index('Atom_chem_shift.Comp_ID')
     atm_index = columns.index('Atom_chem_shift.Atom_ID')
     cs_index = columns.index('Atom_chem_shift.Val')

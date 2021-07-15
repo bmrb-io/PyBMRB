@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import os
-from setuptools import setup, Extension
+
+from setuptools import setup
 
 
 def get_version():
@@ -15,13 +16,14 @@ def get_version():
         else:
             raise RuntimeError("Unable to find version string.")
 
+
 # Should fail if the readme is missing
 long_des = open('README.rst', 'r').read()
 
 setup(name='pybmrb',
       version=get_version(),
       packages=['pybmrb'],
-      install_requires=['pandas','requests>=2.21.0,<=3','plotly>=4.1.0','pynmrstar>=3.0.4','numpy>1.15'],
+      install_requires=['pandas', 'requests>=2.21.0,<=3', 'plotly>=4.1.0', 'pynmrstar>=3.0.4', 'numpy>1.15'],
       python_requires='>=3.6',
       author='Kumaran Baskaran',
       author_email='baskaran@uchc.edu',
@@ -31,7 +33,7 @@ setup(name='pybmrb',
       long_description_content_type='text/x-rst',
       keywords=['bmrb', 'nmr', 'nmrstar', 'biomagresbank',
                 'biological magnetic resonance bank',
-                'HSQC','TOCSY','Chemical shifts',
+                'HSQC', 'TOCSY', 'Chemical shifts',
                 'Histogram'],
       url='https://github.com/uwbmrb/PyBMRB',
       license='MIT',

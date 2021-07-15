@@ -5,8 +5,6 @@ import plotly.express as px
 from pybmrb import ChemicalShiftStatistics
 
 
-
-
 def hist(residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
          ph_min=None, ph_max=None, t_min=None, t_max=None,
          histnorm='',
@@ -42,18 +40,18 @@ def hist(residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10
     :param show_visualization: Automatically opens the visualization on a web browser; default True
     :return: chemical shift data and tags as tuple (chemical shifts, tags)
     """
-    
+
     columns, cs_data = ChemicalShiftStatistics.get_data_from_bmrb(residue=residue,
-                                              atom=atom,
-                                              list_of_atoms=list_of_atoms,
-                                              filtered=filtered,
-                                              sd_limit=sd_limit,
-                                              ambiguity=ambiguity,
-                                              ph_min=ph_min,
-                                              ph_max=ph_max,
-                                              t_min=t_min,
-                                              t_max=t_max,
-                                              standard_amino_acids=standard_amino_acids)
+                                                                  atom=atom,
+                                                                  list_of_atoms=list_of_atoms,
+                                                                  filtered=filtered,
+                                                                  sd_limit=sd_limit,
+                                                                  ambiguity=ambiguity,
+                                                                  ph_min=ph_min,
+                                                                  ph_max=ph_max,
+                                                                  t_min=t_min,
+                                                                  t_max=t_max,
+                                                                  standard_amino_acids=standard_amino_acids)
     cs_index = columns.index('Atom_chem_shift.Val')
     # ph_index = columns.index('Sample_conditions.pH')
     # temp_index = columns.index('Sample_conditions.Temperature_K')
@@ -176,18 +174,18 @@ def hist2d(residue, atom1, atom2, filtered=True, sd_limit=10,
     :param show_visualization: Automatically opens the visualization on a web browser; default True
     :return: tuple (chemical shift list of atom1, chemical shift list of atom2)
     """
-    
+
     x, y = ChemicalShiftStatistics.get_2d_chemical_shifts(residue=residue,
-                                      atom1=atom1,
-                                      atom2=atom2,
-                                      filtered=filtered,
-                                      sd_limit=sd_limit,
-                                      ambiguity1=ambiguity1,
-                                      ambiguity2=ambiguity2,
-                                      ph_min=ph_min,
-                                      ph_max=ph_max,
-                                      t_min=t_min,
-                                      t_max=t_max)
+                                                          atom1=atom1,
+                                                          atom2=atom2,
+                                                          filtered=filtered,
+                                                          sd_limit=sd_limit,
+                                                          ambiguity1=ambiguity1,
+                                                          ambiguity2=ambiguity2,
+                                                          ph_min=ph_min,
+                                                          ph_max=ph_max,
+                                                          t_min=t_min,
+                                                          t_max=t_max)
     if len(x) == 0:
         logging.error('No matching atom, or values found in the database')
         raise ValueError('No matching atom, or values found in the database')
@@ -292,14 +290,14 @@ def conditional_hist(residue, atom, filtering_rules,
     :param show_visualization: Automatically opens the visualization on a web browser; default True
     :return: chemical shift data and tags as tuple (chemical shifts, tags)
     """
-    
+
     columns, cs_data = ChemicalShiftStatistics.get_data_from_bmrb(residue=residue,
-                                              atom=atom,
-                                              ph_min=ph_min,
-                                              ph_max=ph_max,
-                                              t_min=t_min,
-                                              t_max=t_max,
-                                              standard_amino_acids=standard_amino_acids)
+                                                                  atom=atom,
+                                                                  ph_min=ph_min,
+                                                                  ph_max=ph_max,
+                                                                  t_min=t_min,
+                                                                  t_max=t_max,
+                                                                  standard_amino_acids=standard_amino_acids)
     cs_index = columns.index('Atom_chem_shift.Val')
     # ph_index = columns.index('Sample_conditions.pH')
     # temp_index = columns.index('Sample_conditions.Temperature_K')
@@ -310,14 +308,14 @@ def conditional_hist(residue, atom, filtering_rules,
         logging.error('No matching atom, or values found in the database')
         raise ValueError('No matching atom, or values found in the database')
     x1 = ChemicalShiftStatistics.get_filtered_data_from_bmrb(residue=residue,
-                                         atom=atom,
-                                         filtering_rules=filtering_rules,
-                                         ph_min=ph_min,
-                                         ph_max=ph_max,
-                                         t_min=t_min,
-                                         t_max=t_max,
-                                         standard_amino_acids=standard_amino_acids
-                                         )
+                                                             atom=atom,
+                                                             filtering_rules=filtering_rules,
+                                                             ph_min=ph_min,
+                                                             ph_max=ph_max,
+                                                             t_min=t_min,
+                                                             t_max=t_max,
+                                                             standard_amino_acids=standard_amino_acids
+                                                             )
     if len(x1) == 0:
         logging.error('No matching atom, or values found in the database')
         raise ValueError('No matching atom, or values found in the database')
