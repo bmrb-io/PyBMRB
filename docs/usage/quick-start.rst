@@ -213,3 +213,4 @@ More examples can be found :ref:`Examples page<Examples>`.
 .. |c13| replace:: :sup:`1` H - :sup:`13` C
 .. |hh| replace:: :sup:`1` H - :sup:`1` H
 
+.. footbibliography::
