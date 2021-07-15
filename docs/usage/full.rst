@@ -1,27 +1,27 @@
 Module documentation
 =====================
 
-Spectra Class
-~~~~~~~~~~~~~~~~~~~
+Spectra
+~~~~~~~~
 
-.. autoclass:: pybmrb.Spectra
+.. automodule:: pybmrb.Spectra
    :members:
 
-Histogram Class
-~~~~~~~~~~~~~~~~~
+Histogram
+~~~~~~~~~~~
 
-.. autoclass:: pybmrb.Histogram
+.. automodule:: pybmrb.Histogram
    :members:
 
-ChemicalShift Class
-~~~~~~~~~~~~~~~~~~~~~~
+ChemicalShift
+~~~~~~~~~~~~~~
 
-.. autoclass:: pybmrb.ChemicalShift
+.. automodule:: pybmrb.ChemicalShift
    :members:
 
-ChemicalShiftStatistics Class
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ChemicalShiftStatistics
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: pybmrb.ChemicalShiftStatistics
+.. automodule:: pybmrb.ChemicalShiftStatistics
    :members:
 
