@@ -1,2 +1,2 @@
-
-__version__ = '3.0.3'
+__all__=['Spectra','Histogram','ChemicalShift','ChemicalShiftStatistics']
+__version__= '3.0.3'

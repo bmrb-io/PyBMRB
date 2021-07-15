@@ -403,10 +403,10 @@ def conditional_hist(residue, atom, filtering_rules,
             logging.error('Output file format not support:{}'.format(output_format))
     return x, tag
 
-
-if __name__ == "__main__":
-    hist(residue='ALA', atom='N')
-# Histogram.hist(residue='ALA',atom='N', output_format='webp',output_file='test1',
+#
+# if __name__ == "__main__":
+#     hist(residue='ALA', atom='N')
+# # Histogram.hist(residue='ALA',atom='N', output_format='webp',output_file='test1',
 #                show_visualization=False)
 # Histogram.hist(residue='ALA', atom='N', output_format='webp', output_file='test2.webp',
 #                show_visualization=False)

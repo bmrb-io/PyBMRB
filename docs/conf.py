@@ -34,7 +34,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'sphinxcontrib.bibtex',
               'sphinx_rtd_theme',
-              'sphinx.ext.autosectionlabel']
+              'sphinx.ext.autosectionlabel',
+              'sphinx_copybutton']
 
 bibtex_bibfiles = ['refs.bib']
 
