@@ -8,7 +8,7 @@ import pynmrstar
 
 from pybmrb import ChemicalShift
 import plotly.express as px
-from typing import TextIO, BinaryIO, Union, List, Optional, Dict, Any, Tuple
+from typing import Union, List
 
 
 def create_c13hsqc_peaklist(bmrb_ids: Union[str, List[str]],
@@ -27,7 +27,7 @@ def create_c13hsqc_peaklist(bmrb_ids: Union[str, List[str]],
     :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
         cs_track is a dictionary { matching atoms:[cs_values]}
     """
-    
+
     ch_atoms = {'ALA': [('HA', 'CA'), ('HB*', 'CB')],
                 'ARG': [('HA', 'CA'), ('HB*', 'CB'), ('HG*', 'CG'), ('HD*', 'CD')],
                 'ASN': [('HA', 'CA'), ('HB*', 'CB')],
@@ -119,7 +119,7 @@ def create_tocsy_peaklist(bmrb_ids: Union[str, List[str]],
     :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
         cs_track is a dictionary { matching atoms:[cs_values]}
     """
-    
+
     cs_data = {}
     cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids=bmrb_ids, auth_tag=auth_tag)
     cs_data.update(cs_data_bmrb)
@@ -189,7 +189,7 @@ def create_2d_peaklist(bmrb_ids: Union[str, List[str]],
     :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
         cs_track is a dictionary { matching atoms:[cs_values]}
     """
-    
+
     cs_data = {}
     cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
     cs_data.update(cs_data_bmrb)
@@ -260,7 +260,7 @@ def create_n15hsqc_peaklist(bmrb_ids: Union[str, List[str]],
     :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
         cs_track is a dictionary { matching atoms:[cs_values]}
     """
-    
+
     atom_x = 'H'
     atom_y = 'N'
     sidechain_nh_atoms = {'ARG': {
@@ -397,11 +397,11 @@ def n15hsqc(bmrb_ids: Union[str, List[str]] = None,
                 x1.append(float(row[0]))
                 y1.append(float(row[1]))
     peak_list_2d = create_n15hsqc_peaklist(bmrb_ids,
-                                                   input_file_names=input_file_names,
-                                                   entry_objects=entry_objects,
-                                                   auth_tag=auth_tag,
-                                                   draw_trace=draw_trace,
-                                                   include_sidechain=include_sidechain)
+                                           input_file_names=input_file_names,
+                                           entry_objects=entry_objects,
+                                           auth_tag=auth_tag,
+                                           draw_trace=draw_trace,
+                                           include_sidechain=include_sidechain)
     x = peak_list_2d[0]
     y = peak_list_2d[1]
     data_set = peak_list_2d[2]
@@ -424,7 +424,7 @@ def n15hsqc(bmrb_ids: Union[str, List[str]] = None,
                                  }, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7, mode='lines')
         if peak_list is not None:
             fig.add_scatter(x1, y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_layout(showlegend=False)
@@ -444,7 +444,7 @@ def n15hsqc(bmrb_ids: Union[str, List[str]] = None,
         if draw_trace:
             for k in cs_track.keys():
                 fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, mode='lines',
-                                opacity=0.7,hover_name=k)
+                                opacity=0.7, hover_name=k)
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_xaxes(autorange="reversed")
@@ -547,12 +547,12 @@ def c13hsqc(bmrb_ids: Union[str, List[str]],
     :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
         cs_track is a dictionary { matching atoms:[cs_values]}
     """
-    
+
     peak_list_2d = create_c13hsqc_peaklist(bmrb_ids,
-                                                   input_file_names=input_file_names,
-                                                   entry_objects=entry_objects,
-                                                   auth_tag=auth_tag,
-                                                   draw_trace=draw_trace)
+                                           input_file_names=input_file_names,
+                                           entry_objects=entry_objects,
+                                           auth_tag=auth_tag,
+                                           draw_trace=draw_trace)
     x1 = []
     y1 = []
     if peak_list is not None:
@@ -584,7 +584,7 @@ def c13hsqc(bmrb_ids: Union[str, List[str]],
         if draw_trace:
             for k in cs_track.keys():
                 fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1],
-                                name=k, opacity=0.7,mode='lines')
+                                name=k, opacity=0.7, mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_layout(showlegend=False)
@@ -619,7 +619,7 @@ def c13hsqc(bmrb_ids: Union[str, List[str]],
                                  "y": '<sup>13</sup>C (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7, mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_xaxes(autorange="reversed")
@@ -700,12 +700,12 @@ def tocsy(bmrb_ids: Union[str, List[str]],
     :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
         cs_track is a dictionary { matching atoms:[cs_values]}
     """
-    
+
     peak_list_2d = create_tocsy_peaklist(bmrb_ids,
-                                                 input_file_names=input_file_names,
-                                                 entry_objects=entry_objects,
-                                                 auth_tag=auth_tag,
-                                                 draw_trace=draw_trace)
+                                         input_file_names=input_file_names,
+                                         entry_objects=entry_objects,
+                                         auth_tag=auth_tag,
+                                         draw_trace=draw_trace)
     x1 = []
     y1 = []
     if peak_list is not None:
@@ -735,7 +735,7 @@ def tocsy(bmrb_ids: Union[str, List[str]],
                                  "y": '<sup>1</sup>H (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7, mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_layout(showlegend=False)
@@ -771,7 +771,7 @@ def tocsy(bmrb_ids: Union[str, List[str]],
                                  "y": '<sup>1</sup>H (ppm)'}, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7, mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_xaxes(autorange="reversed")
@@ -855,12 +855,12 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
     :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
         cs_track is a dictionary { matching atoms:[cs_values]}
     """
-    
+
     peak_list_2d = create_2d_peaklist(bmrb_ids, atom_x=atom_x, atom_y=atom_y,
-                                              input_file_names=input_file_names,
-                                              entry_objects=entry_objects,
-                                              auth_tag=auth_tag,
-                                              draw_trace=draw_trace)
+                                      input_file_names=input_file_names,
+                                      entry_objects=entry_objects,
+                                      auth_tag=auth_tag,
+                                      draw_trace=draw_trace)
     x1 = []
     y1 = []
     if peak_list is not None:
@@ -891,7 +891,7 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
             layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7, mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_layout(showlegend=False)
@@ -910,7 +910,7 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
             layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7, mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_xaxes(autorange="reversed")
@@ -928,7 +928,7 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
             layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
-                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7,mode='lines')
+                fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7, mode='lines')
         if peak_list is not None:
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_xaxes(autorange="reversed")

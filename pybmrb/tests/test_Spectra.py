@@ -2,6 +2,7 @@
 
 from pybmrb import Spectra
 
+
 def test_create_c13hsqc_peaklist():
     data = Spectra.create_c13hsqc_peaklist(bmrb_ids='27688')
     assert type(data) is tuple
@@ -33,7 +34,7 @@ def test_create_2d_peaklist():
 
 
 def test_create_n15hsqc_peaklist():
-    data = Spectra.create_n15hsqc_peaklist(bmrb_ids=27688)
+    data = Spectra.create_n15hsqc_peaklist(bmrb_ids='27688')
     assert type(data) is tuple
     assert len(data) == 6
     for i in range(len(data) - 1):
@@ -43,7 +44,7 @@ def test_create_n15hsqc_peaklist():
 
 
 def test_n15hsqc():
-    data = Spectra.n15hsqc(bmrb_ids=19152, show_visualization=False)
+    data = Spectra.n15hsqc(bmrb_ids='19152', show_visualization=False)
     assert type(data) is tuple
     assert len(data) == 6
     for i in range(len(data) - 1):
@@ -53,7 +54,7 @@ def test_n15hsqc():
 
 
 def test_c13hsqc():
-    data = Spectra.n15hsqc(bmrb_ids=18228, show_visualization=False)
+    data = Spectra.n15hsqc(bmrb_ids='18228', show_visualization=False)
     assert type(data) is tuple
     assert len(data) == 6
     for i in range(len(data) - 1):
@@ -63,7 +64,7 @@ def test_c13hsqc():
 
 
 def test_tocsy():
-    data = Spectra.tocsy(bmrb_ids=27435, show_visualization=False)
+    data = Spectra.tocsy(bmrb_ids='27435', show_visualization=False)
     assert type(data) is tuple
     assert len(data) == 6
     for i in range(len(data) - 1):
@@ -73,7 +74,7 @@ def test_tocsy():
 
 
 def test_generic_2d():
-    data = Spectra.generic_2d(bmrb_ids=18078, atom_x='H', atom_y='N', show_visualization=False)
+    data = Spectra.generic_2d(bmrb_ids='18078', atom_x='H', atom_y='N', show_visualization=False)
     assert type(data) is tuple
     assert len(data) == 6
     for i in range(len(data) - 1):
