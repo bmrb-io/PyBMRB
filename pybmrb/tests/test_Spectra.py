@@ -87,7 +87,7 @@ def test_export_peak_list():
     data = Spectra.n15hsqc(bmrb_ids='17300',show_visualization=False)
     csv_dict = Spectra.export_peak_list(data, output_format='csv')
     assert type(csv_dict) is dict
-    assert len(csv_dict.keys()) == 4
+    assert len(csv_dict.keys()) == 6
     n = len(csv_dict['sequence'])
     assert n > 0
     for k in csv_dict.keys():
