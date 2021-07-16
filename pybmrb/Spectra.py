@@ -998,7 +998,7 @@ def export_peak_list(peak_list: tuple, output_format:str ='csv', include_side_ch
         for i in range(len(peak_list[0])):
             atom_x = peak_list[3][i].split("-")[5]
             atom_y = peak_list[3][i].split("-")[6]
-            if include_side_chain:
+            if not include_side_chain:
                 if atom_x in back_bone and atom_y in back_bone:
                     csv_dict['sequence'].append(peak_list[3][i].split("-")[3])
                     csv_dict['chem_comp_ID'].append(peak_list[3][i].split("-")[4])
@@ -1028,7 +1028,7 @@ def export_peak_list(peak_list: tuple, output_format:str ='csv', include_side_ch
             res = peak_list[3][i].split("-")[4]
             assignment = '{}{}{}-{}'.format(ChemicalShiftStatistics.one_letter_code[res], peak_list[3][i].split("-")[3],
                                             atom_x, atom_y)
-            if include_side_chain:
+            if not include_side_chain:
                 if atom_x in back_bone and atom_y in back_bone:
                     csv_dict['Assignment'].append(assignment)
                     csv_dict['w1'].append(peak_list[0][i])
@@ -1039,18 +1039,18 @@ def export_peak_list(peak_list: tuple, output_format:str ='csv', include_side_ch
                 csv_dict['w2'].append(peak_list[1][i])
         if output_file_name is not None:
             fo = open(output_file_name, 'w')
-            fo.write('Assignment\t{:>6}\t\t{:>6}\n\n'.format('w1','w2'))
+            fo.write('Assignment  \t{:>6}\t\t{:>6}\n\n'.format('w1','w2'))
             for i in range(len(csv_dict['Assignment'])):
-                fo.write('{}\t\t{:>6}\t\t{:>6}\n'.format(csv_dict['Assignment'][i],
+                fo.write('{:<10}\t\t{:>6}\t\t{:>6}\n'.format(csv_dict['Assignment'][i],
                                                round(float(csv_dict['w1'][i]),3),
                                                round(float(csv_dict['w2'][i]),3)))
             fo.close()
     return csv_dict
 
-#
-# if __name__ == "__main__":
-#     p = n15hsqc(input_file_names='tests/test_data/MyData.str',show_visualization=False)
-#     pk=export_peak_list(p,output_format='sparky',output_file_name='test.list')
+
+if __name__ == "__main__":
+    p = n15hsqc(input_file_names='tests/test_data/MyData.str',show_visualization=False)
+    pk=export_peak_list(p,output_format='csv',output_file_name='test.csv')
 # # Generating examples for documentation
 # n15hsqc(bmrb_ids=15060,output_format='jpg',legend='residue',output_file='../docs/_images/15060_n15',
 #                 show_visualization=False)
