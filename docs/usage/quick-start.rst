@@ -76,9 +76,7 @@ compare your data with BMRB as overlying |n15| - HSQC spectra using the followin
 
 .. code:: python
 
-    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077],
-                input_file_names='tests/test_data/MyData.str',
-                legend='dataset')
+    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077], input_file_names='tests/test_data/MyData.str', legend='dataset')
 
 This will open the visualization on your default web browser. When you mouseover the tool-tip will show the informatoin
 about each peak. You may turn on and off the data set using legend on the right.
@@ -88,12 +86,7 @@ If you want the output as an image and not to open the visualization on web brow
 
 .. code:: python
 
-    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077],
-                input_file_names='tests/test_data/MyData.str',
-                legend='dataset',
-                output_format='jpg',
-                output_file='../docs/_images/n15hsqc_compare',
-                show_visualization = False)
+    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077], input_file_names='tests/test_data/MyData.str', legend='dataset', output_format='jpg', output_file='n15hsqc_compare.jpg', show_visualization = False)
 
 .. figure:: ../_images/n15hsqc_compare.jpg
     :alt: n15hsqc
@@ -107,10 +100,7 @@ If you want to trace the chemical shift changes, use the following command
 
 .. code:: python
 
-    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077],
-                input_file_names='tests/test_data/MyData.str',
-                legend='dataset',
-                draw_trace = True)
+    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077], input_file_names='tests/test_data/MyData.str', legend='dataset', draw_trace = True)
 
 `Click here to view the output2 <../_static/n15hsqc_compare2.html>`_
 
@@ -119,10 +109,7 @@ a csv file. You may use the csv file to compare your peak list with any BMRB ent
 
 .. code:: python
 
-    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077],
-                input_file_names='tests/test_data/MyData.str',
-                legend='dataset',
-                draw_trace = True)
+    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077], input_file_names='tests/test_data/MyData.str', legend='dataset', draw_trace = True)
 
 .. figure:: ../_images/n15_peaklist.jpg
     :alt: n15hsqc
