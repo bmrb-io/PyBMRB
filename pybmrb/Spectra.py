@@ -994,7 +994,9 @@ def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_
         csv_dict = {'sequence': [],
                     'chem_comp_ID': [],
                     'H_shift': [],
-                    'N_shift': []}
+                    'N_shift': [],
+                    'H_atom_name':[],
+                    'N_atom_name':[]}
         for i in range(len(peak_list[0])):
             atom_x = peak_list[3][i].split("-")[5]
             atom_y = peak_list[3][i].split("-")[6]
@@ -1004,19 +1006,26 @@ def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_
                     csv_dict['chem_comp_ID'].append(peak_list[3][i].split("-")[4])
                     csv_dict['H_shift'].append(peak_list[0][i])
                     csv_dict['N_shift'].append(peak_list[1][i])
+                    csv_dict['H_atom_name'].append(peak_list[3][i].split("-")[5])
+                    csv_dict['N_atom_name'].append(peak_list[3][i].split("-")[6])
+
             else:
                 csv_dict['sequence'].append(peak_list[3][i].split("-")[3])
                 csv_dict['chem_comp_ID'].append(peak_list[3][i].split("-")[4])
                 csv_dict['H_shift'].append(peak_list[0][i])
                 csv_dict['N_shift'].append(peak_list[1][i])
+                csv_dict['H_atom_name'].append(peak_list[3][i].split("-")[5])
+                csv_dict['N_atom_name'].append(peak_list[3][i].split("-")[6])
         if output_file_name is not None:
             fo = open(output_file_name, 'w')
-            fo.write('sequence,chem_comp_ID,H_shift,N_shift\n')
+            fo.write('sequence,chem_comp_ID,H_shift,N_shift,H_atom_name,N_atom_name\n')
             for i in range(len(csv_dict['sequence'])):
-                fo.write('{},{},{},{}\n'.format(csv_dict['sequence'][i],
+                fo.write('{},{},{},{},{},{}\n'.format(csv_dict['sequence'][i],
                                                 csv_dict['chem_comp_ID'][i],
                                                 round(float(csv_dict['H_shift'][i]), 3),
-                                                round(float(csv_dict['N_shift'][i]), 3)))
+                                                round(float(csv_dict['N_shift'][i]), 3),
+                                                      csv_dict['H_atom_name'][i],
+                                                      csv_dict['N_atom_name'][i]))
             fo.close()
     elif output_format == 'sparky':
         csv_dict = {'Assignment': [],
@@ -1056,11 +1065,11 @@ def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_
         raise ValueError('Output format not supported')
     return csv_dict
 
-#
+
 # if __name__ == "__main__":
 #     p = n15hsqc(bmrb_ids=15000, show_visualization=False)
-#     pk = export_peak_list(p, output_format='sparky', output_file_name='test.list')
-# # Generating examples for documentation
+#     pk = export_peak_list(p, output_format='csv', output_file_name='test.csv')
+# Generating examples for documentation
 # n15hsqc(bmrb_ids=15060,output_format='jpg',legend='residue',output_file='../docs/_images/15060_n15',
 #                 show_visualization=False)
 # n15hsqc(bmrb_ids=15060, output_format='html', legend='residue',output_file='../docs/_static/15060_n15',
