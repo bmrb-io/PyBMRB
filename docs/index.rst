@@ -2,13 +2,13 @@ Welcome to PyBMRB :footcite:`Baskaran2021`
 =============================================
 
 A Python module for visualizing Nuclear Magnetic Resonance(NMR)  chemical shift data from Biological Magnetic
-Resonance data Bank :footcite:`Ulrich2007` (`BMRB <http://bmrb.io>`_) and  from NMR-STAR :footcite:`Ulrich2019` format files. PyBMRB helps the
-users to view the one dimensional chemical shift list as multi-dimensional NMR spectra. Chemical shift distributions
-can be studied using this library by plotting the histograms using differnt filtering criteria.
+Resonance data Bank :footcite:`Ulrich2007` (`BMRB <http://bmrb.io>`_) and  from NMR-STAR :footcite:`Ulrich2019` format files.  PyBMRB helps the
+user to view the one dimensional chemical shift list a multi-dimensional NMR spectrum.  In addition to that  Chemical shift distribution of
+different atom types can also be visualized as histograms and heatmaps using this library.
 
 This package uses `PyNMRSTAR <https://github.com/uwbmrb/PyNMRSTAR>`_ to parse the NMR-STAR files
 and `BMRB-API <https://github.com/uwbmrb/BMRB-API>`_ to fetch the data directly from BMRB, which avoids the hustle of
-downloading and parsing the data from the BMRB for visualizations. This package is developed and maintained by BMRB
+downloading and parsing the data from BMRB for visualization purpose.  This package is developed and maintained by BMRB.
 
 
 

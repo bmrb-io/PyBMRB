@@ -3,6 +3,7 @@ import json
 import logging
 from urllib.request import urlopen, Request
 import numpy
+from typing import Union, List
 
 # Set the log level to INFO
 logging.getLogger().setLevel(logging.INFO)
@@ -17,7 +18,7 @@ three_letter_code = {'I': 'ILE', 'Q': 'GLN', 'G': 'GLY', 'E': 'GLU', 'C': 'CYS',
 one_letter_code = dict([(value, key) for key, value in three_letter_code.items()])
 
 
-def _get_data_from_api(residue, atom):
+def _get_data_from_api(residue: str, atom: str) -> dict:
     """
     Dumps the BMRB-API return for given residue and atom. Not intend to call directly
 
@@ -43,8 +44,9 @@ def _get_data_from_api(residue, atom):
     return dump
 
 
-def get_data(residue, atom, filtered=True, sd_limit=10, ambiguity='*',
-             ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True):
+def get_data(residue: str, atom: str, filtered: bool = True, sd_limit: float = 10, ambiguity: Union[str, int] = '*',
+             ph_min: float = None, ph_max: float = None, t_min: float = None,
+             t_max: float = None, standard_amino_acids: bool = True) -> tuple:
     """
     Fetches the data from BMRB-API for given residue and atom and filters based of the values provided in the
     parameters
@@ -101,8 +103,11 @@ def get_data(residue, atom, filtered=True, sd_limit=10, ambiguity='*',
     return columns, data
 
 
-def get_data_from_bmrb(residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
-                       ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True):
+def get_data_from_bmrb(residue: str = None, atom: str = None, list_of_atoms: Union[str, List[str]] = None,
+                       filtered: bool = True,
+                       sd_limit: float = 10, ambiguity: Union[str, int] = '*',
+                       ph_min: float = None, ph_max: float = None, t_min: float = None, t_max: float = None,
+                       standard_amino_acids: bool = True) -> tuple:
     """
     Fetches the data from BMRB-API for given residue/list of residues (and/or)  atom/list of atoms and
      filters based of the values provided in the parameters
@@ -287,7 +292,7 @@ def get_data_from_bmrb(residue=None, atom=None, list_of_atoms=None, filtered=Tru
     return columns, out_dat
 
 
-def _list_to_dict(columns, data):
+def _list_to_dict(columns: List[str], data: list) -> dict:
     """
     Converts the outputs from get_data_from_bmrb into a dictionary. Not intend to call directly
 
@@ -326,9 +331,10 @@ def _list_to_dict(columns, data):
     return cs_dict
 
 
-def get_2d_chemical_shifts(residue, atom1, atom2, filtered=True, sd_limit=10,
-                           ambiguity1='*', ambiguity2='*',
-                           ph_min=None, ph_max=None, t_min=None, t_max=None):
+def get_2d_chemical_shifts(residue: str, atom1: str, atom2: str, filtered: bool = True, sd_limit: float = 10,
+                           ambiguity1: Union[str, int] = '*', ambiguity2: Union[str, int] = '*',
+                           ph_min: float = None, ph_max: float = None, t_min: float = None,
+                           t_max: float = None) -> tuple:
     """
     Fetches chemical shift data for a given residue and combines the desired two atoms chemical shift value from the
     same residue as two dimensional list
@@ -388,8 +394,9 @@ def get_2d_chemical_shifts(residue, atom1, atom2, filtered=True, sd_limit=10,
     return cs_x, cs_y
 
 
-def get_filtered_data_from_bmrb(residue, atom, filtering_rules,
-                                ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True):
+def get_filtered_data_from_bmrb(residue: str, atom: str, filtering_rules: list,
+                                ph_min: float = None, ph_max: float = None, t_min: float = None,
+                                t_max: float = None, standard_amino_acids: bool = True) -> list:
     """
     Fetches the chemical shift data for a given residue and filters them using filtering rules
 
@@ -407,7 +414,7 @@ def get_filtered_data_from_bmrb(residue, atom, filtering_rules,
     cs_data = get_data_from_bmrb(residue=residue, ph_min=ph_min, ph_max=ph_max,
                                  t_min=t_min, t_max=t_max, standard_amino_acids=standard_amino_acids)
 
-    def cs_filt(cs_dict2, atm2, cs_val):
+    def cs_filt(cs_dict2: dict, atm2: str, cs_val: float) -> dict:
         cs_width = 0.5
         if 'H' in atm2:
             cs_width = 0.1
@@ -435,8 +442,11 @@ def get_filtered_data_from_bmrb(residue, atom, filtering_rules,
     return x
 
 
-def get_statistics(residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
-                   ph_min=None, ph_max=None, t_min=None, t_max=None, standard_amino_acids=True, verbose=False):
+def get_statistics(residue: str = None, atom: str = None, list_of_atoms: list = None, filtered: bool = True,
+                   sd_limit: float = 10,
+                   ambiguity: Union[str, int] = '*',
+                   ph_min: float = None, ph_max: float = None, t_min: float = None, t_max: float = None,
+                   standard_amino_acids: bool = True, verbose: bool = False) -> dict:
     """
     Provides chemical shift statistics like Mean, Median, Standard deviation for a given residue/atom/list of atoms
 

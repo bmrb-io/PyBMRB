@@ -18,7 +18,7 @@ one_letter_code = dict([(value, key) for key, value in three_letter_code.items()
 
 def _from_pynmrstar_entry_object(entry_data: pynmrstar.Entry,
                                  data_set_id: str,
-                                 auth_tag: bool = False, ):
+                                 auth_tag: bool = False, ) -> dict:
     """
     Extracts chemical shift data as dictionary from PyNMRSTAR entry object
 
@@ -81,7 +81,7 @@ def _from_pynmrstar_entry_object(entry_data: pynmrstar.Entry,
 
 def from_entry_object(entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]],
                       auth_tag: bool = False,
-                      data_set_id: Union[str, List[str]] = None):
+                      data_set_id: Union[str, List[str]] = None) -> dict:
     """
     Extracts chemical shift information one or more PyNMRSTAR entry object
 
@@ -119,7 +119,7 @@ def from_entry_object(entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry
 
 def from_file(input_file_names: Union[str, List[str]],
               auth_tag: bool = False,
-              data_set_id: Union[str, List[str]] = None):
+              data_set_id: Union[str, List[str]] = None) -> dict:
     """
     Extracts chemical shift information one or more NMR-STAR files
 
@@ -155,7 +155,7 @@ def from_file(input_file_names: Union[str, List[str]],
 
 
 def from_bmrb(bmrb_ids: Union[str, List[str]],
-              auth_tag: bool = False):
+              auth_tag: bool = False) -> dict:
     """
     Extracts chemical shift information directly from BMRB database for a given BMRB entry or list of entries
 

@@ -15,7 +15,7 @@ def create_c13hsqc_peaklist(bmrb_ids: Union[str, List[str]],
                             entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
                             input_file_names: Union[str, List[str]] = None,
                             auth_tag: bool = False,
-                            draw_trace: bool = False):
+                            draw_trace: bool = False) -> tuple:
     """
     Converts one dimensional chemical shifts from list of BMRB entries into CHSQC peak list
 
@@ -107,7 +107,7 @@ def create_tocsy_peaklist(bmrb_ids: Union[str, List[str]],
                           entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
                           input_file_names: Union[str, List[str]] = None,
                           auth_tag: bool = False,
-                          draw_trace: bool = False):
+                          draw_trace: bool = False) -> tuple:
     """
     Converts one dimensional chemical shifts from list of BMRB entries into TOCSY peak list
 
@@ -175,7 +175,7 @@ def create_2d_peaklist(bmrb_ids: Union[str, List[str]],
                        atom_x: str, atom_y: str, input_file_names: Union[str, List[str]] = None,
                        entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
                        auth_tag: bool = False,
-                       draw_trace: bool = False):
+                       draw_trace: bool = False) -> tuple:
     """
      Converts one dimensional chemical shifts from list of BMRB entries into generic 2D peak list
 
@@ -246,7 +246,7 @@ def create_n15hsqc_peaklist(bmrb_ids: Union[str, List[str]],
                             entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
                             auth_tag: bool = False,
                             draw_trace: bool = False,
-                            include_sidechain: bool = True):
+                            include_sidechain: bool = True) -> tuple:
     """
     Converts one dimensional chemical shifts from list of BMRB entries into NHSQC peak list
 
@@ -367,7 +367,7 @@ def n15hsqc(bmrb_ids: Union[str, List[str]] = None,
             output_file: str = None,
             output_image_width: int = 800,
             output_image_height: int = 600,
-            show_visualization: bool = True):
+            show_visualization: bool = True) -> tuple:
     """
     Plots NHSQC spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
@@ -528,7 +528,7 @@ def c13hsqc(bmrb_ids: Union[str, List[str]],
             output_file: str = None,
             output_image_width: int = 800,
             output_image_height: int = 600,
-            show_visualization: bool = True):
+            show_visualization: bool = True) -> tuple:
     """
     Plots CHSQC spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
@@ -681,7 +681,7 @@ def tocsy(bmrb_ids: Union[str, List[str]],
           output_file: str = None,
           output_image_width: int = 800,
           output_image_height: int = 600,
-          show_visualization: bool = True):
+          show_visualization: bool = True) -> tuple:
     """
     Plots TOCSY spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
@@ -834,7 +834,7 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
                output_file: str = None,
                output_image_width: int = 800,
                output_image_height: int = 600,
-               show_visualization: bool = True):
+               show_visualization: bool = True) -> tuple:
     """
     Plots generic 2D spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
 
@@ -979,7 +979,7 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
 
 
 def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_chain: bool = True,
-                     output_file_name: str = None):
+                     output_file_name: str = None) -> dict:
     """
     Exports peak list in csv or sparky format
 
@@ -995,8 +995,8 @@ def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_
                     'chem_comp_ID': [],
                     'X_shift': [],
                     'Y_shift': [],
-                    'X_atom_name':[],
-                    'Y_atom_name':[]}
+                    'X_atom_name': [],
+                    'Y_atom_name': []}
         for i in range(len(peak_list[0])):
             atom_x = peak_list[3][i].split("-")[5]
             atom_y = peak_list[3][i].split("-")[6]
@@ -1021,9 +1021,9 @@ def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_
             fo.write('sequence,chem_comp_ID,X_shift,Y_shift,X_atom_name,Y_atom_name\n')
             for i in range(len(csv_dict['sequence'])):
                 fo.write('{},{},{},{},{},{}\n'.format(csv_dict['sequence'][i],
-                                                csv_dict['chem_comp_ID'][i],
-                                                round(float(csv_dict['X_shift'][i]), 3),
-                                                round(float(csv_dict['Y_shift'][i]), 3),
+                                                      csv_dict['chem_comp_ID'][i],
+                                                      round(float(csv_dict['X_shift'][i]), 3),
+                                                      round(float(csv_dict['Y_shift'][i]), 3),
                                                       csv_dict['X_atom_name'][i],
                                                       csv_dict['Y_atom_name'][i]))
             fo.close()
@@ -1065,10 +1065,10 @@ def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_
         raise ValueError('Output format not supported')
     return csv_dict
 
-
-if __name__ == "__main__":
-    p = n15hsqc(bmrb_ids=15000, show_visualization=False)
-    pk = export_peak_list(p, output_format='csv', output_file_name='test.csv')
+#
+# if __name__ == "__main__":
+#     p = n15hsqc(bmrb_ids=15000, show_visualization=False)
+#     pk = export_peak_list(p, output_format='csv', output_file_name='test.csv')
 # Generating examples for documentation
 # n15hsqc(bmrb_ids=15060,output_format='jpg',legend='residue',output_file='../docs/_images/15060_n15',
 #                 show_visualization=False)
