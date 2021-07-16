@@ -1015,8 +1015,8 @@ def export_peak_list(peak_list: tuple, output_format:str ='csv', include_side_ch
             for i in range(len(csv_dict['sequence'])):
                 fo.write('{},{},{},{}\n'.format(csv_dict['sequence'][i],
                                                 csv_dict['chem_comp_ID'][i],
-                                                csv_dict['H_shift'][i],
-                                                csv_dict['N_shift'][i]))
+                                                round(float(csv_dict['H_shift'][i]),3),
+                                                round(float(csv_dict['N_shift'][i]),3)))
             fo.close()
     elif output_format == 'sparky':
         csv_dict = {'Assignment': [],
@@ -1039,20 +1039,18 @@ def export_peak_list(peak_list: tuple, output_format:str ='csv', include_side_ch
                 csv_dict['w2'].append(peak_list[1][i])
         if output_file_name is not None:
             fo = open(output_file_name, 'w')
-            fo.write('Assignment\tw1\tw2\n\n')
+            fo.write('Assignment\t{:>6}\t\t{:>6}\n\n'.format('w1','w2'))
             for i in range(len(csv_dict['Assignment'])):
-                fo.write('{}\n{}\n{}\n'.format(csv_dict['Assignemnt'][i],
-                                               csv_dict['w1'][i],
-                                               csv_dict['w2'][i]))
+                fo.write('{}\t\t{:>6}\t\t{:>6}\n'.format(csv_dict['Assignment'][i],
+                                               round(float(csv_dict['w1'][i]),3),
+                                               round(float(csv_dict['w2'][i]),3)))
             fo.close()
     return csv_dict
 
-    print(peak_list)
-
-
-if __name__ == "__main__":
-    p = n15hsqc(bmrb_ids='15060',show_visualization=False)
-    pk=export_peak_list(p)
+#
+# if __name__ == "__main__":
+#     p = n15hsqc(input_file_names='tests/test_data/MyData.str',show_visualization=False)
+#     pk=export_peak_list(p,output_format='sparky',output_file_name='test.list')
 # # Generating examples for documentation
 # n15hsqc(bmrb_ids=15060,output_format='jpg',legend='residue',output_file='../docs/_images/15060_n15',
 #                 show_visualization=False)
