@@ -14,7 +14,7 @@ def hist(residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10
          output_image_width=800,
          output_image_height=600,
          show_visualization=True
-         ):
+         ) -> tuple:
     """
     plots histogram for a given list of atoms and residues with some filters. One of either residue or atom or list
     of atoms is required
@@ -149,7 +149,7 @@ def hist2d(residue, atom1, atom2, filtered=True, sd_limit=10,
            output_file=None,
            output_image_width=800,
            output_image_height=600,
-           show_visualization=True):
+           show_visualization=True) -> tuple:
     """
     Generates chemical shift correlation plot for any two atoms from a given residue.
 
@@ -267,7 +267,7 @@ def conditional_hist(residue, atom, filtering_rules,
                      output_image_width=800,
                      output_image_height=600,
                      show_visualization=True
-                     ):
+                     ) -> tuple:
     """
     Plots the distribution of the given atom in the residue along with the filtered distribution besed
     on the chemical shift values of the other atoms in the residue

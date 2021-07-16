@@ -16,7 +16,7 @@ Spectra simulation
 --------------------
 PyBMRB combines the chemical shift information from BMRB entries or NMR-STAR files using certain rules defined by the
 experiment type. In this method it can generate |n15| - HSQC, |c13| -HSQC and |HH|-TOCSY. You may define which atom to
-be on X axis and which atom to be on Y axis to generate through bond correlation 2D spectrum.
+be on X axis and which atom to be on Y axis to generate a generic 2D correlation spectrum.
 
 
 |n15| - HSQC peak position simulation

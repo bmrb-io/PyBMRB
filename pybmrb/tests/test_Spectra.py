@@ -84,7 +84,7 @@ def test_generic_2d():
 
 
 def test_export_peak_list():
-    data = Spectra.n15hsqc(bmrb_ids='17300',show_visualization=False)
+    data = Spectra.n15hsqc(bmrb_ids='17300', show_visualization=False)
     csv_dict = Spectra.export_peak_list(data, output_format='csv')
     assert type(csv_dict) is dict
     assert len(csv_dict.keys()) == 6
