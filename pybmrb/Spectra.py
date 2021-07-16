@@ -6,7 +6,7 @@ import csv
 
 import pynmrstar
 
-from pybmrb import ChemicalShift
+from pybmrb import ChemicalShift, ChemicalShiftStatistics
 import plotly.express as px
 from typing import Union, List
 
@@ -310,7 +310,7 @@ def create_n15hsqc_peaklist(bmrb_ids: Union[str, List[str]],
                     y_cs = cs_data[data_id][chain][seq_no][atom_y][2]
                     residue = cs_data[data_id][chain][seq_no][atom_y][0]
                     res.append(residue)
-                    tag = '{}-{}-{}-{}'.format(data_id, chain, seq_no, residue)
+                    tag = '{}-{}-{}-{}-H-N'.format(data_id, chain, seq_no, residue)
                     data_set.append(data_id)
                     atom_id = '{}-{}-{}'.format(chain, seq_no, residue)
                     if draw_trace:
@@ -976,9 +976,83 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
         else:
             logging.error('Output file format not support:{}'.format(output_format))
     return x, y, data_set, info, res, cs_track
-#
-# if __name__ == "__main__":
-#     p=n15hsqc(bmrb_ids=[17300,17299],draw_trace=True)
+
+
+def export_peak_list(peak_list: tuple, output_format:str ='csv', include_side_chain:bool =True,
+                     output_file_name:str =None):
+    """
+    Exports peak list in csv or sparky format
+
+    :param peak_list: Output tuple from any spectra simulation function from the module Spectra
+    :param output_format: csv or sparky
+    :param include_side_chain: whether or not side chain resonances included in the output; default True
+    :param output_file_name: output file name
+    :return: data dictionary; {'column header1':[values],'column header1':[values]..}
+    """
+    back_bone = ['H', 'N', 'C', 'CA']
+    if output_format == 'csv':
+        csv_dict = {'sequence': [],
+                    'chem_comp_ID': [],
+                    'H_shift': [],
+                    'N_shift': []}
+        for i in range(len(peak_list[0])):
+            atom_x = peak_list[3][i].split("-")[5]
+            atom_y = peak_list[3][i].split("-")[6]
+            if include_side_chain:
+                if atom_x in back_bone and atom_y in back_bone:
+                    csv_dict['sequence'].append(peak_list[3][i].split("-")[3])
+                    csv_dict['chem_comp_ID'].append(peak_list[3][i].split("-")[4])
+                    csv_dict['H_shift'].append(peak_list[0][i])
+                    csv_dict['N_shift'].append(peak_list[1][i])
+            else:
+                csv_dict['sequence'].append(peak_list[3][i].split("-")[3])
+                csv_dict['chem_comp_ID'].append(peak_list[3][i].split("-")[4])
+                csv_dict['H_shift'].append(peak_list[0][i])
+                csv_dict['N_shift'].append(peak_list[1][i])
+        if output_file_name is not None:
+            fo = open(output_file_name, 'w')
+            fo.write('sequence,chem_comp_ID,H_shift,N_shift\n')
+            for i in range(len(csv_dict['sequence'])):
+                fo.write('{},{},{},{}\n'.format(csv_dict['sequence'][i],
+                                                csv_dict['chem_comp_ID'][i],
+                                                csv_dict['H_shift'][i],
+                                                csv_dict['N_shift'][i]))
+            fo.close()
+    elif output_format == 'sparky':
+        csv_dict = {'Assignment': [],
+                    'w1': [],
+                    'w2': []}
+        for i in range(len(peak_list[0])):
+            atom_x = peak_list[3][i].split("-")[5]
+            atom_y = peak_list[3][i].split("-")[6]
+            res = peak_list[3][i].split("-")[4]
+            assignment = '{}{}{}-{}'.format(ChemicalShiftStatistics.one_letter_code[res], peak_list[3][i].split("-")[3],
+                                            atom_x, atom_y)
+            if include_side_chain:
+                if atom_x in back_bone and atom_y in back_bone:
+                    csv_dict['Assignment'].append(assignment)
+                    csv_dict['w1'].append(peak_list[0][i])
+                    csv_dict['w2'].append(peak_list[1][i])
+            else:
+                csv_dict['Assignment'].append(assignment)
+                csv_dict['w1'].append(peak_list[0][i])
+                csv_dict['w2'].append(peak_list[1][i])
+        if output_file_name is not None:
+            fo = open(output_file_name, 'w')
+            fo.write('Assignment\tw1\tw2\n\n')
+            for i in range(len(csv_dict['Assignment'])):
+                fo.write('{}\n{}\n{}\n'.format(csv_dict['Assignemnt'][i],
+                                               csv_dict['w1'][i],
+                                               csv_dict['w2'][i]))
+            fo.close()
+    return csv_dict
+
+    print(peak_list)
+
+
+if __name__ == "__main__":
+    p = n15hsqc(bmrb_ids='15060',show_visualization=False)
+    pk=export_peak_list(p)
 # # Generating examples for documentation
 # n15hsqc(bmrb_ids=15060,output_format='jpg',legend='residue',output_file='../docs/_images/15060_n15',
 #                 show_visualization=False)
