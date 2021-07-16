@@ -1027,7 +1027,8 @@ def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_
             atom_y = peak_list[3][i].split("-")[6]
             res = peak_list[3][i].split("-")[4]
             try:
-                assignment = '{}{}{}-{}'.format(ChemicalShiftStatistics.one_letter_code[res], peak_list[3][i].split("-")[3],
+                assignment = '{}{}{}-{}'.format(ChemicalShiftStatistics.one_letter_code[res],
+                                                peak_list[3][i].split("-")[3],
                                                 atom_x, atom_y)
             except KeyError:
                 assignment = '{}{}{}-{}'.format('X',
@@ -1055,10 +1056,10 @@ def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_
         raise ValueError('Output format not supported')
     return csv_dict
 
-
-if __name__ == "__main__":
-    p = n15hsqc(bmrb_ids=15000, show_visualization=False)
-    pk = export_peak_list(p, output_format='sparky', output_file_name='test.list')
+#
+# if __name__ == "__main__":
+#     p = n15hsqc(bmrb_ids=15000, show_visualization=False)
+#     pk = export_peak_list(p, output_format='sparky', output_file_name='test.list')
 # # Generating examples for documentation
 # n15hsqc(bmrb_ids=15060,output_format='jpg',legend='residue',output_file='../docs/_images/15060_n15',
 #                 show_visualization=False)
