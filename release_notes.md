@@ -1,8 +1,8 @@
-3.0.3
+3.0.4
 ------
 
-    - Class methods are converted in to Modules
-    - plot title added
-    - PyNMRSTAR entry object can be given as input for spectral simulation
-    - parameter type definition added
+    - function added to export peak list in csv or sparky format
+    - PEP8 standard implemented
+    - pytest improved
+    - documentation updated
 

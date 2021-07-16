@@ -29,3 +29,10 @@ First release of version 3
     - PyNMRSTAR entry object can be given as input for spectral simulation
     - parameter type definition added
 
+3.0.4
+------
+
+    - function added to export peak list in csv or sparky format
+    - PEP8 standard implemented
+    - pytest improved
+    - documentation updated

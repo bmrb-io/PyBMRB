@@ -81,3 +81,21 @@ def test_generic_2d():
         for j in range(len(data) - 1):
             if i != j:
                 assert len(data[i]) == len(data[j])
+
+
+def test_export_peak_list():
+    data = Spectra.n15hsqc(bmrb_ids='17300',show_visualization=False)
+    csv_dict = Spectra.export_peak_list(data, output_format='csv')
+    assert type(csv_dict) is dict
+    assert len(csv_dict.keys()) == 4
+    n = len(csv_dict['sequence'])
+    assert n > 0
+    for k in csv_dict.keys():
+        assert len(csv_dict[k]) == n
+    sparky_dict = Spectra.export_peak_list(data, output_format='sparky')
+    assert type(sparky_dict) is dict
+    assert len(sparky_dict.keys()) == 3
+    n = len(sparky_dict['Assignment'])
+    assert n > 0
+    for k in sparky_dict.keys():
+        assert len(sparky_dict[k]) == n
