@@ -206,9 +206,9 @@ def create_2d_peaklist(bmrb_ids: Union[str, List[str]],
     y = []
     res = []
     info = []
-    psn=[]
+    psn = []
     atom_ids = {}
-    seq_trace=[[],[]]
+    seq_trace = [[], [], []]
     for data_id in cs_data.keys():
         for chain in cs_data[data_id].keys():
             for seq_no in cs_data[data_id][chain]['seq_ids']:
@@ -226,23 +226,26 @@ def create_2d_peaklist(bmrb_ids: Union[str, List[str]],
                                         or (ch_atom[1] == atm_y):
                                     if include_preceding:
                                         try:
-                                            residue_p = cs_data[data_id][chain][seq_no-1][
-                                                list(cs_data[data_id][chain][seq_no-1].keys())[0]][0]
-                                            cs_y = cs_data[data_id][chain][seq_no-1][atm_y][2]
+                                            residue_p = cs_data[data_id][chain][seq_no - 1][
+                                                list(cs_data[data_id][chain][seq_no - 1].keys())[0]][0]
+                                            cs_y = cs_data[data_id][chain][seq_no - 1][atm_y][2]
                                             data_set.append(data_id)
                                             x.append(cs_x)
                                             y.append(cs_y)
                                             seq_trace[0].append(cs_x)
                                             seq_trace[1].append(cs_y)
+                                            seq_trace[2].append(seq_no - 1)
                                             res.append(residue)
                                             if legend == 'psn':
                                                 psn.append('Preceding')
                                             else:
                                                 psn.append(0.5)
-                                            tag = '{}-{}-{}-{}-{}-{}-{}-{}'.format(data_id, chain, seq_no, residue, seq_no-1, residue_p, atm_x,
-                                                                             atm_y)
+                                            tag = '{}-{}-{}-{}-{}-{}-{}-{}'.format(data_id, chain, seq_no, residue,
+                                                                                   seq_no - 1, residue_p, atm_x,
+                                                                                   atm_y)
                                             info.append(tag)
-                                            atom_id = '{}-{}-{}-{}-{}-{}-{}'.format(chain, seq_no, residue,seq_no-1, residue_p, atm_x, atm_y)
+                                            atom_id = '{}-{}-{}-{}-{}-{}-{}'.format(chain, seq_no, residue, seq_no - 1,
+                                                                                    residue_p, atm_x, atm_y)
                                             if draw_trace:
                                                 if atom_id not in atom_ids.keys():
                                                     atom_ids[atom_id] = [[], []]
@@ -256,6 +259,7 @@ def create_2d_peaklist(bmrb_ids: Union[str, List[str]],
                                     y.append(cs_y)
                                     seq_trace[0].append(cs_x)
                                     seq_trace[1].append(cs_y)
+                                    seq_trace[2].append(seq_no)
                                     res.append(residue)
                                     if legend == 'psn':
                                         psn.append('Same')
@@ -271,23 +275,26 @@ def create_2d_peaklist(bmrb_ids: Union[str, List[str]],
                                         atom_ids[atom_id][1].append(cs_y)
                                     if include_next:
                                         try:
-                                            residue_p = cs_data[data_id][chain][seq_no+1][
-                                                list(cs_data[data_id][chain][seq_no+1].keys())[0]][0]
-                                            cs_y = cs_data[data_id][chain][seq_no+1][atm_y][2]
+                                            residue_p = cs_data[data_id][chain][seq_no + 1][
+                                                list(cs_data[data_id][chain][seq_no + 1].keys())[0]][0]
+                                            cs_y = cs_data[data_id][chain][seq_no + 1][atm_y][2]
                                             data_set.append(data_id)
                                             x.append(cs_x)
                                             y.append(cs_y)
                                             seq_trace[0].append(cs_x)
                                             seq_trace[1].append(cs_y)
+                                            seq_trace[2].append(seq_no + 1)
                                             res.append(residue)
                                             if legend == 'psn':
                                                 psn.append('Next')
                                             else:
                                                 psn.append(0.5)
-                                            tag = '{}-{}-{}-{}-{}-{}-{}-{}'.format(data_id, chain, seq_no, residue, seq_no+1, residue_p, atm_x,
-                                                                             atm_y)
+                                            tag = '{}-{}-{}-{}-{}-{}-{}-{}'.format(data_id, chain, seq_no, residue,
+                                                                                   seq_no + 1, residue_p, atm_x,
+                                                                                   atm_y)
                                             info.append(tag)
-                                            atom_id = '{}-{}-{}-{}-{}-{}-{}'.format(chain, seq_no, residue,seq_no+1, residue_p, atm_x, atm_y)
+                                            atom_id = '{}-{}-{}-{}-{}-{}-{}'.format(chain, seq_no, residue, seq_no + 1,
+                                                                                    residue_p, atm_x, atm_y)
                                             if draw_trace:
                                                 if atom_id not in atom_ids.keys():
                                                     atom_ids[atom_id] = [[], []]
@@ -295,7 +302,6 @@ def create_2d_peaklist(bmrb_ids: Union[str, List[str]],
                                                 atom_ids[atom_id][1].append(cs_y)
                                         except KeyError:
                                             pass
-
 
     cs_track = {}
     if draw_trace:
@@ -894,8 +900,10 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
                legend: str = None,
                draw_trace: bool = False,
                peak_list: str = None,
-               include_preceding = False,
-               include_next = False,
+               include_preceding: bool = False,
+               include_next: bool = False,
+               full_walk: bool = False,
+               seq_walk: bool = False,
                output_format: str = None,
                output_file: str = None,
                output_image_width: int = 800,
@@ -912,6 +920,10 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
     :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
     :param legend: legend based on residue name or data set id; values: None, residue, datase ; default None
     :param draw_trace: Connect matching residues by list
+    :param include_preceding: include i-1 residue on y axis
+    :param include_next: include i+i residue on y axix
+    :param seq_walk: draw trace to connect i-> i+i  and so one.
+    :param full_walk: draw trace ignoring missing resonances
     :param peak_list: optionally peak list as csv file cam be provided
     :param output_format: html,jpg,png,pdf,wabp,None; default None opens figure in default web browser
     :param output_file: output file name default None
@@ -944,8 +956,32 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
     info = peak_list_2d[3]
     res = peak_list_2d[4]
     cs_track = peak_list_2d[5]
-    psn=peak_list_2d[6]
-    seq_trace=peak_list_2d[7]
+    psn = peak_list_2d[6]
+    seq_trace = peak_list_2d[7]
+
+    def sequence_walk(seq_t, filt=True):
+        seq_traces = {}
+        j = 0
+        s = -999
+        for i in range(len(seq_trace[0])):
+            if seq_trace[2][i] == s or seq_trace[2][i] == s + 1:
+                s = seq_trace[2][i]
+                seq_traces['walk_{}'.format(j)][0].append(seq_trace[0][i])
+                seq_traces['walk_{}'.format(j)][1].append(seq_trace[1][i])
+            else:
+                s = seq_trace[2][i]
+                j += 1
+                seq_traces['walk_{}'.format(j)] = [[seq_trace[0][i]], [seq_trace[1][i]]]
+        sq_walk = {}
+        if filt:
+            for k in seq_traces.keys():
+                if len(seq_traces[k][0]) > 1:
+                    sq_walk[k] = seq_traces[k]
+        else:
+            sq_walk = seq_traces
+        return sq_walk
+
+    sq_walk = sequence_walk(seq_trace)
     if len(x) == 0 or len(y) == 0:
         logging.error('Required chemical shifts not found')
         raise ValueError('Required chemical shifts not found')
@@ -961,7 +997,11 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
                                  "x": '{} (ppm)'.format(atom_x),
                                  "y": '{} (ppm)'.format(atom_y)}, opacity=0.7)
         fig.update(layout=dict(title=dict(x=0.5)))
-        fig.add_scatter(x=seq_trace[0], y=seq_trace[1], name='sequence walk', opacity=0.7, mode='lines')
+        if full_walk:
+            fig.add_scatter(x=seq_trace[0], y=seq_trace[1], name='Full walk', opacity=0.7, mode='lines')
+        if seq_walk:
+            for k in sq_walk.keys():
+                fig.add_scatter(x=sq_walk[k][0], y=sq_walk[k][1], name=k, opacity=0.7, mode='lines')
         if draw_trace:
             for k in cs_track.keys():
                 fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7, mode='lines')
@@ -982,6 +1022,11 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
                                  "x": '{} (ppm)'.format(atom_x),
                                  "y": '{} (ppm)'.format(atom_y)}, opacity=0.7).update(
             layout=dict(title=dict(x=0.5)))
+        if full_walk:
+            fig.add_scatter(x=seq_trace[0], y=seq_trace[1], name='Full walk', opacity=0.7, mode='lines')
+        if seq_walk:
+            for k in sq_walk.keys():
+                fig.add_scatter(x=sq_walk[k][0], y=sq_walk[k][1], name=k, opacity=0.7, mode='lines')
         if draw_trace:
             for k in cs_track.keys():
                 fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7, mode='lines')
@@ -1001,6 +1046,11 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
                                  "x": '{} (ppm)'.format(atom_x),
                                  "y": '{} (ppm)'.format(atom_y)}, opacity=0.7).update(
             layout=dict(title=dict(x=0.5)))
+        if full_walk:
+            fig.add_scatter(x=seq_trace[0], y=seq_trace[1], name='Full walk', opacity=0.7, mode='lines')
+        if seq_walk:
+            for k in sq_walk.keys():
+                fig.add_scatter(x=sq_walk[k][0], y=sq_walk[k][1], name=k, opacity=0.7, mode='lines')
         if draw_trace:
             for k in cs_track.keys():
                 fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7, mode='lines')
@@ -1008,7 +1058,7 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
             fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
         fig.update_xaxes(autorange="reversed")
         fig.update_yaxes(autorange="reversed")
-    elif legend=='psn':
+    elif legend == 'psn':
         fig = px.scatter(x=x, y=y,
                          title='Simulated {}-{} COSY peak positions'.format(atom_x, atom_y),
                          hover_name=info,
@@ -1018,7 +1068,11 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
                                  "x": '{} (ppm)'.format(atom_x),
                                  "y": '{} (ppm)'.format(atom_y)}, opacity=0.7).update(
             layout=dict(title=dict(x=0.5)))
-        fig.add_scatter(x=seq_trace[0], y=seq_trace[1], name='sequence walk', opacity=0.7, mode='lines')
+        if full_walk:
+            fig.add_scatter(x=seq_trace[0], y=seq_trace[1], name='Full walk', opacity=0.7, mode='lines')
+        if seq_walk:
+            for k in sq_walk.keys():
+                fig.add_scatter(x=sq_walk[k][0], y=sq_walk[k][1], name=k, opacity=0.7, mode='lines')
         if draw_trace:
             for k in cs_track.keys():
                 fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7, mode='lines')
@@ -1160,7 +1214,10 @@ def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_
 
 
 if __name__ == "__main__":
-    p = generic_2d(bmrb_ids=15000,atom_x='CA',atom_y='CB',legend='psn',include_next=True,include_preceding=True)
+    p = generic_2d(bmrb_ids=15000, atom_x='CA', atom_y='CB', legend='psn', include_next=True, seq_walk=True,
+                   full_walk=True)
+    p = generic_2d(bmrb_ids=15000, atom_x='CA', atom_y='CB', legend='psn', include_preceding=True,
+                   seq_walk=True, full_walk=True)
 
 #     pk = export_peak_list(p, output_format='csv', output_file_name='test.csv')
 # Generating examples for documentation
