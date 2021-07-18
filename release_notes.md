@@ -1,8 +1,7 @@
-3.0.4
+3.0.5
 ------
 
-    - function added to export peak list in csv or sparky format
-    - PEP8 standard implemented
-    - pytest improved
-    - documentation updated
+    - New: generic 2D spectrum can optionally include chemical shifts from preceding and next residues
+    - New: sequential connectivity can be shown as trace in the generic 2D spectrum
+    - Documentation improved
 

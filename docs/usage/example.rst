@@ -210,6 +210,78 @@ were used as  x axis and CB chemical shifts were was used a Y axis.
 
     `Click here for interactive html for generic 2D spectrum from BMRB entries 17074,17076 and 17076 with trace <../_static/multi2_2d.html>`_
 
+- Example 15: Include chemical shifts from preceding residue in the generic 2d spectrum
+
+You may also include chemical shift from i-1 atom in the generic 2D spectrum, which will be shown using different size
+
+.. code:: python
+
+    peak_list = Spectra.generic_2d((bmrb_ids=15000, atom_x='N', atom_y='CA', include_preceding=True, legend='residue')
+
+.. figure:: ../_images/n_cb_p.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for generic 2D spectrum with preceding residue <../_static/n_cb_p.html>`_
+
+- Example 16: Draw trace to show the walk along the sequence
+
+You may draw a trace connecting i-1 to i to next i-1 and so on as long as the sequence is continuous. If you have missing
+chemical shift, then the trace will start from next possible residue
+.. code:: python
+
+    peak_list = Spectra.generic_2d((bmrb_ids=15000, atom_x='N', atom_y='CA', include_preceding=True, legend='residue', seq_walk=True)
+
+.. figure:: ../_images/n_cb_p_w.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for generic 2D spectrum with preceding residue and sequence walk <../_static/n_cb_p_w.html>`_
+
+- Example 17: Include chemical shift from next residues in the generic 2d spectrum
+
+You may also include chemical shift from i+1 atoms in the generic 2D spectrum, which will be shown using different size
+
+.. code:: python
+
+    peak_list = Spectra.generic_2d((bmrb_ids=15000, atom_x='N', atom_y='CA', include_next=True, legend='residue')
+
+.. figure:: ../_images/n_cb_n.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for generic 2D spectrum with next residue <../_static/n_cb_n.html>`_
+
+- Example 18: Draw trace to show the walk along the sequence
+
+You may draw a trace connecting i+1 to i to next i+1 and so on as long as the sequence is continuous. If you have missing
+chemical shift, then the trace will start from next possible residue
+.. code:: python
+
+    peak_list = Spectra.generic_2d((bmrb_ids=15000, atom_x='N', atom_y='CA', include_next=True, legend='residue', seq_walk=True)
+
+.. figure:: ../_images/n_cb_n_w.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for generic 2D spectrum with next residue and sequence walk <../_static/n_cb_n_w.html>`_
+
+- Example 19: Draw trace to show the walk along the sequence ignoring missing residues
+
+you may also draw traces from starting residue to end residue ignoring the missing ones
+
+.. code:: python
+
+    peak_list = Spectra.generic_2d((bmrb_ids=15000, atom_x='N', atom_y='CA', include_next=True, legend='residue',  full_walk = True)
+
+.. figure:: ../_images/n_cb_n_w_f.jpg
+    :alt: n15hsqc
+    :align: center
+
+    `Click here for interactive html for generic 2D spectrum with next residue and full sequence walk <../_static/n_cb_n_w_f.html>`_
+
+
+
 Chemical shift Histograms
 ---------------------------
 
@@ -222,7 +294,7 @@ can be filtered using temperature range and PH range. Here are some of the examp
 Single distribution
 ^^^^^^^^^^^^^^^^^^^^
 
-- Example 15: Chemical shift distribution of CYS-CB
+- Example 20: Chemical shift distribution of CYS-CB
 
 .. code:: python
 
@@ -234,7 +306,7 @@ Single distribution
 
     `Click here for interactive html for CYS-CB histogram <../_static/cys_cb_hist.html>`_
 
-- Example 16: Chemical shift distribution of CYS-CB with standard deviation cs_filt
+- Example 21: Chemical shift distribution of CYS-CB with standard deviation cs_filt
 
 You may exclude extreme values by using the cs_filt based on standard deviation. sd_limit=5 would  exclude
 the values beyond 5 times standard deviation on moth sides of the mean
@@ -249,7 +321,7 @@ the values beyond 5 times standard deviation on moth sides of the mean
 
     `Click here for interactive html for CYS-CB histogram with in 5 std on both sides of the mean <../_static/cys_cb_hist_sd5.html>`_
 
-- Example 17: Chemical shift distribution of CYS-CB with Ph cs_filt
+- Example 22: Chemical shift distribution of CYS-CB with Ph cs_filt
 
 You may use experimental conditions like  Ph or temperature values as a cs_filt
 
@@ -263,7 +335,7 @@ You may use experimental conditions like  Ph or temperature values as a cs_filt
 
     `Click here for interactive html for CYS-CB histogram with Ph cs_filt <../_static/cys_cb_hist_ph.html>`_
 
-- Example 18: Chemical shift distribution of CYS-CB as box plot
+- Example 23: Chemical shift distribution of CYS-CB as box plot
 
 Box plot and Violin plot will show all the statistical properties of the distribution, when you mouse over the distribution.
 
@@ -277,7 +349,7 @@ Box plot and Violin plot will show all the statistical properties of the distrib
 
     `Click here for interactive html for CYS-CB box plot <../_static/cys_cb_box_sd5.html>`_
 
-- Example 19: Chemical shift distribution of CYS-CB as violin plot
+- Example 24: Chemical shift distribution of CYS-CB as violin plot
 
 Box plot and Violin plot will show all the statistical properties of the distribution, when you mouse over the distribution.
 
@@ -294,7 +366,7 @@ Box plot and Violin plot will show all the statistical properties of the distrib
 Multiple distribution
 ^^^^^^^^^^^^^^^^^^^^^^
 
-- Example 20: Histogram from list of atoms
+- Example 25: Histogram from list of atoms
 
 You may also provide list of atoms as input
 
@@ -308,7 +380,7 @@ You may also provide list of atoms as input
 
     `Click here for interactive html for multiple distribution <../_static/multi_hist.html>`_
 
-- Example 21: Violin plot for list of atoms
+- Example 26: Violin plot for list of atoms
 
 
 
@@ -323,7 +395,7 @@ You may also provide list of atoms as input
     `Click here for interactive html for violin plot <../_static/multi_violin.html>`_
 
 
-- Example 22: Histogram method supports wildcard
+- Example 27: Histogram method supports wildcard
 
 If you want to see the chemical shift distribution of protons in GLN, then you may use the following command.
 You may chose histnorm as 'probability density' to compare distributions
@@ -338,7 +410,7 @@ You may chose histnorm as 'probability density' to compare distributions
 
     `Click here for interactive html for GLN-H* distribution <../_static/gln_h_hist.html>`_
 
-- Example 23: Distribution of all atoms from a residue
+- Example 28: Distribution of all atoms from a residue
 
 If you want to see the chemical shift distribution of all atoms from a residue you may use atom='*' or simply leave out atom.
 
@@ -359,7 +431,7 @@ or
 
     `Click here for interactive html for ASP distribution <../_static/asp_hist.html>`_
 
-- Example 24: Distribution of specific atom type from al residues
+- Example 29: Distribution of specific atom type from al residues
 
 If you want to see the chemical shift distribution CG atoms from all 20 standard residues you may use residue=*' or simply leave out residue.
 
@@ -383,7 +455,7 @@ or
 2D Histograms
 ^^^^^^^^^^^^^^^^^^^^
 
-- Example 25: Chemical shift correlation as 2d heatmap
+- Example 30: Chemical shift correlation as 2d heatmap
 
 
 .. code:: python
@@ -396,7 +468,7 @@ or
 
     `Click here for interactive 2D heatmap  <../_static/cys-ca-cb.html>`_
 
-- Example 26: Chemical shift correlation as contour heatmap
+- Example 31: Chemical shift correlation as contour heatmap
 
 
 .. code:: python
@@ -412,7 +484,7 @@ or
 Conditional histogram
 ^^^^^^^^^^^^^^^^^^^^^^
 
-- Example 27: Conditional histogram with chemical shift filtering
+- Example 32: Conditional histogram with chemical shift filtering
 
 You may cs_filt the chemical shift distribution of an atom in a residue based on the chemical shift values of one or
 more atom in the same residue. In the following example CYS-CB values are filtered based on CYS-H=8.9. During the seach
@@ -428,7 +500,7 @@ more atom in the same residue. In the following example CYS-CB values are filter
 
     `Click here for interactive conditional histogram with one rule  <../_static/filt1.html>`_
 
-- Example 28: Conditional histogram with chemical shift list
+- Example 33: Conditional histogram with chemical shift list
 
 
 .. code:: python
