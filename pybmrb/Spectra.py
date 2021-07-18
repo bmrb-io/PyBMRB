@@ -1214,10 +1214,36 @@ def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_
 
 
 if __name__ == "__main__":
-    p = generic_2d(bmrb_ids=15000, atom_x='CA', atom_y='CB', legend='psn', include_next=True, seq_walk=True,
-                   full_walk=True)
-    p = generic_2d(bmrb_ids=15000, atom_x='CA', atom_y='CB', legend='psn', include_preceding=True,
-                   seq_walk=True, full_walk=True)
+    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
+                   include_preceding=True,legend='residue',output_format='jpg',
+                   output_file='../docs/_images/n_cb_p.jpg')
+    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
+                   include_preceding=True, legend='residue', output_format='html',
+                   output_file='../docs/_static/n_cb_p.html')
+    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
+                   include_next=True, legend='residue', output_format='jpg',
+                   output_file='../docs/_images/n_cb_n.jpg')
+    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
+                   include_next=True, legend='residue', output_format='html',
+                   output_file='../docs/_static/n_cb_n.html')
+    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
+                   include_preceding=True, legend='residue', output_format='jpg',
+                   output_file='../docs/_images/n_cb_p_w.jpg')
+    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
+                   include_preceding=True, legend='residue', output_format='html',
+                   output_file='../docs/_static/n_cb_p_w.html')
+    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
+                   include_next=True, legend='residue', output_format='jpg',
+                   output_file='../docs/_images/n_cb_n_w.jpg')
+    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
+                   include_next=True, legend='residue', output_format='html',
+                   output_file='../docs/_static/n_cb_n_w.html')
+    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA', full_walk=True,
+                   include_next=True, legend='residue', output_format='jpg',
+                   output_file='../docs/_images/n_cb_n_w_f.jpg')
+    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA', full_walk=True,
+                   include_next=True, legend='residue', output_format='html',
+                   output_file='../docs/_static/n_cb_n_w_f.html')
 
 #     pk = export_peak_list(p, output_format='csv', output_file_name='test.csv')
 # Generating examples for documentation

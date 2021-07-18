@@ -26,9 +26,9 @@ def test_create_tocsy_peaklist():
 def test_create_2d_peaklist():
     data = Spectra.create_2d_peaklist(bmrb_ids='25493', atom_x='H', atom_y='N')
     assert type(data) is tuple
-    assert len(data) == 6
-    for i in range(len(data) - 1):
-        for j in range(len(data) - 1):
+    assert len(data) == 8
+    for i in range(len(data) - 3):
+        for j in range(len(data) - 3):
             if i != j:
                 assert len(data[i]) == len(data[j])
 
