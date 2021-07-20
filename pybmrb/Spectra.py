@@ -189,6 +189,9 @@ def create_2d_peaklist(bmrb_ids: Union[str, List[str]],
     :param entry_objects: One of more PyNMRSTAR entry objects
     :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
     :param draw_trace: Connect the matching residues using sequence numbering; default: False
+    :param include_preceding: bool include preceding residue chemical shifts
+    :param include_next: bool include next residue chemical shifts
+    :param legend str selection of legend to display
     :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
         cs_track is a dictionary { matching atoms:[cs_values]}
     """
@@ -963,23 +966,23 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
         seq_traces = {}
         j = 0
         s = -999
-        for i in range(len(seq_trace[0])):
-            if seq_trace[2][i] == s or seq_trace[2][i] == s + 1:
-                s = seq_trace[2][i]
-                seq_traces['walk_{}'.format(j)][0].append(seq_trace[0][i])
-                seq_traces['walk_{}'.format(j)][1].append(seq_trace[1][i])
+        for i in range(len(seq_t[0])):
+            if seq_t[2][i] == s or seq_t[2][i] == s + 1:
+                s = seq_t[2][i]
+                seq_traces['walk_{}'.format(j)][0].append(seq_t[0][i])
+                seq_traces['walk_{}'.format(j)][1].append(seq_t[1][i])
             else:
-                s = seq_trace[2][i]
+                s = seq_t[2][i]
                 j += 1
-                seq_traces['walk_{}'.format(j)] = [[seq_trace[0][i]], [seq_trace[1][i]]]
-        sq_walk = {}
+                seq_traces['walk_{}'.format(j)] = [[seq_t[0][i]], [seq_t[1][i]]]
+        sq_w = {}
         if filt:
-            for k in seq_traces.keys():
-                if len(seq_traces[k][0]) > 1:
-                    sq_walk[k] = seq_traces[k]
+            for k1 in seq_traces.keys():
+                if len(seq_traces[k1][0]) > 1:
+                    sq_w[k1] = seq_traces[k1]
         else:
-            sq_walk = seq_traces
-        return sq_walk
+            sq_w = seq_traces
+        return sq_w
 
     sq_walk = sequence_walk(seq_trace)
     if len(x) == 0 or len(y) == 0:
@@ -1211,39 +1214,39 @@ def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_
         logging.error('Output format not supported')
         raise ValueError('Output format not supported')
     return csv_dict
-
-
-if __name__ == "__main__":
-    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
-                   include_preceding=True,legend='residue',output_format='jpg',
-                   output_file='../docs/_images/n_cb_p.jpg')
-    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
-                   include_preceding=True, legend='residue', output_format='html',
-                   output_file='../docs/_static/n_cb_p.html')
-    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
-                   include_next=True, legend='residue', output_format='jpg',
-                   output_file='../docs/_images/n_cb_n.jpg')
-    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
-                   include_next=True, legend='residue', output_format='html',
-                   output_file='../docs/_static/n_cb_n.html')
-    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
-                   include_preceding=True, legend='residue', output_format='jpg',
-                   output_file='../docs/_images/n_cb_p_w.jpg')
-    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
-                   include_preceding=True, legend='residue', output_format='html',
-                   output_file='../docs/_static/n_cb_p_w.html')
-    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
-                   include_next=True, legend='residue', output_format='jpg',
-                   output_file='../docs/_images/n_cb_n_w.jpg')
-    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
-                   include_next=True, legend='residue', output_format='html',
-                   output_file='../docs/_static/n_cb_n_w.html')
-    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA', full_walk=True,
-                   include_next=True, legend='residue', output_format='jpg',
-                   output_file='../docs/_images/n_cb_n_w_f.jpg')
-    p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA', full_walk=True,
-                   include_next=True, legend='residue', output_format='html',
-                   output_file='../docs/_static/n_cb_n_w_f.html')
+#
+#
+# if __name__ == "__main__":
+#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
+#                    include_preceding=True,legend='residue',output_format='jpg',
+#                    output_file='../docs/_images/n_cb_p.jpg')
+#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
+#                    include_preceding=True, legend='residue', output_format='html',
+#                    output_file='../docs/_static/n_cb_p.html')
+#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
+#                    include_next=True, legend='residue', output_format='jpg',
+#                    output_file='../docs/_images/n_cb_n.jpg')
+#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
+#                    include_next=True, legend='residue', output_format='html',
+#                    output_file='../docs/_static/n_cb_n.html')
+#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
+#                    include_preceding=True, legend='residue', output_format='jpg',
+#                    output_file='../docs/_images/n_cb_p_w.jpg')
+#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
+#                    include_preceding=True, legend='residue', output_format='html',
+#                    output_file='../docs/_static/n_cb_p_w.html')
+#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
+#                    include_next=True, legend='residue', output_format='jpg',
+#                    output_file='../docs/_images/n_cb_n_w.jpg')
+#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
+#                    include_next=True, legend='residue', output_format='html',
+#                    output_file='../docs/_static/n_cb_n_w.html')
+#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA', full_walk=True,
+#                    include_next=True, legend='residue', output_format='jpg',
+#                    output_file='../docs/_images/n_cb_n_w_f.jpg')
+#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA', full_walk=True,
+#                    include_next=True, legend='residue', output_format='html',
+#                    output_file='../docs/_static/n_cb_n_w_f.html')
 
 #     pk = export_peak_list(p, output_format='csv', output_file_name='test.csv')
 # Generating examples for documentation
