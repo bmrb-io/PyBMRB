@@ -75,7 +75,7 @@ def get_data(residue: str, atom: str, filtered: bool = True, sd_limit: float = 1
     ph_index = columns.index('Sample_conditions.pH')
     temp_index = columns.index('Sample_conditions.Temperature_K')
     res_index = columns.index('Atom_chem_shift.Comp_ID')
-    # atm_index = columns.index('Atom_chem_shift.Atom_ID')
+    atm_index = columns.index('Atom_chem_shift.Atom_ID')
     amb_index = columns.index('Atom_chem_shift.Ambiguity_code')
     data = api_data['data']
     if len(data):
@@ -84,12 +84,22 @@ def get_data(residue: str, atom: str, filtered: bool = True, sd_limit: float = 1
         if ambiguity != '*':
             data = [i for i in data if i[amb_index] == ambiguity]
         if filtered:
-            cs = [i[cs_index] for i in data]
-            sd = numpy.std(cs)
-            avg = numpy.mean(cs)
-            min_cs = avg - (sd_limit * sd)
-            max_cs = avg + (sd_limit * sd)
-            data = [i for i in data if min_cs < i[cs_index] < max_cs]
+            atom_list = set([i[atm_index] for i in data])
+            a_dict = {}
+            for atm in atom_list:
+                a_dict[atm] = {}
+                tmp_cs = [i[cs_index] for i in data if i[atm_index] == atm]
+                a_dict[atm]['sd'] = numpy.std(tmp_cs)
+                a_dict[atm]['avg'] = numpy.mean(tmp_cs)
+                a_dict[atm]['min_cs'] = a_dict[atm]['avg'] - (sd_limit * a_dict[atm]['sd'])
+                a_dict[atm]['max_cs'] = a_dict[atm]['avg'] + (sd_limit * a_dict[atm]['sd'])
+
+            # cs = [i[cs_index] for i in data]
+            # sd = numpy.std(cs)
+            # avg = numpy.mean(cs)
+            # min_cs = avg - (sd_limit * sd)
+            # max_cs = avg + (sd_limit * sd)
+            data = [i for i in data if a_dict[i[atm_index]]['min_cs'] < i[cs_index] < a_dict[i[atm_index]]['max_cs']]
         if ph_min is not None:
             data = [i for i in data if i[ph_index] is not None and i[ph_index] >= ph_min]
         if ph_max is not None:
