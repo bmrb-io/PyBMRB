@@ -189,12 +189,13 @@ def create_2d_peaklist(bmrb_ids: Union[str, List[str]],
     :param entry_objects: One of more PyNMRSTAR entry objects
     :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
     :param draw_trace: Connect the matching residues using sequence numbering; default: False
-    :param include_preceding: bool include preceding residue chemical shifts
-    :param include_next: bool include next residue chemical shifts
-    :param legend str selection of legend to display
+    :param include_preceding:  include preceding residue chemical shifts
+    :param include_next:  include next residue chemical shifts
+    :param legend:  selection of legend to display
     :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
         cs_track is a dictionary { matching atoms:[cs_values]}
     """
+
     cs_data = {}
     cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
     cs_data.update(cs_data_bmrb)
