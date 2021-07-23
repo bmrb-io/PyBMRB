@@ -1,7 +1,6 @@
-3.0.5
+3.0.6
 ------
 
-    - New: generic 2D spectrum can optionally include chemical shifts from preceding and next residues
-    - New: sequential connectivity can be shown as trace in the generic 2D spectrum
-    - Documentation improved
+    - Bug fix: Filtering chemical shifts based on standard deviation was not working properly when you 
+    fetch chemical shifts of more than one atom type. It is fixed now. 
 
