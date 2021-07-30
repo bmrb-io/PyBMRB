@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """
-Histogram
+This module generates visualizations for chemical shift distribution of a given list of atoms and residues. It can also
+generate chemical shift correlation plots between two atoms in the same residue and filtered chemical shift
+distribution based on user defined rules
 """
 import logging
 import plotly.express as px
@@ -436,81 +438,191 @@ def conditional_hist(residue: str,
         else:
             logging.error('Output file format not supported:{}'.format(output_format))
     return x, tag
-
 #
-# if __name__ == "__main__":
-#     hist(residue='ALA', atom='N')
-# # Histogram.hist(residue='ALA',atom='N', output_format='webp',output_file='test1',
-#                show_visualization=False)
-# Histogram.hist(residue='ALA', atom='N', output_format='webp', output_file='test2.webp',
-#                show_visualization=False)
-
-# Histogram.hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'],histnorm='probability density',
-#                output_format='jpg',output_file='../docs/_images/multi_hist')
-# Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], histnorm='probability density',
-#                output_format='html', output_file='../docs/_static/multi_hist')
-# Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], plot_type='violin',
-#                output_format='jpg', output_file='../docs/_images/multi_violin')
-# Histogram.hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'], plot_type='violin',
-#                output_format='html', output_file='../docs/_static/multi_violin')
-
-# Histogram.hist(residue='CYS',atom='CB',output_format='jpg',
-#                output_file='../docs/_images/cys_cb_hist',show_visualization=False)
-# Histogram.hist(residue='CYS', atom='CB', output_format='html',
-#                output_file='../docs/_static/cys_cb_hist',show_visualization=False)
-# Histogram.hist(residue='CYS', atom='CB', output_format='jpg',
-#                sd_limit=5, output_file='../docs/_images/cys_cb_hist_sd5',show_visualization=False)
-# Histogram.hist(residue='CYS', atom='CB', output_format='html',
-#                sd_limit=5, output_file='../docs/_static/cys_cb_hist_sd5',show_visualization=False)
-# Histogram.hist(residue='CYS', atom='CB', output_format='jpg',
-#                ph_min=7.0,ph_max=8.2, output_file='../docs/_images/cys_cb_hist_ph',show_visualization=False)
-# Histogram.hist(residue='CYS', atom='CB', output_format='html',
-#                ph_min=7.0,ph_max=8.2, output_file='../docs/_static/cys_cb_hist_ph',show_visualization=False)
-# Histogram.hist(residue='CYS', atom='CB', output_format='jpg', plot_type='box',
-#                 output_file='../docs/_images/cys_cb_box_sd5',show_visualization=False)
-# Histogram.hist(residue='CYS', atom='CB', output_format='html', plot_type='box',
-#                output_file='../docs/_static/cys_cb_box_sd5',show_visualization=False)
-# Histogram.hist(residue='CYS', atom='CB', output_format='jpg', plot_type='violin',
-#                 output_file='../docs/_images/cys_cb_violin_sd5',show_visualization=False)
-# Histogram.hist(residue='CYS', atom='CB', output_format='html', plot_type='violin',
-#                 output_file='../docs/_static/cys_cb_violin_sd5',show_visualization=False)
-# Histogram.hist(residue='GLN', atom='H*', output_format='jpg',
-#                histnorm='probability density',
-#                output_file='../docs/_images/gln_h_hist',show_visualization=False)
-# Histogram.hist(residue='GLN', atom='H*', output_format='html',
-#                histnorm='probability density',
-#                 output_file='../docs/_static/gln_h_hist',show_visualization=False)
-# Histogram.hist(residue='ASP', atom='*', output_format='jpg',
-#                output_file='../docs/_images/asp_hist',show_visualization=False)
-# Histogram.hist(residue='ASP', atom='*', output_format='html',
-#                output_file='../docs/_static/asp_hist',show_visualization=False)
-# Histogram.hist(residue='*', atom='CG*', output_format='jpg',histnorm='percent',
-#                output_file='../docs/_images/cg_hist',show_visualization=False)
-# Histogram.hist(residue='*', atom='CG*', output_format='html', histnorm='percent',
-#                output_file='../docs/_static/cg_hist',show_visualization=False)
+# if __name__=="__main__":
+#     #Following script generates example images for readthedocs
+#     hist(atom='CB*',output_format='jpg',output_file='../docs/_images/sample_cbhist.jpg',
+#          show_visualization=False)
+#     hist(atom='CB*', output_format='html', output_file='../docs/_static/sample_cbhist.html',
+#          show_visualization=False)
 #
+#     hist2d(residue='CYS',atom1='N',atom2='CB',sd_limit=5,
+#            output_file='../docs/_images/sample_hist2d.jpg',output_format='jpg',
+#            show_visualization=False
+#            )
+#     hist2d(residue='CYS', atom1='N', atom2='CB', sd_limit=5,output_format='html',
+#            output_file='../docs/_static/sample_hist2d.html',
+#            show_visualization=False
+#            )
 #
-# Histogram.hist2d(residue='CYS',atom1='CA',atom2='CB',output_format='jpg', sd_limit=5,
-#                  output_file='../docs/_images/cys-ca-cb',show_visualization=False)
-# Histogram.hist2d(residue='CYS', atom1='CA', atom2='CB', output_format='html', sd_limit=5,
-#                  output_file='../docs/_static/cys-ca-cb',show_visualization=False)
-# Histogram.hist2d(residue='GLN',atom1='HE21',atom2='HE22',output_format='jpg', sd_limit=5,
-#                  plot_type='contour', output_file='../docs/_images/gln-2d',show_visualization=False)
-# Histogram.hist2d(residue='GLN', atom1='HE21', atom2='HE22', output_format='html', sd_limit=5,
-#                  plot_type='contour',output_file='../docs/_static/gln-2d',show_visualization=False)
+#     hist(residue='CYS',
+#          atom='CB',
+#          output_format='jpg',
+#          output_file='../docs/_images/example20.jpg',
+#          show_visualization=False)
+#     hist(residue='CYS',
+#          atom='CB',
+#          output_format='html',
+#          output_file='../docs/_static/example20.html',
+#          show_visualization=False)
 #
-# Histogram.conditional_hist(residue='CYS',atom='CB', histnorm='percent',
-#                            filtering_rules=[('H',8.9)],output_format='jpg',
-#                            output_file='../docs/_images/filt1',show_visualization=False)
-# Histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent',
-#                            filtering_rules=[('H', 8.9)], output_format='html',
-#                            output_file='../docs/_static/filt1',show_visualization=False)
-# Histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent',
-#                            filtering_rules=[('H', 8.9), ('CA', 61)], output_format='jpg',
-#                            output_file='../docs/_images/filt2',show_visualization=False)
-# Histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent',
-#                            filtering_rules=[('H', 8.9), ('CA', 61)],output_format='html',
-#                            output_file='../docs/_static/filt2',show_visualization=False)
+#     hist(residue='CYS',
+#          atom='CB',
+#          sd_limit=5,
+#          output_format='jpg',
+#          output_file='../docs/_images/example21.jpg',
+#          show_visualization=False)
+#     hist(residue='CYS',
+#          atom='CB',
+#          sd_limit=5,
+#          output_format='html',
+#          output_file='../docs/_static/example21.html',
+#          show_visualization=False)
 #
+#     hist(residue='CYS',
+#          atom='CB',
+#          sd_limit=5,
+#          ph_min=7.0,
+#          ph_max=8.2,
+#          output_format='jpg',
+#          output_file='../docs/_images/example22.jpg',
+#          show_visualization=False)
+#     hist(residue='CYS',
+#          atom='CB',
+#          sd_limit=5,
+#          ph_min=7.0,
+#          ph_max=8.2,
+#          output_format='html',
+#          output_file='../docs/_static/example22.html',
+#          show_visualization=False)
 #
+#     hist(residue='CYS',
+#          atom='CB',
+#          plot_type='box',
+#          output_format='jpg',
+#          output_file='../docs/_images/example23.jpg',
+#          show_visualization=False)
+#     hist(residue='CYS',
+#          atom='CB',
+#          plot_type='box',
+#          output_format='html',
+#          output_file='../docs/_static/example23.html',
+#          show_visualization=False)
 #
+#     hist(residue='CYS',
+#          atom='CB',
+#          plot_type='violin',
+#          output_format='jpg',
+#          output_file='../docs/_images/example24.jpg',
+#          show_visualization=False)
+#     hist(residue='CYS',
+#          atom='CB',
+#          plot_type='violin',
+#          output_format='html',
+#          output_file='../docs/_static/example24.html',
+#          show_visualization=False)
+#
+#     hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'],
+#          histnorm='probability density',
+#          output_format='jpg',
+#          output_file='../docs/_images/example25.jpg',
+#          show_visualization=False)
+#     hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'],
+#          histnorm='probability density',
+#          output_format='html',
+#          output_file='../docs/_static/example25.jpg',
+#          show_visualization=False)
+#
+#     hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'],
+#          plot_type='violin',
+#          output_format='jpg',
+#          output_file='../docs/_images/example26.jpg',
+#          show_visualization=False)
+#     hist(list_of_atoms=['GLN-CB', 'CYS-CB', 'TYR-CB'],
+#          plot_type='violin',
+#          output_format='html',
+#          output_file='../docs/_static/example26.html',
+#          show_visualization=False)
+#
+#     hist(residue='GLN', atom='H*', histnorm='probability density',
+#          output_format='jpg',
+#          output_file='../docs/_images/example27.jpg',
+#          show_visualization=False)
+#     hist(residue='GLN', atom='H*', histnorm='probability density',
+#          output_format='html',
+#          output_file='../docs/_static/example27.html',
+#          show_visualization=False)
+#
+#     hist(residue='ASP',
+#          sd_limit=5,
+#          output_format='jpg',
+#          output_file='../docs/_images/example28.jpg',
+#          show_visualization=False)
+#     hist(residue='ASP',
+#          sd_limit=5.0,
+#          output_format='html',
+#          output_file='../docs/_static/example28.html',
+#          show_visualization=False)
+#
+#     hist(atom='CG*',
+#          histnorm='percent',
+#          output_format='jpg',
+#          output_file='../docs/_images/example29.jpg',
+#          show_visualization=False)
+#     hist(atom='CG*',
+#          histnorm='percent',
+#          output_format='html',
+#          output_file='../docs/_static/example29.html',
+#          show_visualization=False)
+#
+#     hist2d(residue='CYS', atom1='CA', atom2='CB', sd_limit=5,
+#            output_format='jpg',
+#            output_file='../docs/_images/example30.jpg',
+#            show_visualization=False
+#            )
+#     hist2d(residue='CYS', atom1='CA', atom2='CB', sd_limit=5,
+#            output_format='html',
+#            output_file='../docs/_static/example30.html',
+#            show_visualization=False
+#            )
+#
+#     hist2d(residue='GLN', atom1='HE21', atom2='HE22', sd_limit=5,
+#            output_format='jpg',
+#            output_file='../docs/_images/example31.jpg',
+#            show_visualization=False
+#            )
+#     hist2d(residue='GLN', atom1='HE21', atom2='HE22', sd_limit=5,
+#            output_format='html',
+#            output_file='../docs/_static/example31.html',
+#            show_visualization=False
+#            )
+#
+#     conditional_hist(residue='CYS',
+#                      atom='CB', histnorm='percent',
+#                      filtering_rules=[('H', 8.9)],
+#                      output_format='jpg',
+#                      output_file='../docs/_images/example32.jpg',
+#                      show_visualization=False
+#                      )
+#     conditional_hist(residue='CYS',
+#                      atom='CB', histnorm='percent',
+#                      filtering_rules=[('H', 8.9)],
+#                      output_format='html',
+#                      output_file='../docs/_static/example32.html',
+#                      show_visualization=False
+#                      )
+#
+#     conditional_hist(residue='CYS',
+#                      atom='CB', histnorm='percent',
+#                      filtering_rules=[('H', 8.9),('CA', 61)],
+#                      output_format='jpg',
+#                      output_file='../docs/_images/example33.jpg',
+#                      show_visualization=False
+#                      )
+#     conditional_hist(residue='CYS',
+#                      atom='CB', histnorm='percent',
+#                      filtering_rules=[('H', 8.9),('CA', 61)],
+#                      output_format='html',
+#                      output_file='../docs/_static/example33.html',
+#                      show_visualization=False
+#                      )

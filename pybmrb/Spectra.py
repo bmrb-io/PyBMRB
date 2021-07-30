@@ -1299,110 +1299,300 @@ def export_peak_list(peak_list: tuple,
         raise ValueError('Output format not supported')
     return csv_dict
 
-
-if __name__ == "__main__":
-    # p = n15hsqc(bmrb_ids=15060,output_format='eps',output_file='testttt',show_visualization=False)
-    p = n15hsqc(bmrb_ids=[15060, 15000])
-#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
-#                    include_preceding=True,legend='residue',output_format='jpg',
-#                    output_file='../docs/_images/n_cb_p.jpg')
-#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
-#                    include_preceding=True, legend='residue', output_format='html',
-#                    output_file='../docs/_static/n_cb_p.html')
-#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
-#                    include_next=True, legend='residue', output_format='jpg',
-#                    output_file='../docs/_images/n_cb_n.jpg')
-#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
-#                    include_next=True, legend='residue', output_format='html',
-#                    output_file='../docs/_static/n_cb_n.html')
-#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
-#                    include_preceding=True, legend='residue', output_format='jpg',
-#                    output_file='../docs/_images/n_cb_p_w.jpg')
-#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
-#                    include_preceding=True, legend='residue', output_format='html',
-#                    output_file='../docs/_static/n_cb_p_w.html')
-#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
-#                    include_next=True, legend='residue', output_format='jpg',
-#                    output_file='../docs/_images/n_cb_n_w.jpg')
-#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',seq_walk=True,
-#                    include_next=True, legend='residue', output_format='html',
-#                    output_file='../docs/_static/n_cb_n_w.html')
-#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA', full_walk=True,
-#                    include_next=True, legend='residue', output_format='jpg',
-#                    output_file='../docs/_images/n_cb_n_w_f.jpg')
-#     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA', full_walk=True,
-#                    include_next=True, legend='residue', output_format='html',
-#                    output_file='../docs/_static/n_cb_n_w_f.html')
-
-#     pk = export_peak_list(p, output_format='csv', output_file_name='test.csv')
-# Generating examples for documentation
-# n15hsqc(bmrb_ids=15060,output_format='jpg',legend='residue',output_file='../docs/_images/15060_n15',
-#                 show_visualization=False)
-# n15hsqc(bmrb_ids=15060, output_format='html', legend='residue',output_file='../docs/_static/15060_n15',
-#                 show_visualization=False)
-# n15hsqc(bmrb_ids=[17076,17077], file_names='tests/test_data/MyData.str',
-#                 output_format='jpg', output_file='../docs/_images/multi_n15',
-#                 legend='dataset',show_visualization=False)
-# n15hsqc(bmrb_ids=[17076,17077], file_names='tests/test_data/MyData.str',
-#                 output_format='html', output_file='../docs/_static/multi_n15',
-#                 legend='dataset',show_visualization=False)
-# n15hsqc(bmrb_ids=[ 17076, 17077], file_names='tests/test_data/MyData.str',
-#                 peak_list='tests/test_data/test_peak_list.csv',
-#                 output_format='jpg', output_file='../docs/_images/multi_n152',
-#                 legend='dataset', show_visualization=False)
-# n15hsqc(bmrb_ids=[ 17076, 17077], file_names='tests/test_data/MyData.str',
-#                 peak_list='tests/test_data/test_peak_list.csv',
-#                 output_format='html', output_file='../docs/_static/multi_n152',
-#                 legend='dataset', show_visualization=False)
-# n15hsqc(bmrb_ids=[ 17076, 17077],file_names='tests/test_data/MyData.str',
-#                 output_format='jpg', output_file='../docs/_images/multi2_n15',
-#                 legend='dataset',draw_trace=True, show_visualization=False,)
-# n15hsqc(bmrb_ids=[ 17076, 17077], file_names='tests/test_data/MyData.str',
-#                 output_format='html', output_file='../docs/_static/multi2_n15',
-#                 legend='dataset',draw_trace=True,show_visualization=False)
 #
-# c13hsqc(bmrb_ids=15060, output_format='jpg', legend='residue', output_file='../docs/_images/15060_c13',
-#                 show_visualization=False)
-# c13hsqc(bmrb_ids=15060, output_format='html', legend='residue', output_file='../docs/_static/15060_c13',
-#                 show_visualization=False)
-# c13hsqc(bmrb_ids=[17074, 17076, 17077], output_format='jpg', output_file='../docs/_images/multi_c13',
-#                 legend='dataset', show_visualization=False)
-# c13hsqc(bmrb_ids=[17074, 17076, 17077], output_format='html', output_file='../docs/_static/multi_c13',
-#                 legend='dataset', show_visualization=False)
-# n15hsqc(bmrb_ids=[17074, 17076, 17077], output_format='jpg', output_file='../docs/_images/multi2_c13',
-#                 legend='dataset', draw_trace=True, show_visualization=False, )
-# c13hsqc(bmrb_ids=[17074, 17076, 17077], output_format='html', output_file='../docs/_static/multi2_c13',
-#                 legend='dataset', draw_trace=True, show_visualization=False)
+# if __name__ == "__main__":
 #
-# tocsy(bmrb_ids=15060, output_format='jpg', legend='residue', output_file='../docs/_images/15060_tocsy',
-#                 show_visualization=False)
-# tocsy(bmrb_ids=15060, output_format='html', legend='residue', output_file='../docs/_static/15060_tocsy',
-#                 show_visualization=False)
-# tocsy(bmrb_ids=[17074, 17076, 17077], output_format='jpg', output_file='../docs/_images/multi_tocsy',
-#                 legend='dataset', show_visualization=False)
-# tocsy(bmrb_ids=[17074, 17076, 17077], output_format='html', output_file='../docs/_static/multi_tocsy',
-#                 legend='dataset', show_visualization=False)
-# tocsy(bmrb_ids=[17074, 17076, 17077], output_format='jpg', output_file='../docs/_images/multi_tocsy2',
-#               legend='residue', show_visualization=False)
-# tocsy(bmrb_ids=[17074, 17076, 17077], output_format='html', output_file='../docs/_static/multi_tocsy2',
-#               legend='residue', show_visualization=False)
-# tocsy(bmrb_ids=[17074, 17076, 17077], output_format='jpg', output_file='../docs/_images/multi2_tocsy',
-#                 legend='dataset', draw_trace=True, show_visualization=False, )
-# tocsy(bmrb_ids=[17074, 17076, 17077], output_format='html', output_file='../docs/_static/multi2_tocsy',
-#                 legend='dataset', draw_trace=True, show_visualization=False)
+#     # The following script is to generate example figures for readthedocs
+#     n15hsqc(bmrb_ids=[17074,17076,17077],legend='dataset',output_format='jpg',
+#             output_file='../docs/_images/sample_n15hsqc.jpg',show_visualization=False,
+#             draw_trace=True)
+#     n15hsqc(bmrb_ids=[17074, 17076, 17077], legend='dataset', output_format='html',
+#             output_file='../docs/_static/sample_n15hsqc.html', show_visualization=False,
+#             draw_trace=True)
+#     c13hsqc(bmrb_ids=15060,legend='residue',output_file='../docs/_images/sample_c13hsqc.jpg',
+#             output_format='jpg',show_visualization=False)
+#     c13hsqc(bmrb_ids=15060, legend='residue', output_file='../docs/_static/sample_c13hsqc.html',
+#             output_format='html', show_visualization=False)
+#     n15hsqc(bmrb_ids=[17076, 17077], input_file_names='tests/test_data/MyData.str',
+#                                 legend='dataset',output_format='jpg',
+#             output_file='../docs/_images/quick_start_n15hsqc_compare.jpg',
+#             show_visualization=False)
+#     n15hsqc(bmrb_ids=[17076, 17077], input_file_names='tests/test_data/MyData.str',
+#             legend='dataset', output_format='html',
+#             output_file='../docs/_static/quick_start_n15hsqc_compare.html',
+#             show_visualization=False)
+#     n15hsqc(bmrb_ids=[17076, 17077], input_file_names='tests/test_data/MyData.str',
+#             legend='dataset', output_format='html',draw_trace=True,
+#             output_file='../docs/_static/quick_start_n15hsqc_compare2.html',
+#             show_visualization=False)
+#     n15hsqc(bmrb_ids=[17076, 17077], peak_list='tests/test_data/test_peak_list.csv',
+#                                 legend='dataset', output_format='jpg',
+#             output_file='../docs/_images/quick_start_n15_peaklist.jpg',
+#             show_visualization=False)
+#     n15hsqc(bmrb_ids=15060,
+#             legend='residue',
+#             output_format='jpg',
+#             output_file='../docs/_images/example1.jpg',
+#             show_visualization=False)
+#     n15hsqc(bmrb_ids=15060,
+#             legend='residue',
+#             output_format='html',
+#             output_file='../docs/_static/example1.html',
+#             show_visualization=False)
+#     n15hsqc(bmrb_ids=[17076, 17077],
+#             input_file_names='tests/test_data/MyData.str',
+#             legend='dataset',
+#             output_format='jpg',
+#             output_file='../docs/_images/example2.jpg',
+#             show_visualization=False
+#             )
+#     n15hsqc(bmrb_ids=[17076, 17077],
+#             input_file_names='tests/test_data/MyData.str',
+#             legend='dataset',
+#             output_format='html',
+#             output_file='../docs/_static/example2.html',
+#             show_visualization=False
+#             )
+#     n15hsqc(bmrb_ids=[17076, 17077],
+#             input_file_names='tests/test_data/MyData.str',
+#             peak_list='tests/test_data/test_peak_list.csv',
+#             legend='dataset',
+#             output_format='jpg',
+#             output_file='../docs/_images/example3.jpg',
+#             show_visualization=False
+#             )
+#     n15hsqc(bmrb_ids=[17076, 17077],
+#             input_file_names='tests/test_data/MyData.str',
+#             peak_list='tests/test_data/test_peak_list.csv',
+#             legend='dataset',
+#             output_format='html',
+#             output_file='../docs/_static/example3.html',
+#             show_visualization=False
+#             )
+#     n15hsqc(bmrb_ids=[17076, 17077],
+#             input_file_names='tests/test_data/MyData.str',
+#             legend='dataset',
+#             draw_trace=True,
+#             output_format='jpg',
+#             output_file='../docs/_images/example4.jpg',
+#             show_visualization=False
+#             )
+#     n15hsqc(bmrb_ids=[17076, 17077],
+#             input_file_names='tests/test_data/MyData.str',
+#             legend='dataset',
+#             draw_trace=True,
+#             output_format='html',
+#             output_file='../docs/_static/example4.html',
+#             show_visualization=False
+#             )
+#     c13hsqc(bmrb_ids=15060,
+#             legend='residue',
+#             output_format='jpg',
+#             output_file='../docs/_images/example5.jpg',
+#             show_visualization=False)
+#     c13hsqc(bmrb_ids=15060,
+#             legend='residue',
+#             output_format='html',
+#             output_file='../docs/_static/example5.html',
+#             show_visualization=False)
+#     c13hsqc(bmrb_ids=[17074, 17076, 17077],
+#             legend='dataset',
+#             output_format='jpg',
+#             output_file='../docs/_images/example6.jpg',
+#             show_visualization=False
+#             )
+#     c13hsqc(bmrb_ids=[17074, 17076, 17077],
+#             legend='dataset',
+#             output_format='html',
+#             output_file='../docs/_static/example6.html',
+#             show_visualization=False
+#             )
+#     c13hsqc(bmrb_ids=[17074, 17076, 17077],
+#             legend='dataset',
+#             draw_trace=True,
+#             output_format='jpg',
+#             output_file='../docs/_images/example7.jpg',
+#             show_visualization=False
+#             )
+#     c13hsqc(bmrb_ids=[17074, 17076, 17077],
+#             legend='dataset',
+#             draw_trace=True,
+#             output_format='html',
+#             output_file='../docs/_static/example7.html',
+#             show_visualization=False
+#             )
+#     tocsy(bmrb_ids=15060,
+#           legend='residue',
+#           output_format='jpg',
+#           output_file='../docs/_images/example8.jpg',
+#           show_visualization=False)
+#     tocsy(bmrb_ids=15060,
+#           legend='residue',
+#           output_format='html',
+#           output_file='../docs/_static/example8.html',
+#           show_visualization=False)
+#     tocsy(bmrb_ids=[17074, 17076, 17077],
+#           legend='dataset',
+#           output_format='jpg',
+#           output_file='../docs/_images/example9.jpg',
+#           show_visualization=False)
+#     tocsy(bmrb_ids=[17074, 17076, 17077],
+#           legend='dataset',
+#           output_format='html',
+#           output_file='../docs/_static/example9.html',
+#           show_visualization=False)
+#     tocsy(bmrb_ids=[17074, 17076, 17077],
+#           legend='residue',
+#           output_format='jpg',
+#           output_file='../docs/_images/example10.jpg',
+#           show_visualization=False)
+#     tocsy(bmrb_ids=[17074, 17076, 17077],
+#           legend='residue',
+#           output_format='html',
+#           output_file='../docs/_static/example10.html',
+#           show_visualization=False)
+#     tocsy(bmrb_ids=[17074, 17076, 17077],
+#           legend='dataset',
+#           draw_trace=True,
+#           output_format='jpg',
+#           output_file='../docs/_images/example11.jpg',
+#           show_visualization=False)
+#     tocsy(bmrb_ids=[17074, 17076, 17077],
+#           legend='dataset',
+#           draw_trace=True,
+#           output_format='html',
+#           output_file='../docs/_static/example11.html',
+#           show_visualization=False)
+#     generic_2d(bmrb_ids=15060,
+#                atom_x='N',
+#                atom_y='CB',
+#                legend='residue',
+#                output_format='jpg',
+#                output_file='../docs/_images/example12.jpg',
+#                show_visualization=False)
+#     generic_2d(bmrb_ids=15060,
+#                atom_x='N',
+#                atom_y='CB',
+#                legend='residue',
+#                output_format='html',
+#                output_file='../docs/_static/example12.html',
+#                show_visualization=False)
+#     generic_2d(bmrb_ids=[17074,17076,17077],
+#                atom_x='N',
+#                atom_y='CB',
+#                legend='dataset',
+#                output_format='jpg',
+#                output_file='../docs/_images/example13.jpg',
+#                show_visualization=False)
+#     generic_2d(bmrb_ids=[17074,17076,17077],
+#                atom_x='N',
+#                atom_y='CB',
+#                legend='dataset',
+#                output_format='html',
+#                output_file='../docs/_static/example13.html',
+#                show_visualization=False)
+#     generic_2d(bmrb_ids=[17074, 17076, 17077],
+#                atom_x='N',
+#                atom_y='CB',
+#                legend='dataset',
+#                draw_trace=True,
+#                output_format='jpg',
+#                output_file='../docs/_images/example14.jpg',
+#                show_visualization=False)
+#     generic_2d(bmrb_ids=[17074, 17076, 17077],
+#                atom_x='N',
+#                atom_y='CB',
+#                legend='dataset',
+#                draw_trace=True,
+#                output_format='html',
+#                output_file='../docs/_static/example14.html',
+#                show_visualization=False)
 #
-# generic_2d(bmrb_ids=15060, atom_x='N',atom_y='CB', output_format='jpg', legend='residue',
-#                    output_file='../docs/_images/15060_2d',
-#                    show_visualization=False)
-# generic_2d(bmrb_ids=15060, atom_x='N',atom_y='CB',output_format='html', legend='residue',
-#                    output_file='../docs/_static/15060_2d', show_visualization=False)
-# generic_2d(bmrb_ids=[17074, 17076, 17077], atom_x='N',atom_y='CB',output_format='jpg',
-#                    output_file='../docs/_images/multi_2d', legend='dataset', show_visualization=False)
-# generic_2d(bmrb_ids=[17074, 17076, 17077], atom_x='N',atom_y='CB',output_format='html',
-#                    output_file='../docs/_static/multi_2d', legend='dataset', show_visualization=False)
-# generic_2d(bmrb_ids=[17074, 17076, 17077], atom_x='N',atom_y='CB',output_format='jpg',
-#                    output_file='../docs/_images/multi2_2d', legend='dataset', draw_trace=True,
-#                    show_visualization=False, )
-# generic_2d(bmrb_ids=[17074, 17076, 17077], atom_x='N',atom_y='CB',output_format='html',
-#                    output_file='../docs/_static/multi2_2d',
-#                    legend='dataset', draw_trace=True, show_visualization=False)
+#     generic_2d(bmrb_ids=15000,
+#                atom_x='N',
+#                atom_y='CA',
+#                legend='residue',
+#                include_preceding=True,
+#                output_format='jpg',
+#                output_file='../docs/_images/example15.jpg',
+#                show_visualization=False)
+#     generic_2d(bmrb_ids=15000,
+#                atom_x='N',
+#                atom_y='CA',
+#                legend='residue',
+#                include_preceding=True,
+#                output_format='html',
+#                output_file='../docs/_static/example15.html',
+#                show_visualization=False)
+#     generic_2d(bmrb_ids=15000,
+#                atom_x='N',
+#                atom_y='CA',
+#                legend='residue',
+#                include_preceding=True,
+#                seq_walk=True,
+#                output_format='jpg',
+#                output_file='../docs/_images/example16.jpg',
+#                show_visualization=False)
+#     generic_2d(bmrb_ids=15000,
+#                atom_x='N',
+#                atom_y='CA',
+#                legend='residue',
+#                include_preceding=True,
+#                seq_walk=True,
+#                output_format='html',
+#                output_file='../docs/_static/example16.html',
+#                show_visualization=False)
+#     generic_2d(bmrb_ids=15000,
+#                atom_x='N',
+#                atom_y='CA',
+#                legend='residue',
+#                include_next=True,
+#                output_format='jpg',
+#                output_file='../docs/_images/example17.jpg',
+#                show_visualization=False)
+#     generic_2d(bmrb_ids=15000,
+#                atom_x='N',
+#                atom_y='CA',
+#                legend='residue',
+#                include_next=True,
+#                output_format='html',
+#                output_file='../docs/_static/example17.html',
+#                show_visualization=False)
+#     generic_2d(bmrb_ids=15000,
+#                atom_x='N',
+#                atom_y='CA',
+#                legend='residue',
+#                include_next=True,
+#                seq_walk=True,
+#                output_format='jpg',
+#                output_file='../docs/_images/example18.jpg',
+#                show_visualization=False)
+#     generic_2d(bmrb_ids=15000,
+#                atom_x='N',
+#                atom_y='CA',
+#                legend='residue',
+#                include_next=True,
+#                seq_walk=True,
+#                output_format='html',
+#                output_file='../docs/_static/example18.html',
+#                show_visualization=False)
+#
+#     generic_2d(bmrb_ids=15000,
+#                atom_x='N',
+#                atom_y='CA',
+#                legend='residue',
+#                include_next=True,
+#                full_walk=True,
+#                output_format='jpg',
+#                output_file='../docs/_images/example19.jpg',
+#                show_visualization=False)
+#     generic_2d(bmrb_ids=15000,
+#                atom_x='N',
+#                atom_y='CA',
+#                legend='residue',
+#                include_next=True,
+#                full_walk=True,
+#                output_format='html',
+#                output_file='../docs/_static/example19.html',
+#                show_visualization=False)
+#

@@ -19,29 +19,29 @@ Sample visualizations
 
 Click the figure caption for interactive visualization
 
-.. figure:: _images/n15hsqc.jpg
+.. figure:: _images/sample_n15hsqc.jpg
     :alt: n15hsqc
     :align: center
 
-    `Figure 1 <_static/n15hsqc_compare2.html>`_ :  |n15| -HSQC
+    `Figure 1 <_static/sample_n15hsqc.html>`_ :  |n15| -HSQC
 
-.. figure:: _images/c13hsqc.jpg
+.. figure:: _images/sample_c13hsqc.jpg
     :alt: c13hsqc
     :align: center
 
-    `Figure 2 <_static/c13hsqc.html>`_ :  |c13| -HSQC
+    `Figure 2 <_static/sample_c13hsqc.html>`_ :  |c13| -HSQC
 
-.. figure:: _images/cbhist.jpg
+.. figure:: _images/sample_cbhist.jpg
     :alt: cbhist
     :align: center
 
-    `Figure 3 <_static/cbhist.html>`_ :  CB-Histogram
+    `Figure 3 <_static/sample_cbhist.html>`_ :  CB-Histogram
 
-.. figure:: _images/cys-n-cb.jpg
+.. figure:: _images/sample_hist2d.jpg
     :alt: cys-n-cb
     :align: center
 
-    `Figure 4 <_static/cys-n-cb.html>`_ :  Chemical shift correlation of CYS N and CB
+    `Figure 4 <_static/sample_hist2d.html>`_ :  Chemical shift correlation of CYS N and CB
 
 
 .. |n15| replace:: :sup:`1` H - :sup:`15` N

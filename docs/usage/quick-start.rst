@@ -79,7 +79,7 @@ compare your data with BMRB as overlying |n15| - HSQC spectra using the followin
 
 This will open the visualization on your default web browser. When you mouseover the tool-tip it will show the information
 about each peak. You may turn on and off the data set using legend on the right.
-`Click here to view the output1 <../_static/n15hsqc_compare.html>`_
+`Click here to view the output1 <../_static/quick_start_n15hsqc_compare.html>`_
 
 If you want the output as an image and not to open the visualization on web browser then use the following option
 
@@ -87,7 +87,7 @@ If you want the output as an image and not to open the visualization on web brow
 
     peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077], input_file_names='tests/test_data/MyData.str', legend='dataset', output_format='jpg', output_file='n15hsqc_compare.jpg', show_visualization = False)
 
-.. figure:: ../_images/n15hsqc_compare.jpg
+.. figure:: ../_images/quick_start_n15hsqc_compare.jpg
     :alt: n15hsqc
     :align: center
 
@@ -101,16 +101,16 @@ If you want to trace the chemical shift changes, use the following command
 
     peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077], input_file_names='tests/test_data/MyData.str', legend='dataset', draw_trace = True)
 
-`Click here to view the output2 <../_static/n15hsqc_compare2.html>`_
+`Click here to view the output2 <../_static/quick_start_n15hsqc_compare2.html>`_
 
 If you don't have your data in NMR-STAR format, then no problem!. You may extract the peak list from any NMR spectra as
 a csv file. You may use the csv file to compare your peak list with any BMRB entry
 
 .. code:: python
 
-    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077], input_file_names='tests/test_data/MyData.str', legend='dataset', draw_trace = True)
+    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077], peak_list='tests/test_data/test_peak_list.csv', legend='dataset', draw_trace = True)
 
-.. figure:: ../_images/n15_peaklist.jpg
+.. figure:: ../_images/quick_start_n15_peaklist.jpg
     :alt: n15hsqc
     :align: center
 

@@ -27,11 +27,11 @@ be on X axis and which atom to be on Y axis to generate a generic 2D correlation
 
     peak_list=Spectra.n15hsqc(bmrb_ids=15060, legend='residue')
 
-.. figure:: ../_images/15060_n15.jpg
+.. figure:: ../_images/example1.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for n15-HSQC from BMRB entry 15060 <../_static/15060_n15.html>`_
+    `Click here for interactive html for n15-HSQC from BMRB entry 15060 <../_static/example1.html>`_
 
 - Example 2: Multiple entries from BMRB along with a NMR-STAR file.
 
@@ -42,11 +42,11 @@ You may also use residue as legend to turn on and off different residue types
 
     peak_list=Spectra.n15hsqc(bmrb_ids=[17076,17077], input_file_names='test_data/MyData.str', legend='dataset')
 
-.. figure:: ../_images/multi_n15.jpg
+.. figure:: ../_images/example2.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for n15-HSQC from BMRB entries along with NMR-STAR file <../_static/multi_n15.html>`_
+    `Click here for interactive html for n15-HSQC from BMRB entries along with NMR-STAR file <../_static/example2.html>`_
 
 - Example 3: Multiple entries from BMRB along with a NMR-STAR file and a peak list in csv format
 
@@ -54,11 +54,11 @@ You may also use residue as legend to turn on and off different residue types
 
     peak_list=Spectra.n15hsqc(bmrb_ids=[17076,17077], input_file_names='test_data/MyData.str', peak_list='test_data/my_peak_list.csv', legend='dataset')
 
-.. figure:: ../_images/multi_n152.jpg
+.. figure:: ../_images/example3.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for n15-HSQC from BMRB entries along with NMR-STAR file and a peak list <../_static/multi_n152.html>`_
+    `Click here for interactive html for n15-HSQC from BMRB entries along with NMR-STAR file and a peak list <../_static/example2.html>`_
 
 
 - Example 4: Multiple entries from BMRB with chemical shift tracking
@@ -67,11 +67,11 @@ You may also use residue as legend to turn on and off different residue types
 
     peak_list=Spectra.n15hsqc(bmrb_ids=[17076,17077], input_file_names='test_data/MyData.str', legend='dataset', draw_trace=True)
 
-.. figure:: ../_images/multi2_n15.jpg
+.. figure:: ../_images/example4.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for n15-HSQC from BMRB entries 17074,17076 and 17076 with trace <../_static/multi2_n15.html>`_
+    `Click here for interactive html for n15-HSQC from BMRB entries 17074,17076 and 17076 with trace <../_static/example4.html>`_
 
 
 |c13| - HSQC peak position simulation
@@ -83,11 +83,11 @@ You may also use residue as legend to turn on and off different residue types
 
     peak_list=Spectra.c13hsqc(bmrb_ids=15060, legend='residue')
 
-.. figure:: ../_images/15060_c13.jpg
+.. figure:: ../_images/example5.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for c13-HSQC from BMRB entry 15060 <../_static/15060_c13.html>`_
+    `Click here for interactive html for c13-HSQC from BMRB entry 15060 <../_static/example5.html>`_
 
 - Example 6: Multiple entries from BMRB
 
@@ -95,11 +95,11 @@ You may also use residue as legend to turn on and off different residue types
 
     peak_list=Spectra.c13hsqc(bmrb_ids=[17074,17076,17077], legend='dataset')
 
-.. figure:: ../_images/multi_c13.jpg
+.. figure:: ../_images/example6.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for c13-HSQC from BMRB entries 17074,17076 and 17076 <../_static/multi_c13.html>`_
+    `Click here for interactive html for c13-HSQC from BMRB entries 17074,17076 and 17076 <../_static/example6.html>`_
 
 - Example 7: Multiple entries from BMRB with chemical shift tracking
 
@@ -107,11 +107,11 @@ You may also use residue as legend to turn on and off different residue types
 
     peak_list=Spectra.c13hsqc(bmrb_ids=[17074,17076,17077], legend='dataset', draw_trace=True)
 
-.. figure:: ../_images/multi2_c13.jpg
+.. figure:: ../_images/example7.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for c13-HSQC from BMRB entries 17074,17076 and 17076 with trace <../_static/multi2_c13.html>`_
+    `Click here for interactive html for c13-HSQC from BMRB entries 17074,17076 and 17076 with trace <../_static/example7.html>`_
 
 
 |hh| - TOCSY peak position simulation
@@ -123,11 +123,11 @@ You may also use residue as legend to turn on and off different residue types
 
     peak_list=Spectra.tocsy(bmrb_ids=15060, legend='residue')
 
-.. figure:: ../_images/15060_tocsy.jpg
+.. figure:: ../_images/example8.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for TOCSY from BMRB entry 15060 <../_static/15060_tocsy.html>`_
+    `Click here for interactive html for TOCSY from BMRB entry 15060 <../_static/example8.html>`_
 
 - Example 9: Multiple entries from BMRB
 
@@ -135,11 +135,11 @@ You may also use residue as legend to turn on and off different residue types
 
     peak_list=Spectra.tocsy(bmrb_ids=[17074,17076,17077], legend='dataset')
 
-.. figure:: ../_images/multi_tocsy.jpg
+.. figure:: ../_images/example9.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for TOCSY from BMRB entries 17074,17076 and 17076 <../_static/multi_tocsy.html>`_
+    `Click here for interactive html for TOCSY from BMRB entries 17074,17076 and 17076 <../_static/example9.html>`_
 
 - Example 10: Multiple entries from BMRB with residues as legend
 
@@ -147,11 +147,11 @@ You may also use residue as legend to turn on and off different residue types
 
     peak_list=Spectra.tocsy(bmrb_ids=[17074,17076,17077], legend='residue')
 
-.. figure:: ../_images/multi_tocsy2.jpg
+.. figure:: ../_images/example10.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for TOCSY from BMRB entries 17074,17076 and 17076 with residues as legend <../_static/multi_tocsy2.html>`_
+    `Click here for interactive html for TOCSY from BMRB entries 17074,17076 and 17076 with residues as legend <../_static/example10.html>`_
 
 - Example 11 : Multiple entries from BMRB with chemical shift tracking
 
@@ -159,11 +159,11 @@ You may also use residue as legend to turn on and off different residue types
 
     peak_list=Spectra.tocsy(bmrb_ids=[17074,17076,17077], legend='dataset', draw_trace=True)
 
-.. figure:: ../_images/multi2_tocsy.jpg
+.. figure:: ../_images/example11.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for TOCSY from BMRB entries 17074,17076 and 17076 with trace <../_static/multi2_tocsy.html>`_
+    `Click here for interactive html for TOCSY from BMRB entries 17074,17076 and 17076 with trace <../_static/example11.html>`_
 
 Please not the above TOCSY with chemical shift visualization will take some time to load, because of hundreds of traces
 
@@ -180,11 +180,11 @@ were used as  x axis and CB chemical shifts were was used a Y axis.
 
     peak_list=Spectra.generic_2d(bmrb_ids=15060, atom_x='N', atom_y='CB', legend='residue')
 
-.. figure:: ../_images/15060_2d.jpg
+.. figure:: ../_images/example12.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for generic 2D spectrum from BMRB entry 15060 <../_static/15060_2d.html>`_
+    `Click here for interactive html for generic 2D spectrum from BMRB entry 15060 <../_static/example12.html>`_
 
 - Example 13: Multiple entries from BMRB
 
@@ -192,11 +192,11 @@ were used as  x axis and CB chemical shifts were was used a Y axis.
 
     peak_list=Spectra.generic_2d(bmrb_ids=[17074,17076,17077], atom_x='N', atom_y='CB', legend='dataset')
 
-.. figure:: ../_images/multi_2d.jpg
+.. figure:: ../_images/example13.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for generic 2D spectrum from BMRB entries 17074,17076 and 17076 <../_static/multi_2d.html>`_
+    `Click here for interactive html for generic 2D spectrum from BMRB entries 17074,17076 and 17076 <../_static/example13.html>`_
 
 - Example 14: Multiple entries from BMRB with chemical shift tracking
 
@@ -204,11 +204,11 @@ were used as  x axis and CB chemical shifts were was used a Y axis.
 
     peak_list=Spectra.generic_2d(bmrb_ids=[17074,17076,17077], atom_x='N', atom_y='CB', legend='dataset', draw_trace=True)
 
-.. figure:: ../_images/multi2_2d.jpg
+.. figure:: ../_images/example14.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for generic 2D spectrum from BMRB entries 17074,17076 and 17076 with trace <../_static/multi2_2d.html>`_
+    `Click here for interactive html for generic 2D spectrum from BMRB entries 17074,17076 and 17076 with trace <../_static/example14.html>`_
 
 - Example 15: Include chemical shifts from preceding residue in the generic 2d spectrum
 
@@ -218,25 +218,26 @@ You may also include chemical shift from i-1 atom in the generic 2D spectrum, wh
 
     peak_list = Spectra.generic_2d((bmrb_ids=15000, atom_x='N', atom_y='CA', include_preceding=True, legend='residue')
 
-.. figure:: ../_images/n_cb_p.jpg
+.. figure:: ../_images/example15.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for generic 2D spectrum with preceding residue <../_static/n_cb_p.html>`_
+    `Click here for interactive html for generic 2D spectrum with preceding residue <../_static/example15.html>`_
 
 - Example 16: Draw trace to show the walk along the sequence
 
 You may draw a trace connecting i-1 to i to next i-1 and so on as long as the sequence is continuous. If you have missing
 chemical shift, then the trace will start from next possible residue
+
 .. code:: python
 
     peak_list = Spectra.generic_2d((bmrb_ids=15000, atom_x='N', atom_y='CA', include_preceding=True, legend='residue', seq_walk=True)
 
-.. figure:: ../_images/n_cb_p_w.jpg
+.. figure:: ../_images/example16.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for generic 2D spectrum with preceding residue and sequence walk <../_static/n_cb_p_w.html>`_
+    `Click here for interactive html for generic 2D spectrum with preceding residue and sequence walk <../_static/example16.html>`_
 
 - Example 17: Include chemical shift from next residues in the generic 2d spectrum
 
@@ -246,25 +247,26 @@ You may also include chemical shift from i+1 atoms in the generic 2D spectrum, w
 
     peak_list = Spectra.generic_2d((bmrb_ids=15000, atom_x='N', atom_y='CA', include_next=True, legend='residue')
 
-.. figure:: ../_images/n_cb_n.jpg
+.. figure:: ../_images/example17.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for generic 2D spectrum with next residue <../_static/n_cb_n.html>`_
+    `Click here for interactive html for generic 2D spectrum with next residue <../_static/example17.html>`_
 
 - Example 18: Draw trace to show the walk along the sequence
 
 You may draw a trace connecting i+1 to i to next i+1 and so on as long as the sequence is continuous. If you have missing
 chemical shift, then the trace will start from next possible residue
+
 .. code:: python
 
     peak_list = Spectra.generic_2d((bmrb_ids=15000, atom_x='N', atom_y='CA', include_next=True, legend='residue', seq_walk=True)
 
-.. figure:: ../_images/n_cb_n_w.jpg
+.. figure:: ../_images/example18.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for generic 2D spectrum with next residue and sequence walk <../_static/n_cb_n_w.html>`_
+    `Click here for interactive html for generic 2D spectrum with next residue and sequence walk <../_static/example18.html>`_
 
 - Example 19: Draw trace to show the walk along the sequence ignoring missing residues
 
@@ -274,11 +276,11 @@ you may also draw traces from starting residue to end residue ignoring the missi
 
     peak_list = Spectra.generic_2d((bmrb_ids=15000, atom_x='N', atom_y='CA', include_next=True, legend='residue',  full_walk = True)
 
-.. figure:: ../_images/n_cb_n_w_f.jpg
+.. figure:: ../_images/example19.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for generic 2D spectrum with next residue and full sequence walk <../_static/n_cb_n_w_f.html>`_
+    `Click here for interactive html for generic 2D spectrum with next residue and full sequence walk <../_static/example19.html>`_
 
 
 
@@ -300,11 +302,11 @@ Single distribution
 
     cs_data=Histogram.hist(residue='CYS', atom='CB')
 
-.. figure:: ../_images/cys_cb_hist.jpg
+.. figure:: ../_images/example20.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for CYS-CB histogram <../_static/cys_cb_hist.html>`_
+    `Click here for interactive html for CYS-CB histogram <../_static/example20.html>`_
 
 - Example 21: Chemical shift distribution of CYS-CB with standard deviation cs_filt
 
@@ -315,11 +317,11 @@ the values beyond 5 times standard deviation on moth sides of the mean
 
     cs_data=Histogram.hist(residue='CYS', atom='CB', sd_limit=5 )
 
-.. figure:: ../_images/cys_cb_hist_sd5.jpg
+.. figure:: ../_images/example21.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for CYS-CB histogram with in 5 std on both sides of the mean <../_static/cys_cb_hist_sd5.html>`_
+    `Click here for interactive html for CYS-CB histogram with in 5 std on both sides of the mean <../_static/example21.html>`_
 
 - Example 22: Chemical shift distribution of CYS-CB with Ph cs_filt
 
@@ -329,11 +331,11 @@ You may use experimental conditions like  Ph or temperature values as a cs_filt
 
     cs_data=Histogram.hist(residue='CYS', atom='CB', sd_limit=5, ph_min=7.0, ph_max=8.2)
 
-.. figure:: ../_images/cys_cb_hist_ph.jpg
+.. figure:: ../_images/example22.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for CYS-CB histogram with Ph cs_filt <../_static/cys_cb_hist_ph.html>`_
+    `Click here for interactive html for CYS-CB histogram with Ph cs_filt <../_static/example22.html>`_
 
 - Example 23: Chemical shift distribution of CYS-CB as box plot
 
@@ -343,11 +345,11 @@ Box plot and Violin plot will show all the statistical properties of the distrib
 
     cs_data=Histogram.hist(residue='CYS', atom='CB', plot_type='box')
 
-.. figure:: ../_images/cys_cb_box_sd5.jpg
+.. figure:: ../_images/example23.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for CYS-CB box plot <../_static/cys_cb_box_sd5.html>`_
+    `Click here for interactive html for CYS-CB box plot <../_static/example23.html>`_
 
 - Example 24: Chemical shift distribution of CYS-CB as violin plot
 
@@ -357,11 +359,11 @@ Box plot and Violin plot will show all the statistical properties of the distrib
 
     cs_data=Histogram.hist(residue='CYS', atom='CB', plot_type='violin')
 
-.. figure:: ../_images/cys_cb_violin_sd5.jpg
+.. figure:: ../_images/example24.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for CYS-CB violin plot <../_static/cys_cb_violin_sd5.html>`_
+    `Click here for interactive html for CYS-CB violin plot <../_static/example24.html>`_
 
 Multiple distribution
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -374,11 +376,11 @@ You may also provide list of atoms as input
 
     cs_data=Histogram.hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'], histnorm='probability density')
 
-.. figure:: ../_images/multi_hist.jpg
+.. figure:: ../_images/example25.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for multiple distribution <../_static/multi_hist.html>`_
+    `Click here for interactive html for multiple distribution <../_static/example25.html>`_
 
 - Example 26: Violin plot for list of atoms
 
@@ -388,11 +390,11 @@ You may also provide list of atoms as input
 
     cs_data=Histogram.hist(list_of_atoms=['GLN-CB','CYS-CB','TYR-CB'], plot_type='violin')
 
-.. figure:: ../_images/multi_violin.jpg
+.. figure:: ../_images/example26.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for violin plot <../_static/multi_violin.html>`_
+    `Click here for interactive html for violin plot <../_static/example26.html>`_
 
 
 - Example 27: Histogram method supports wildcard
@@ -404,11 +406,11 @@ You may chose histnorm as 'probability density' to compare distributions
 
     cs_data=Histogram.hist(residue='GLN', atom='H*', histnorm='probability density')
 
-.. figure:: ../_images/gln_h_hist.jpg
+.. figure:: ../_images/example27.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for GLN-H* distribution <../_static/gln_h_hist.html>`_
+    `Click here for interactive html for GLN-H* distribution <../_static/example27.html>`_
 
 - Example 28: Distribution of all atoms from a residue
 
@@ -425,11 +427,11 @@ or
     cs_data=Histogram.hist(residue='ASP')
 
 
-.. figure:: ../_images/asp_hist.jpg
+.. figure:: ../_images/example28.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for ASP distribution <../_static/asp_hist.html>`_
+    `Click here for interactive html for ASP distribution <../_static/example28.html>`_
 
 - Example 29: Distribution of specific atom type from al residues
 
@@ -446,11 +448,11 @@ or
     cs_data=Histogram.hist(atom='CG*', histnorm='percent')
 
 
-.. figure:: ../_images/cg_hist.jpg
+.. figure:: ../_images/example29.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for CG* distribution <../_static/cg_hist.html>`_
+    `Click here for interactive html for CG* distribution <../_static/example29.html>`_
 
 2D Histograms
 ^^^^^^^^^^^^^^^^^^^^
@@ -462,11 +464,11 @@ or
 
     cs_data=Histogram.hist2d(residue='CYS', atom1='CA', atom2='CB', sd_limit=5)
 
-.. figure:: ../_images/cys-ca-cb.jpg
+.. figure:: ../_images/example30.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive 2D heatmap  <../_static/cys-ca-cb.html>`_
+    `Click here for interactive 2D heatmap  <../_static/example30.html>`_
 
 - Example 31: Chemical shift correlation as contour heatmap
 
@@ -475,11 +477,11 @@ or
 
     cs_data=Histogram.hist2d(residue='GLN', atom1='HE21', atom2='HE22', sd_limit=5, plot_type='contour')
 
-.. figure:: ../_images/gln-2d.jpg
+.. figure:: ../_images/example31.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive contour plot  <../_static/gln-2d.html>`_
+    `Click here for interactive contour plot  <../_static/example31.html>`_
 
 Conditional histogram
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -494,11 +496,11 @@ more atom in the same residue. In the following example CYS-CB values are filter
 
     cs_data=Histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent', filtering_rules=[('H',8.9)])
 
-.. figure:: ../_images/filt1.jpg
+.. figure:: ../_images/example32.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive conditional histogram with one rule  <../_static/filt1.html>`_
+    `Click here for interactive conditional histogram with one rule  <../_static/example32.html>`_
 
 - Example 33: Conditional histogram with chemical shift list
 
@@ -507,11 +509,11 @@ more atom in the same residue. In the following example CYS-CB values are filter
 
     cs_data=Histogram.conditional_hist(residue='CYS', atom='CB', histnorm='percent', filtering_rules=[('H', 8.9), ('CA', 61)])
 
-.. figure:: ../_images/filt2.jpg
+.. figure:: ../_images/example33.jpg
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive conditional histogram with list of rules  <../_static/filt2.html>`_
+    `Click here for interactive conditional histogram with list of rules  <../_static/example33.html>`_
 
 Data manipulation
 -------------------
