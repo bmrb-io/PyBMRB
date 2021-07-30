@@ -5,9 +5,17 @@ import plotly.express as px
 from pybmrb import ChemicalShiftStatistics
 
 
-def hist(residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10, ambiguity='*',
-         ph_min=None, ph_max=None, t_min=None, t_max=None,
-         histnorm='',
+def hist(residue=None,
+         atom=None,
+         list_of_atoms=None,
+         filtered=True,
+         sd_limit=10,
+         ambiguity='*',
+         ph_min=None,
+         ph_max=None,
+         t_min=None,
+         t_max=None,
+         histnorm=None,
          standard_amino_acids=True,
          plot_type='histogram', output_format='html',
          output_file=None,
@@ -28,7 +36,7 @@ def hist(residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10
     :param ph_min: PH filter (min);default None
     :param ph_max: PH filter (max); default None
     :param t_min: Temperature filter (min); default None
-    :param histnorm: histnorm for the distribution 'probability','percent','probability density')
+    :param histnorm: One of 'percent', 'probability', 'density', or 'probability density' If None, the output of histfunc is used as is. If 'probability', the output of histfunc for a given bin is divided by the sum of the output of histfunc for all bins. If 'percent', the output of histfunc for a given bin is divided by the sum of the output of histfunc for all bins and multiplied by 100. If 'density', the output of histfunc for a given bin is divided by the size of the bin. If 'probability density', the output of histfunc for a given bin is normalized such that it corresponds to the probability that a random event whose distribution is described by the output of histfunc will fall into that bin.
     :param t_max: Temperature filter (max); default None
     :param standard_amino_acids: get data only form standard amino acids and nucleic acids; default:True
     :param plot_type: plot type; supported types 'histogram','box','violin' ; default histogram
@@ -102,42 +110,12 @@ def hist(residue=None, atom=None, list_of_atoms=None, filtered=True, sd_limit=10
         fig.show()
     if output_file is not None:
         if output_format == 'html':
-            if output_file.split(".")[-1] == 'html':
-                fig.write_html('{}'.format(output_file))
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Successfully written {}.html'.format(output_file))
-        elif output_format == 'jpg':
-            if output_file.split(".")[-1] == 'jpg':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.jpg'.format(output_file))
-        elif output_format == 'png':
-            if output_file.split(".")[-1] == 'png':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.png'.format(output_file))
-        elif output_format == 'pdf':
-            if output_file.split(".")[-1] == 'pdf':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.pdf'.format(output_file))
-        elif output_format == 'webp':
-            if output_file.split(".")[-1] == 'webp':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.wepb'.format(output_file))
+            fig.write_html(output_file)
+        elif output_format in ['png', 'jpg', 'jpeg', 'webp', 'svg', 'pdf', 'json']:
+            fig.write_image(file=output_file, format=output_format, width=output_image_width,
+                            height=output_image_height)
         else:
-            logging.error('Output file format not support:{}'.format(output_format))
+            logging.error('Output file format not supported:{}'.format(output_format))
     return x, tag
 
 
@@ -219,42 +197,12 @@ def hist2d(residue, atom1, atom2, filtered=True, sd_limit=10,
         fig.show()
     if output_file is not None:
         if output_format == 'html':
-            if output_file.split(".")[-1] == 'html':
-                fig.write_html('{}'.format(output_file))
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Successfully written {}.html'.format(output_file))
-        elif output_format == 'jpg':
-            if output_file.split(".")[-1] == 'jpg':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.jpg'.format(output_file))
-        elif output_format == 'png':
-            if output_file.split(".")[-1] == 'png':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.png'.format(output_file))
-        elif output_format == 'pdf':
-            if output_file.split(".")[-1] == 'pdf':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.pdf'.format(output_file))
-        elif output_format == 'webp':
-            if output_file.split(".")[-1] == 'webp':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.wepb'.format(output_file))
+            fig.write_html(output_file)
+        elif output_format in ['png', 'jpg', 'jpeg', 'webp', 'svg', 'pdf', 'json']:
+            fig.write_image(file=output_file, format=output_format, width=output_image_width,
+                            height=output_image_height)
         else:
-            logging.error('Output file format not support:{}'.format(output_format))
+            logging.error('Output file format not supported:{}'.format(output_format))
     return x, y
 
 
@@ -363,42 +311,12 @@ def conditional_hist(residue, atom, filtering_rules,
         fig.show()
     if output_file is not None:
         if output_format == 'html':
-            if output_file.split(".")[-1] == 'html':
-                fig.write_html('{}'.format(output_file))
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Successfully written {}.html'.format(output_file))
-        elif output_format == 'jpg':
-            if output_file.split(".")[-1] == 'jpg':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.jpg'.format(output_file))
-        elif output_format == 'png':
-            if output_file.split(".")[-1] == 'png':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.png'.format(output_file))
-        elif output_format == 'pdf':
-            if output_file.split(".")[-1] == 'pdf':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.pdf'.format(output_file))
-        elif output_format == 'webp':
-            if output_file.split(".")[-1] == 'webp':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.wepb'.format(output_file))
+            fig.write_html(output_file)
+        elif output_format in ['png', 'jpg', 'jpeg', 'webp', 'svg', 'pdf', 'json']:
+            fig.write_image(file=output_file, format=output_format, width=output_image_width,
+                            height=output_image_height)
         else:
-            logging.error('Output file format not support:{}'.format(output_format))
+            logging.error('Output file format not supported:{}'.format(output_format))
     return x, tag
 
 #

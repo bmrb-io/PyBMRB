@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-
+"""
+This module is used to visualize the one dimensional chemical shift list from BMRB entry or NMR-STAR file as a 
+two dimensional NMR spectrum. It simulates peak positions of \u00b9\u2075N-HSQC, \u00b9\u00b3C-HSQC and
+\u00b9H-\u00b9H-TOCSY. It can also simulate a generic 2D spectrum between any two given pair of atoms. This module is 
+useful to compare user data with any BMRB entry/list of entries as a overlaid NMR spectra.
+"""
 
 import logging
 import csv
@@ -8,26 +13,37 @@ import pynmrstar
 
 from pybmrb import ChemicalShift, ChemicalShiftStatistics
 import plotly.express as px
-from typing import Union, List
+from typing import Union, List, Optional
 
 
-def create_c13hsqc_peaklist(bmrb_ids: Union[str, List[str]],
-                            entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
-                            input_file_names: Union[str, List[str]] = None,
-                            auth_tag: bool = False,
-                            draw_trace: bool = False) -> tuple:
+def create_c13hsqc_peaklist(bmrb_ids: Optional[Union[str, List[str], int, List[int]]] = None,
+                            entry_objects: Optional[Union[pynmrstar.Entry, List[pynmrstar.Entry]]] = None,
+                            input_file_names: Optional[Union[str, List[str]]] = None,
+                            auth_tag: Optional[bool] = False,
+                            draw_trace: Optional[bool] = False) -> tuple:
     """
-    Converts one dimensional chemical shifts from list of BMRB entries into CHSQC peak list
+    Converts one dimensional chemical shifts from BMRB entries/NMR-STAR files/PyNMRSTAR entry objects into
+    \u00b9\u00b3C-HSQC peak list
 
-    :param bmrb_ids: BMRB entry ID or list of entry ids
-    :param input_file_names: Input NMR-STAR file name
-    :param entry_objects: One of more PyNMRSTAR entry objects
-    :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
-    :param draw_trace: Connect the matching residues using sequence numbering; default: False
-    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+    :param bmrb_ids: single BMRB entry ID or multiple BMRB entry IDs as list, defaults to None
+    :type bmrb_ids: str/int/list, optional
+    :param input_file_names: single input file name  or multiple input file names as list, defaults to None
+    :type input_file_names: str, optional
+    :param entry_objects: single PyNMRSTAR entry object  or multiple PyNMRSTAR entry objects as list, defaults to None
+    :type entry_objects: PyNMRSTAR object/list, optional
+    :param auth_tag: Use sequence numbers from _Atom_chem_shift.Auth_seq_ID instead of _Atom_chem_shift.Comp_index_ID
+        in the NMR-STAR file/BMRB entry, defaults to False
+    :type auth_tag: bool, optional
+    :param draw_trace: draw line connecting peaks from residues at the same sequence location in different
+        data sets, defaults to False
+    :type draw_trace: bool optional
+    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track)
+        if draw_trace is True cs_track={ matching atoms:[cs_values]} else cs_track={}
+    :rtype: tuple
     """
-
+    if bmrb_ids is None and input_file_names is None and entry_objects is None:
+        logging.error('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
+        raise TypeError('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
     ch_atoms = {'ALA': [('HA', 'CA'), ('HB*', 'CB')],
                 'ARG': [('HA', 'CA'), ('HB*', 'CB'), ('HG*', 'CG'), ('HD*', 'CD')],
                 'ASN': [('HA', 'CA'), ('HB*', 'CB')],
@@ -103,23 +119,33 @@ def create_c13hsqc_peaklist(bmrb_ids: Union[str, List[str]],
     return x, y, data_set, info, res, cs_track
 
 
-def create_tocsy_peaklist(bmrb_ids: Union[str, List[str]],
-                          entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
-                          input_file_names: Union[str, List[str]] = None,
-                          auth_tag: bool = False,
-                          draw_trace: bool = False) -> tuple:
+def create_tocsy_peaklist(bmrb_ids: Optional[Union[str, List[str], int, List[int]]] = None,
+                          entry_objects: Optional[Union[pynmrstar.Entry, List[pynmrstar.Entry]]] = None,
+                          input_file_names: Optional[Union[str, List[str]]] = None,
+                          auth_tag: Optional[bool] = False,
+                          draw_trace: Optional[bool] = False) -> tuple:
     """
-    Converts one dimensional chemical shifts from list of BMRB entries into TOCSY peak list
+    Converts one dimensional chemical shifts from BMRB entries/NMR-STAR files/PyNMRSTAR entry objects into  into \u00b9H-\u00b9H-TOCSY peak list
 
-    :param bmrb_ids: BMRB entry ID or list of entry ids
-    :param input_file_names: Input NMR-STAR file name
-    :param entry_objects: One of more PyNMRSTAR entry objects
-    :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
-    :param draw_trace: Connect the matching residues using sequence numbering; default: False
-    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+    :param bmrb_ids: single BMRB entry ID or multiple BMRB entry IDs as list, defaults to None
+    :type bmrb_ids: str/int/list, optional
+    :param input_file_names: single input file name  or multiple input file names as list, defaults to None
+    :type input_file_names: str, optional
+    :param entry_objects: single PyNMRSTAR entry object  or multiple PyNMRSTAR entry objects as list, defaults to None
+    :type entry_objects: PyNMRSTAR object/list, optional
+    :param auth_tag: Use sequence numbers from _Atom_chem_shift.Auth_seq_ID instead of _Atom_chem_shift.Comp_index_ID
+        in the NMR-STAR file/BMRB entry, defaults to False
+    :type auth_tag: bool, optional
+    :param draw_trace: draw line connecting peaks from residues at the same sequence location in different
+        data sets, defaults to False
+    :type draw_trace: bool optional
+    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track)
+        if draw_trace is True cs_track={ matching atoms:[cs_values]} else cs_track={}
+    :rtype: tuple
     """
-
+    if bmrb_ids is None and input_file_names is None and entry_objects is None:
+        logging.error('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
+        raise TypeError('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
     cs_data = {}
     cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids=bmrb_ids, auth_tag=auth_tag)
     cs_data.update(cs_data_bmrb)
@@ -171,30 +197,51 @@ def create_tocsy_peaklist(bmrb_ids: Union[str, List[str]],
     return x, y, data_set, info, res, cs_track
 
 
-def create_2d_peaklist(bmrb_ids: Union[str, List[str]],
-                       atom_x: str, atom_y: str, input_file_names: Union[str, List[str]] = None,
-                       entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
-                       auth_tag: bool = False,
-                       draw_trace: bool = False,
-                       include_preceding: bool = False,
-                       include_next: bool = False,
-                       legend: str = None) -> tuple:
+def create_2d_peaklist(atom_x: str,
+                       atom_y: str,
+                       bmrb_ids: Optional[Union[str, List[str], int, List[int]]] = None,
+                       input_file_names: Optional[Union[str, List[str]]] = None,
+                       entry_objects: Optional[Union[pynmrstar.Entry, List[pynmrstar.Entry]]] = None,
+                       auth_tag: Optional[bool] = False,
+                       draw_trace: Optional[bool] = False,
+                       include_preceding: Optional[bool] = False,
+                       include_next: Optional[bool] = False,
+                       legend: Optional[str] = None) -> tuple:
     """
-     Converts one dimensional chemical shifts from list of BMRB entries into generic 2D peak list
+     Converts one dimensional chemical shifts from BMRB entries/NMR-STAR files/PyNMRSTAR entry objects into  into generic 2D peak list
 
-    :param bmrb_ids: BMRB entry ID or list of entry ids
-    :param atom_x: atom for x coordinate in IUPAC format
-    :param atom_y: atom for y coordinate in IUPAC format
-    :param input_file_names: Input NMR-STAR file name
-    :param entry_objects: One of more PyNMRSTAR entry objects
-    :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
-    :param draw_trace: Connect the matching residues using sequence numbering; default: False
-    :param include_preceding:  include preceding residue chemical shifts
-    :param include_next:  include next residue chemical shifts
-    :param legend:  selection of legend to display
-    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+    :param atom_x: atom name for X coordinate in IUPAC format
+    :type atom_x: str
+    :param atom_y: atom name for Y coordinate in IUPAC format
+    :type atom_y: str
+    :param bmrb_ids: single BMRB entry ID or multiple BMRB entry IDs as list, defaults to None
+    :type bmrb_ids: str/int/list, optional
+    :param input_file_names: single input file name  or multiple input file names as list, defaults to None
+    :type input_file_names: str, optional
+    :param entry_objects: single PyNMRSTAR entry object  or multiple PyNMRSTAR entry objects as list, defaults to None
+    :type entry_objects: PyNMRSTAR object/list, optional
+    :param auth_tag: Use sequence numbers from _Atom_chem_shift.Auth_seq_ID instead of _Atom_chem_shift.Comp_index_ID
+        in the NMR-STAR file/BMRB entry, defaults to False
+    :type auth_tag: bool, optional
+    :param draw_trace: draw line connecting peaks from residues at the same sequence location in different
+        data sets, defaults to False
+    :type draw_trace: bool optional
+    :param include_preceding: include peaks from i-1 residue on the Y axis, defaults to False
+    :type include_preceding: bool, optional
+    :param include_next: include peaks from i+i residue on the Y axis, defaults to False
+    :type include_next: bool, optional
+    :param legend: legends are disabled by default. Residue types are indicated by  color and  data sets are
+        indicated by symbol, displaying the combination of both will create a very long list of legend. Optionally
+        either 'residue' or 'dataset' can be used to color code the scatter plot by residue type
+        or data set and display the legend, defaults to None
+    :type legend: str, optional
+    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track,psn,seq_track)
+        if draw_trace is True cs_track={ matching atoms:[cs_values]} else cs_track={}
+    :rtype: tuple
     """
+    if bmrb_ids is None and input_file_names is None and entry_objects is None:
+        logging.error('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
+        raise TypeError('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
 
     cs_data = {}
     cs_data_bmrb = ChemicalShift.from_bmrb(bmrb_ids, auth_tag=auth_tag)
@@ -315,26 +362,36 @@ def create_2d_peaklist(bmrb_ids: Union[str, List[str]],
     return x, y, data_set, info, res, cs_track, psn, seq_trace
 
 
-def create_n15hsqc_peaklist(bmrb_ids: Union[str, List[str]],
-                            input_file_names: Union[str, List[str]] = None,
-                            entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
-                            auth_tag: bool = False,
-                            draw_trace: bool = False,
-                            include_sidechain: bool = True) -> tuple:
+def create_n15hsqc_peaklist(bmrb_ids: Optional[Union[str, List[str], int, List[int]]] = None,
+                            input_file_names: Optional[Union[str, List[str]]] = None,
+                            entry_objects: Optional[Union[pynmrstar.Entry, List[pynmrstar.Entry]]] = None,
+                            auth_tag: Optional[bool] = False,
+                            draw_trace: Optional[bool] = False,
+                            include_sidechain: Optional[bool] = True) -> tuple:
     """
-    Converts one dimensional chemical shifts from list of BMRB entries into NHSQC peak list
+    Converts one dimensional chemical shifts from BMRB entries/NMR-STAR files/PyNMRSTAR entry objects into  \u00b9\u2075N-HSQC peak list
 
-    :param entry_objects: One of more PyNMRSTAR entry objects
-    :param bmrb_ids: BMRB entry ID or list of entry ids
-    :param input_file_names: Input NMR-STAR file name
-    :param entry_objects: One of more PyNMRSTAR entry objects
-    :param auth_tag: Use author provided sequence numbering from BMRB/NMR-STAR file; default: False
-    :param draw_trace: Connect the matching residues using sequence numbering; default: False
-    :param include_sidechain: include side chain NHs ; default: True
-    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+    :param bmrb_ids: single BMRB entry ID or multiple BMRB entry IDs as list, defaults to None
+    :type bmrb_ids: str/int/list, optional
+    :param input_file_names: single input file name  or multiple input file names as list, defaults to None
+    :type input_file_names: str, optional
+    :param entry_objects: single PyNMRSTAR entry object  or multiple PyNMRSTAR entry objects as list, defaults to None
+    :type entry_objects: PyNMRSTAR object/list, optional
+    :param auth_tag: Use sequence numbers from _Atom_chem_shift.Auth_seq_ID instead of _Atom_chem_shift.Comp_index_ID
+        in the NMR-STAR file/BMRB entry, defaults to False
+    :type auth_tag: bool, optional
+    :param draw_trace: draw line connecting peaks from residues at the same sequence location in different
+        data sets, defaults to False
+    :type draw_trace: bool optional
+    :param include_sidechain: include peaks from side chains, defaults to True
+    :type include_sidechain: bool, optional
+    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track)
+        if draw_trace is True cs_track={ matching atoms:[cs_values]} else cs_track={}
+    :rtype: tuple
     """
-
+    if bmrb_ids is None and input_file_names is None and entry_objects is None:
+        logging.error('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
+        raise TypeError('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
     atom_x = 'H'
     atom_y = 'N'
     sidechain_nh_atoms = {'ARG': {
@@ -429,39 +486,68 @@ def create_n15hsqc_peaklist(bmrb_ids: Union[str, List[str]],
     return x, y, data_set, info, res, cs_track
 
 
-def n15hsqc(bmrb_ids: Union[str, List[str]] = None,
-            input_file_names: Union[str, List[str]] = None,
-            entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
-            auth_tag: bool = False,
-            legend: str = None,
-            draw_trace: bool = False,
-            include_sidechain: bool = True,
-            peak_list: str = None,
-            output_format: str = 'html',
-            output_file: str = None,
-            output_image_width: int = 800,
-            output_image_height: int = 600,
-            show_visualization: bool = True) -> tuple:
+def n15hsqc(bmrb_ids: Optional[Union[str, List[str], int, List[int]]] = None,
+            input_file_names: Optional[Union[str, List[str]]] = None,
+            entry_objects: Optional[Union[pynmrstar.Entry, List[pynmrstar.Entry]]] = None,
+            auth_tag: Optional[bool] = False,
+            legend: Optional[str] = None,
+            draw_trace: Optional[bool] = False,
+            include_sidechain: Optional[bool] = True,
+            peak_list: Optional[str] = None,
+            output_format: Optional[str] = 'html',
+            output_file: Optional[str] = None,
+            output_image_width: Optional[int] = 800,
+            output_image_height: Optional[int] = 600,
+            show_visualization: Optional[bool] = True) -> tuple:
     """
-    Plots NHSQC spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
+    Plots \u00b9\u2075N-HSQC spectrum  for a given  BMRB entry/NMR-STAR file/PyNMRSTAR entry object;
+    This function can be used to compare different data sets as overlaid NMR Spectra. It overlays \u00b9\u2075N-HSQC
+    for a given list of BMRB entries/NMR-STAR files/PyNMRSTAR entry objects and draw lines connecting peaks
+    from residues at the same sequence location in different data sets
 
-    :param bmrb_ids: list of BMRB IDs or single BMRB ID default None
-    :param input_file_names: list of NMR-STAR files ; default None
-    :param entry_objects: One of more PyNMRSTAR entry objects
-    :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
-    :param legend: legend based on residue name or data set id; values: None, residue, dataset ; default None
-    :param draw_trace: Connect matching residues by list
-    :param include_sidechain: include side-chain NH peaks
-    :param peak_list: optionally peak list as csv file cam be provided
-    :param output_format: html,jpg,png,pdf,wabp,None; default None opens figure in default web browser
-    :param output_file: output file name default None
-    :param output_image_width: output image width; default 800
-    :param output_image_height: output image height; default 600
-    :param show_visualization: Automatically opens the visualization on a web browser; default True
-    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+    :param bmrb_ids: single BMRB entry ID or multiple BMRB entry IDs as list, defaults to None
+    :type bmrb_ids: str/int/list, optional
+    :param input_file_names: single input file name  or multiple input file names as list, defaults to None
+    :type input_file_names: str, optional
+    :param entry_objects: single PyNMRSTAR entry object  or multiple PyNMRSTAR entry objects as list, defaults to None
+    :type entry_objects: PyNMRSTAR object/list, optional
+    :param auth_tag: Use sequence numbers from _Atom_chem_shift.Auth_seq_ID instead of _Atom_chem_shift.Comp_index_ID
+        in the NMR-STAR file/BMRB entry, defaults to False
+    :type auth_tag: bool, optional
+    :param legend: legends are disabled by default. Residue types are indicated by  color and  data sets are
+        indicated by symbol, displaying the combination of both will create a very long list of legend. Optionally
+        either 'residue' or 'dataset' can be used to color code the scatter plot by residue type
+        or data set and display the legend, defaults to None
+    :type legend: str, optional
+    :param draw_trace: draw line connecting peaks from residues at the same sequence location in different
+        data sets, defaults to False
+    :type draw_trace: bool optional
+    :param include_sidechain: include peaks from side chains, defaults to True
+    :type include_sidechain: bool, optional
+    :param peak_list: comma-separated two column file can be given as optional unassigned peak list,
+        which can be overlaid on the spectrum as another data set, defaults to None
+    :type peak_list: str, optional
+    :param output_format: visualizations can be expoerted as interactive 'html' file
+        or as static images in 'jpg','jpeg','png','pdf','webp','svg', defaults to 'html'
+    :type output_format: str, optional
+    :param output_file: file name to export visualization
+    :type output_file: str, optional
+    :param output_image_width: The width of the exported image in layout pixels, defaults to 800
+    :type output_image_width: int, optional
+    :param output_image_height: The height of the exported image in layout pixels, defaults to 600
+    :type output_image_height: int, optional
+    :param show_visualization: Visualization automatically opens in a web browser or as
+        embedded visualization in Jupyter Notebook. This feature can be disabled
+        by setting this flag as False, defaults to True
+    :type show_visualization: bool, optional
+    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track)
+        if draw_trace is True cs_track={ matching atoms:[cs_values]} else cs_track={}
+    :rtype: tuple
     """
 
+    if bmrb_ids is None and input_file_names is None and entry_objects is None:
+        logging.error('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
+        raise TypeError('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
     x1 = []
     y1 = []
     if peak_list is not None:
@@ -482,26 +568,41 @@ def n15hsqc(bmrb_ids: Union[str, List[str]] = None,
     info = peak_list_2d[3]
     res = peak_list_2d[4]
     cs_track = peak_list_2d[5]
-    if len(x) == 0 or len(y) == 0:
+    if (len(x) == 0 or len(y) == 0) and (len(x1) == 0 or len(y1) == 0):
         logging.error('Required chemical shifts not found')
         raise ValueError('Required chemical shifts not found')
     if legend is None:
-        fig = px.scatter(x=x, y=y,
-                         title='Simulated <sup>1</sup>H-<sup>15</sup>N HSQC peak positions',
-                         symbol=data_set,
-                         hover_name=info,
-                         color=res,
-                         labels={"color": "Residue",
-                                 "symbol": "Data set",
-                                 "x": '<sup>1</sup>H (ppm)',
-                                 "y": '<sup>15</sup>N (ppm)',
-                                 }, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
+        if len(x1) and len(y1):
+            fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>15</sup>N HSQC peak positions',
+                             hover_name=info,
+                             color=data_set,
+                             labels={"color": "Data set",
+                                     # "symbol": "Data set",
+                                     "x": '<sup>1</sup>H (ppm)',
+                                     "y": '<sup>15</sup>N (ppm)',
+                                     }, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
+        else:
+            fig = px.scatter(x=x, y=y,
+                             title='Simulated <sup>1</sup>H-<sup>15</sup>N HSQC peak positions',
+                             symbol=data_set,
+                             hover_name=info,
+                             color=res,
+                             labels={"color": "Residue",
+                                     "symbol": "Data set",
+                                     "x": '<sup>1</sup>H (ppm)',
+                                     "y": '<sup>15</sup>N (ppm)',
+                                     }, opacity=0.7).update(layout=dict(title=dict(x=0.5)))
         if draw_trace:
             for k in cs_track.keys():
                 fig.add_scatter(x=cs_track[k][0], y=cs_track[k][1], name=k, opacity=0.7, mode='lines')
         if peak_list is not None:
-            fig.add_scatter(x1, y1, mode='markers', name='Peak list', opacity=0.7)
-        fig.update_layout(showlegend=False)
+            fig.add_scatter(x=x1, y=y1, mode='markers', name='Peak list', opacity=0.7)
+        if len(x1) and len(y1):
+            fig.update_layout(showlegend=True)
+        else:
+            fig.update_layout(showlegend=False)
+
         fig.update_xaxes(autorange="reversed")
         fig.update_yaxes(autorange="reversed")
 
@@ -552,76 +653,73 @@ def n15hsqc(bmrb_ids: Union[str, List[str]] = None,
         fig.show()
     if output_file is not None:
         if output_format == 'html':
-            if output_file.split(".")[-1] == 'html':
-                fig.write_html('{}'.format(output_file))
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Successfully written {}.html'.format(output_file))
-        elif output_format == 'jpg':
-            if output_file.split(".")[-1] == 'jpg':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.jpg'.format(output_file))
-        elif output_format == 'png':
-            if output_file.split(".")[-1] == 'png':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.png'.format(output_file))
-        elif output_format == 'pdf':
-            if output_file.split(".")[-1] == 'pdf':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.pdf'.format(output_file))
-        elif output_format == 'webp':
-            if output_file.split(".")[-1] == 'webp':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.wepb'.format(output_file))
+            fig.write_html(output_file)
+        elif output_format in ['png', 'jpg', 'jpeg', 'webp', 'svg', 'pdf', 'json']:
+            fig.write_image(file=output_file, format=output_format, width=output_image_width,
+                            height=output_image_height)
         else:
-            logging.error('Output file format not support:{}'.format(output_format))
+            logging.error('Output file format not supported:{}'.format(output_format))
     return x, y, data_set, info, res, cs_track
 
 
-def c13hsqc(bmrb_ids: Union[str, List[str]],
-            input_file_names: Union[str, List[str]] = None,
-            entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
-            auth_tag: bool = False,
-            legend: str = None,
-            draw_trace: bool = False,
-            peak_list: str = None,
-            output_format: str = None,
-            output_file: str = None,
-            output_image_width: int = 800,
-            output_image_height: int = 600,
-            show_visualization: bool = True) -> tuple:
+def c13hsqc(bmrb_ids: Optional[Union[str, List[str], int, List[int]]] = None,
+            input_file_names: Optional[Union[str, List[str]]] = None,
+            entry_objects: Optional[Union[pynmrstar.Entry, List[pynmrstar.Entry]]] = None,
+            auth_tag: Optional[bool] = False,
+            legend: Optional[str] = None,
+            draw_trace: Optional[bool] = False,
+            peak_list: Optional[str] = None,
+            output_format: Optional[str] = 'html',
+            output_file: Optional[str] = None,
+            output_image_width: Optional[int] = 800,
+            output_image_height: Optional[int] = 600,
+            show_visualization: Optional[bool] = True) -> tuple:
     """
-    Plots CHSQC spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
+    Plots \u00b9\u00b3C-HSQC spectrum  for a given  BMRB entry/NMR-STAR file/PyNMRSTAR entry object;
+    This function can be used to compare different data sets as overlaid NMR Spectra. It overlays \u00b9\u00b3C-HSQC
+    for a given list of BMRB entries/NMR-STAR files/PyNMRSTAR entry objects and draw lines connecting peaks
+    from residues at the same sequence location in different data sets
 
-    :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
-    :param input_file_names: list of NMR-STAR files : default: None
-    :param entry_objects: One of more PyNMRSTAR entry objects
-    :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
-    :param legend: legend based on residue name or data set id; values: None, residue, datase ; default None
-    :param draw_trace: Connect matching residues by list
-    :param peak_list: optionally peak list as csv file cam be provided
-    :param output_format: html,jpg,png,pdf,wabp,None; default None opens figure in default web browser
-    :param output_file: output file name default None
-    :param output_image_width: output image width; default 800
-    :param output_image_height: output image height; default 600
-    :param show_visualization: Automatically opens the visualization on a web browser; default True
-    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+    :param bmrb_ids: single BMRB entry ID or multiple BMRB entry IDs as list, defaults to None
+    :type bmrb_ids: str/int/list, optional
+    :param input_file_names: single input file name  or multiple input file names as list, defaults to None
+    :type input_file_names: str, optional
+    :param entry_objects: single PyNMRSTAR entry object  or multiple PyNMRSTAR entry objects as list, defaults to None
+    :type entry_objects: PyNMRSTAR object/list, optional
+    :param auth_tag: Use sequence numbers from _Atom_chem_shift.Auth_seq_ID instead of _Atom_chem_shift.Comp_index_ID
+        in the NMR-STAR file/BMRB entry, defaults to False
+    :type auth_tag: bool, optional
+    :param legend: legends are disabled by default. Residue types are indicated by  color and  data sets are
+        indicated by symbol, displaying the combination of both will create a very long list of legend. Optionally
+        either 'residue' or 'dataset' can be used to color code the scatter plot by residue type
+        or data set and display the legend, defaults to None
+    :type legend: str, optional
+    :param draw_trace: draw line connecting peaks from residues at the same sequence location in different
+        data sets, defaults to False
+    :type draw_trace: bool optional
+    :param peak_list: comma-separated two column file can be given as optional unassigned peak list,
+        which can be overlaid on the spectrum as another data set, defaults to None
+    :type peak_list: str, optional
+    :param output_format: visualizations can be expoerted as interactive 'html' file
+        or as static images in 'jpg','jpeg','png','pdf','webp','svg', defaults to 'html'
+    :type output_format: str, optional
+    :param output_file: file name to export visualization
+    :type output_file: str, optional
+    :param output_image_width: The width of the exported image in layout pixels, defaults to 800
+    :type output_image_width: int, optional
+    :param output_image_height: The height of the exported image in layout pixels, defaults to 600
+    :type output_image_height: int, optional
+    :param show_visualization: Visualization automatically opens in a web browser or as
+        embedded visualization in Jupyter Notebook. This feature can be disabled
+        by setting this flag as False, defaults to True
+    :type show_visualization: bool, optional
+    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track)
+        if draw_trace is True cs_track={ matching atoms:[cs_values]} else cs_track={}
+    :rtype: tuple
     """
-
+    if bmrb_ids is None and input_file_names is None and entry_objects is None:
+        logging.error('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
+        raise TypeError('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
     peak_list_2d = create_c13hsqc_peaklist(bmrb_ids,
                                            input_file_names=input_file_names,
                                            entry_objects=entry_objects,
@@ -705,75 +803,73 @@ def c13hsqc(bmrb_ids: Union[str, List[str]],
         fig.show()
     if output_file is not None:
         if output_format == 'html':
-            if output_file.split(".")[-1] == 'html':
-                fig.write_html('{}'.format(output_file))
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Successfully written {}.html'.format(output_file))
-        elif output_format == 'jpg':
-            if output_file.split(".")[-1] == 'jpg':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.jpg'.format(output_file))
-        elif output_format == 'png':
-            if output_file.split(".")[-1] == 'png':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.png'.format(output_file))
-        elif output_format == 'pdf':
-            if output_file.split(".")[-1] == 'pdf':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.pdf'.format(output_file))
-        elif output_format == 'webp':
-            if output_file.split(".")[-1] == 'webp':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.wepb'.format(output_file))
+            fig.write_html(output_file)
+        elif output_format in ['png', 'jpg', 'jpeg', 'webp', 'svg', 'pdf', 'json']:
+            fig.write_image(file=output_file, format=output_format, width=output_image_width,
+                            height=output_image_height)
         else:
-            logging.error('Output file format not support:{}'.format(output_format))
+            logging.error('Output file format not supported:{}'.format(output_format))
     return x, y, data_set, info, res, cs_track
 
 
-def tocsy(bmrb_ids: Union[str, List[str]],
-          input_file_names: Union[str, List[str]] = None,
-          entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
-          auth_tag: bool = False,
-          legend: str = None,
-          draw_trace: bool = False,
-          peak_list: str = None,
-          output_format: str = None,
-          output_file: str = None,
-          output_image_width: int = 800,
-          output_image_height: int = 600,
-          show_visualization: bool = True) -> tuple:
+def tocsy(bmrb_ids: Optional[Union[str, List[str], int, List[int]]] = None,
+          input_file_names: Optional[Union[str, List[str]]] = None,
+          entry_objects: Optional[Union[pynmrstar.Entry, List[pynmrstar.Entry]]] = None,
+          auth_tag: Optional[bool] = False,
+          legend: Optional[str] = None,
+          draw_trace: Optional[bool] = False,
+          peak_list: Optional[str] = None,
+          output_format: Optional[str] = 'html',
+          output_file: Optional[str] = None,
+          output_image_width: Optional[int] = 800,
+          output_image_height: Optional[int] = 600,
+          show_visualization: Optional[bool] = True) -> tuple:
     """
-    Plots TOCSY spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
+    Plots \u00b9H-\u00b9H-TOCSY spectrum for a given  BMRB entry/NMR-STAR file/PyNMRSTAR entry object;
+    This function can be used to compare different data sets as overlaid NMR Spectra. It overlays \u00b9H-\u00b9H-TOCSY
+    for a given list of BMRB entries/NMR-STAR files/PyNMRSTAR entry objects and draw lines connecting peaks
+    from residues at the same sequence location in different data sets
 
-    :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
-    :param input_file_names: list of NMR-STAR files : default: None
-    :param entry_objects: One of more PyNMRSTAR entry objects
-    :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
-    :param legend: legend based on residue name or data set id; values: None, residue, dataset ; default None
-    :param draw_trace: Connect matching residues by list
-    :param peak_list: optionally peak list as csv file cam be provided
-    :param output_format: html,jpg,png,pdf,wabp,None; default None opens figure in default web browser
-    :param output_file: output file name default None
-    :param output_image_width: output image width; default 800
-    :param output_image_height: output image height; default 600
-    :param show_visualization: Automatically opens the visualization on a web browser; default True
-    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+    :param bmrb_ids: single BMRB entry ID or multiple BMRB entry IDs as list, defaults to None
+    :type bmrb_ids: str/int/list, optional
+    :param input_file_names: single input file name  or multiple input file names as list, defaults to None
+    :type input_file_names: str, optional
+    :param entry_objects: single PyNMRSTAR entry object  or multiple PyNMRSTAR entry objects as list, defaults to None
+    :type entry_objects: PyNMRSTAR object/list, optional
+    :param auth_tag: Use sequence numbers from _Atom_chem_shift.Auth_seq_ID instead of _Atom_chem_shift.Comp_index_ID
+        in the NMR-STAR file/BMRB entry, defaults to False
+    :type auth_tag: bool, optional
+    :param legend: legends are disabled by default. Residue types are indicated by  color and  data sets are
+        indicated by symbol, displaying the combination of both will create a very long list of legend. Optionally
+        either 'residue' or 'dataset' can be used to color code the scatter plot by residue type
+        or data set and display the legend, defaults to None
+    :type legend: str, optional
+    :param draw_trace: draw line connecting peaks from residues at the same sequence location in different
+        data sets, defaults to False
+    :type draw_trace: bool optional
+    :param peak_list: comma-separated two column file can be given as optional unassigned peak list,
+        which can be overlaid on the spectrum as another data set, defaults to None
+    :type peak_list: str, optional
+    :param output_format: visualizations can be expoerted as interactive 'html' file
+        or as static images in 'jpg','jpeg','png','pdf','webp','svg', defaults to 'html'
+    :type output_format: str, optional
+    :param output_file: file name to export visualization
+    :type output_file: str, optional
+    :param output_image_width: The width of the exported image in layout pixels, defaults to 800
+    :type output_image_width: int, optional
+    :param output_image_height: The height of the exported image in layout pixels, defaults to 600
+    :type output_image_height: int, optional
+    :param show_visualization: Visualization automatically opens in a web browser or as
+        embedded visualization in Jupyter Notebook. This feature can be disabled
+        by setting this flag as False, defaults to True
+    :type show_visualization: bool, optional
+    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track)
+        if draw_trace is True cs_track={ matching atoms:[cs_values]} else cs_track={}
+    :rtype: tuple
     """
+    if bmrb_ids is None and input_file_names is None and entry_objects is None:
+        logging.error('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
+        raise TypeError('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
 
     peak_list_2d = create_tocsy_peaklist(bmrb_ids,
                                          input_file_names=input_file_names,
@@ -856,89 +952,96 @@ def tocsy(bmrb_ids: Union[str, List[str]],
         fig.show()
     if output_file is not None:
         if output_format == 'html':
-            if output_file.split(".")[-1] == 'html':
-                fig.write_html('{}'.format(output_file))
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Successfully written {}.html'.format(output_file))
-        elif output_format == 'jpg':
-            if output_file.split(".")[-1] == 'jpg':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.jpg'.format(output_file))
-        elif output_format == 'png':
-            if output_file.split(".")[-1] == 'png':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.png'.format(output_file))
-        elif output_format == 'pdf':
-            if output_file.split(".")[-1] == 'pdf':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.pdf'.format(output_file))
-        elif output_format == 'webp':
-            if output_file.split(".")[-1] == 'webp':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.wepb'.format(output_file))
+            fig.write_html(output_file)
+        elif output_format in ['png', 'jpg', 'jpeg', 'webp', 'svg', 'pdf', 'json']:
+            fig.write_image(file=output_file, format=output_format, width=output_image_width,
+                            height=output_image_height)
         else:
-            logging.error('Output file format not support:{}'.format(output_format))
+            logging.error('Output file format not supported:{}'.format(output_format))
     return x, y, data_set, info, res, cs_track
 
 
-def generic_2d(bmrb_ids: Union[str, List[str]],
-               input_file_names: Union[str, List[str]] = None,
-               entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]] = None,
-               atom_x: str = 'H',
-               atom_y: str = 'N',
-               auth_tag: bool = False,
-               legend: str = None,
-               draw_trace: bool = False,
-               peak_list: str = None,
-               include_preceding: bool = False,
-               include_next: bool = False,
-               full_walk: bool = False,
-               seq_walk: bool = False,
-               output_format: str = None,
-               output_file: str = None,
-               output_image_width: int = 800,
-               output_image_height: int = 600,
-               show_visualization: bool = True) -> tuple:
+def generic_2d(atom_x: str,
+               atom_y: str,
+               bmrb_ids: Optional[Union[str, List[str], int, List[int]]] = None,
+               input_file_names: Optional[Union[str, List[str]]] = None,
+               entry_objects: Optional[Union[pynmrstar.Entry, List[pynmrstar.Entry]]] = None,
+               auth_tag: Optional[bool] = False,
+               legend: Optional[str] = None,
+               draw_trace: Optional[bool] = False,
+               peak_list: Optional[str] = None,
+               include_preceding: Optional[bool] = False,
+               include_next: Optional[bool] = False,
+               full_walk: Optional[bool] = False,
+               seq_walk: Optional[bool] = False,
+               output_format: Optional[str] = 'html',
+               output_file: Optional[str] = None,
+               output_image_width: Optional[int] = 800,
+               output_image_height: Optional[int] = 600,
+               show_visualization: Optional[bool] = True) -> tuple:
     """
-    Plots generic 2D spectrum  for a given list of BMRB IDs (or) local NMR-STAR files (or) both
+    Plots generic 2D spectrum for a given  BMRB entry/NMR-STAR file/PyNMRSTAR entry object;
+    This function can be used to compare different data sets as overlaid NMR Spectra. It overlays the 2D spectra
+    for a given list of BMRB entries/NMR-STAR files/PyNMRSTAR entry objects and draw lines connecting peaks
+    from residues at the same sequence location in different data sets
 
-    :param bmrb_ids: list of BMRB IDs or single BMRB ID default: None
-    :param input_file_names: list of NMR-STAR files : default: None
-    :param entry_objects: One of more PyNMRSTAR entry objects
-    :param atom_x: atom name for x coordinate in IUPAC format; default : 'H
-    :param atom_y: atom name for y coordinate in IUPAC format; default :'N'
-    :param auth_tag: use author provided sequence numbering from BMRB /NMR-STAR file; default: False
-    :param legend: legend based on residue name or data set id; values: None, residue, datase ; default None
-    :param draw_trace: Connect matching residues by list
-    :param include_preceding: include i-1 residue on y axis
-    :param include_next: include i+i residue on y axix
-    :param seq_walk: draw trace to connect i-> i+i  and so one.
-    :param full_walk: draw trace ignoring missing resonances
-    :param peak_list: optionally peak list as csv file cam be provided
-    :param output_format: html,jpg,png,pdf,wabp,None; default None opens figure in default web browser
-    :param output_file: output file name default None
-    :param output_image_width: output image width; default 800
-    :param output_image_height: output image height; default 600
-    :param show_visualization: Automatically opens the visualization on a web browser; default True
-    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track);
-        cs_track is a dictionary { matching atoms:[cs_values]}
+    :param atom_x: atom name for X coordinate in IUPAC format
+    :type atom_x: str
+    :param atom_y: atom name for Y coordinate in IUPAC format
+    :type atom_y: str
+    :param bmrb_ids: single BMRB entry ID or multiple BMRB entry IDs as list, defaults to None
+    :type bmrb_ids: str/int/list, optional
+    :param input_file_names: single input file name  or multiple input file names as list, defaults to None
+    :type input_file_names: str, optional
+    :param entry_objects: single PyNMRSTAR entry object  or multiple PyNMRSTAR entry objects as list, defaults to None
+    :type entry_objects: PyNMRSTAR object/list, optional
+    :param auth_tag: Use sequence numbers from _Atom_chem_shift.Auth_seq_ID instead of _Atom_chem_shift.Comp_index_ID
+        in the NMR-STAR file/BMRB entry, defaults to False
+    :type auth_tag: bool, optional
+    :param legend: legends are disabled by default. Residue types are indicated by  color and  data sets are
+        indicated by symbol, displaying the combination of both will create a very long list of legend. Optionally
+        either 'residue' or 'dataset' can be used to color code the scatter plot by residue type
+        or data set and display the legend, defaults to None
+    :type legend: str, optional
+    :param draw_trace: draw line connecting peaks from residues at the same sequence location in different
+        data sets, defaults to False
+    :type draw_trace: bool optional
+    :param include_preceding: include peaks from i-1 residue on the Y axis, defaults to False
+    :type include_preceding: bool, optional
+    :param include_next: include peaks from i+i residue on the Y axis, defaults to False
+    :type include_next: bool, optional
+    :param seq_walk: draw line connecting i->i-1/i+1 to next i->i-1/i+1 for only
+        continuous sequence segments, defaults to False
+    :type seq_walk: bool, optional
+    :param full_walk: draw line connecting i->i-1/i+1 to next i->i-1/i+1 for the
+        full sequence ignoring any missing residues, defautls to False
+    :type full_walk: bool, optional
+    :param peak_list: comma-separated two column file can be given as optional unassigned peak list,
+        which can be overlaid on the spectrum as another data set, defaults to None
+    :type peak_list: str, optional
+    :param output_format: visualizations can be expoerted as interactive 'html' file
+        or as static images in 'jpg','jpeg','png','pdf','webp','svg', defaults to 'html'
+    :type output_format: str, optional
+    :param output_file: file name to export visualization
+    :type output_file: str, optional
+    :param output_image_width: The width of the exported image in layout pixels, defaults to 800
+    :type output_image_width: int, optional
+    :param output_image_height: The height of the exported image in layout pixels, defaults to 600
+    :type output_image_height: int, optional
+    :param show_visualization: Visualization automatically opens in a web browser or as
+        embedded visualization in Jupyter Notebook. This feature can be disabled
+        by setting this flag as False, defaults to True
+    :type show_visualization: bool, optional
+    :return: tuple of lists and dictionary (x,y,data_set,info,res,cs_track)
+        if draw_trace is True cs_track={ matching atoms:[cs_values]} else cs_track={}
+    :rtype: tuple
     """
-
-    peak_list_2d = create_2d_peaklist(bmrb_ids, atom_x=atom_x, atom_y=atom_y,
+    if bmrb_ids is None and input_file_names is None and entry_objects is None:
+        logging.error('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
+        raise TypeError('At least one of  three parameters must be present; bmrb_ids, input_file_names, entry_objects')
+    peak_list_2d = create_2d_peaklist(atom_x=atom_x,
+                                      atom_y=atom_y,
+                                      bmrb_ids=bmrb_ids,
                                       input_file_names=input_file_names,
                                       entry_objects=entry_objects,
                                       auth_tag=auth_tag,
@@ -1090,55 +1193,32 @@ def generic_2d(bmrb_ids: Union[str, List[str]],
         fig.show()
     if output_file is not None:
         if output_format == 'html':
-            if output_file.split(".")[-1] == 'html':
-                fig.write_html('{}'.format(output_file))
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_html('{}.html'.format(output_file))
-                logging.info('Successfully written {}.html'.format(output_file))
-        elif output_format == 'jpg':
-            if output_file.split(".")[-1] == 'jpg':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.jpg'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.jpg'.format(output_file))
-        elif output_format == 'png':
-            if output_file.split(".")[-1] == 'png':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.png'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.png'.format(output_file))
-        elif output_format == 'pdf':
-            if output_file.split(".")[-1] == 'pdf':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.pdf'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.pdf'.format(output_file))
-        elif output_format == 'webp':
-            if output_file.split(".")[-1] == 'webp':
-                fig.write_image('{}'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}'.format(output_file))
-            else:
-                fig.write_image('{}.webp'.format(output_file), width=output_image_width, height=output_image_height)
-                logging.info('Successfully written {}.wepb'.format(output_file))
+            fig.write_html(output_file)
+        elif output_format in ['png', 'jpg', 'jpeg', 'webp', 'svg', 'pdf', 'json']:
+            fig.write_image(file=output_file, format=output_format, width=output_image_width,
+                            height=output_image_height)
         else:
-            logging.error('Output file format not support:{}'.format(output_format))
+            logging.error('Output file format not supported:{}'.format(output_format))
     return x, y, data_set, info, res, cs_track
 
 
-def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_chain: bool = True,
-                     output_file_name: str = None) -> dict:
+def export_peak_list(peak_list: tuple,
+                     output_file_name: str,
+                     output_format: str = 'csv',
+                     include_side_chain: bool = True) -> dict:
     """
-    Exports peak list in csv or sparky format
+    Exports the peak list return from other functions in this module in csv or sparky format
 
-    :param peak_list: Output tuple from any spectra simulation function from the module Spectra
-    :param output_format: csv or sparky
-    :param include_side_chain: whether or not side chain resonances included in the output; default True
+    :param peak_list: Output tuple from any peak list/spectrum simulation function from the module Spectra
+    :type peak_list: tuple
     :param output_file_name: output file name
-    :return: data dictionary; {'column header1':[values],'column header1':[values]..}
+    :type output_file_name: str
+    :param output_format: output format 'csv' or 'sparky', defaults to 'csv'
+    :type output_format: str, optional
+    :param include_side_chain: whether or not include side chain resonances in the output, defaults to True
+    :type include_side_chain: bool, optional
+    :return: data dictionary {'column header1':[values],'column header1':[values]..}
+    :rtype: dict
     """
     back_bone = ['H', 'N', 'C', 'CA']
     if output_format == 'csv':
@@ -1215,9 +1295,11 @@ def export_peak_list(peak_list: tuple, output_format: str = 'csv', include_side_
         logging.error('Output format not supported')
         raise ValueError('Output format not supported')
     return csv_dict
-#
-#
-# if __name__ == "__main__":
+
+
+if __name__ == "__main__":
+    # p = n15hsqc(bmrb_ids=15060,output_format='eps',output_file='testttt',show_visualization=False)
+    p = n15hsqc(bmrb_ids=[15060, 15000])
 #     p = generic_2d(bmrb_ids=15000, atom_x='N', atom_y='CA',
 #                    include_preceding=True,legend='residue',output_format='jpg',
 #                    output_file='../docs/_images/n_cb_p.jpg')
