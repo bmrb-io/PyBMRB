@@ -125,7 +125,8 @@ def create_tocsy_peaklist(bmrb_ids: Optional[Union[str, List[str], int, List[int
                           auth_tag: Optional[bool] = False,
                           draw_trace: Optional[bool] = False) -> tuple:
     """
-    Converts one dimensional chemical shifts from BMRB entries/NMR-STAR files/PyNMRSTAR entry objects into  into \u00b9H-\u00b9H-TOCSY peak list
+    Converts one dimensional chemical shifts from BMRB entries/NMR-STAR files/PyNMRSTAR entry objects
+    into  into \u00b9H-\u00b9H-TOCSY peak list
 
     :param bmrb_ids: single BMRB entry ID or multiple BMRB entry IDs as list, defaults to None
     :type bmrb_ids: str/int/list, optional
@@ -208,7 +209,8 @@ def create_2d_peaklist(atom_x: str,
                        include_next: Optional[bool] = False,
                        legend: Optional[str] = None) -> tuple:
     """
-     Converts one dimensional chemical shifts from BMRB entries/NMR-STAR files/PyNMRSTAR entry objects into  into generic 2D peak list
+     Converts one dimensional chemical shifts from BMRB entries/NMR-STAR files/PyNMRSTAR entry objects
+     into  into generic 2D peak list
 
     :param atom_x: atom name for X coordinate in IUPAC format
     :type atom_x: str
@@ -369,7 +371,8 @@ def create_n15hsqc_peaklist(bmrb_ids: Optional[Union[str, List[str], int, List[i
                             draw_trace: Optional[bool] = False,
                             include_sidechain: Optional[bool] = True) -> tuple:
     """
-    Converts one dimensional chemical shifts from BMRB entries/NMR-STAR files/PyNMRSTAR entry objects into  \u00b9\u2075N-HSQC peak list
+    Converts one dimensional chemical shifts from BMRB entries/NMR-STAR files/PyNMRSTAR
+    entry objects into  \u00b9\u2075N-HSQC peak list
 
     :param bmrb_ids: single BMRB entry ID or multiple BMRB entry IDs as list, defaults to None
     :type bmrb_ids: str/int/list, optional
@@ -527,7 +530,7 @@ def n15hsqc(bmrb_ids: Optional[Union[str, List[str], int, List[int]]] = None,
     :param peak_list: comma-separated two column file can be given as optional unassigned peak list,
         which can be overlaid on the spectrum as another data set, defaults to None
     :type peak_list: str, optional
-    :param output_format: visualizations can be expoerted as interactive 'html' file
+    :param output_format: visualizations can be exported as interactive 'html' file
         or as static images in 'jpg','jpeg','png','pdf','webp','svg', defaults to 'html'
     :type output_format: str, optional
     :param output_file: file name to export visualization
@@ -700,7 +703,7 @@ def c13hsqc(bmrb_ids: Optional[Union[str, List[str], int, List[int]]] = None,
     :param peak_list: comma-separated two column file can be given as optional unassigned peak list,
         which can be overlaid on the spectrum as another data set, defaults to None
     :type peak_list: str, optional
-    :param output_format: visualizations can be expoerted as interactive 'html' file
+    :param output_format: visualizations can be exported as interactive 'html' file
         or as static images in 'jpg','jpeg','png','pdf','webp','svg', defaults to 'html'
     :type output_format: str, optional
     :param output_file: file name to export visualization
@@ -741,7 +744,7 @@ def c13hsqc(bmrb_ids: Optional[Union[str, List[str], int, List[int]]] = None,
     res = peak_list_2d[4]
     cs_track = peak_list_2d[5]
     if len(x) == 0 or len(y) == 0:
-        logging.error('Resuired chemical shifts not found')
+        logging.error('Required chemical shifts not found')
         raise ValueError('Required chemical shifts not found')
     if legend is None:
         fig = px.scatter(x=x, y=y,
@@ -850,7 +853,7 @@ def tocsy(bmrb_ids: Optional[Union[str, List[str], int, List[int]]] = None,
     :param peak_list: comma-separated two column file can be given as optional unassigned peak list,
         which can be overlaid on the spectrum as another data set, defaults to None
     :type peak_list: str, optional
-    :param output_format: visualizations can be expoerted as interactive 'html' file
+    :param output_format: visualizations can be exported as interactive 'html' file
         or as static images in 'jpg','jpeg','png','pdf','webp','svg', defaults to 'html'
     :type output_format: str, optional
     :param output_file: file name to export visualization
@@ -1014,12 +1017,12 @@ def generic_2d(atom_x: str,
         continuous sequence segments, defaults to False
     :type seq_walk: bool, optional
     :param full_walk: draw line connecting i->i-1/i+1 to next i->i-1/i+1 for the
-        full sequence ignoring any missing residues, defautls to False
+        full sequence ignoring any missing residues, defaults to False
     :type full_walk: bool, optional
     :param peak_list: comma-separated two column file can be given as optional unassigned peak list,
         which can be overlaid on the spectrum as another data set, defaults to None
     :type peak_list: str, optional
-    :param output_format: visualizations can be expoerted as interactive 'html' file
+    :param output_format: visualizations can be exported as interactive 'html' file
         or as static images in 'jpg','jpeg','png','pdf','webp','svg', defaults to 'html'
     :type output_format: str, optional
     :param output_file: file name to export visualization

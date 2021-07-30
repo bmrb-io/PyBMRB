@@ -1,52 +1,86 @@
 #!/usr/bin/env python3
-
+"""
+Histogram
+"""
 import logging
 import plotly.express as px
 from pybmrb import ChemicalShiftStatistics
+from typing import Union, List, Optional
 
 
-def hist(residue=None,
-         atom=None,
-         list_of_atoms=None,
-         filtered=True,
-         sd_limit=10,
-         ambiguity='*',
-         ph_min=None,
-         ph_max=None,
-         t_min=None,
-         t_max=None,
-         histnorm=None,
-         standard_amino_acids=True,
-         plot_type='histogram', output_format='html',
-         output_file=None,
-         output_image_width=800,
-         output_image_height=600,
-         show_visualization=True
+def hist(residue: Optional[str] = None,
+         atom: Optional[str] = None,
+         list_of_atoms: Optional[Union[str, List[str]]] = None,
+         filtered: Optional[bool] = True,
+         sd_limit: Optional[float] = 10.0,
+         ambiguity: Optional[Union[str, int]] = '*',
+         ph_min: Optional[float] = None,
+         ph_max: Optional[float] = None,
+         t_min: Optional[float] = None,
+         t_max: Optional[float] = None,
+         standard_amino_acids: Optional[bool] = True,
+         histnorm: Optional[str] = None,
+         plot_type: Optional[str] = 'histogram',
+         output_format: Optional[str] = 'html',
+         output_file: Optional[str] = None,
+         output_image_width: Optional[int] = 800,
+         output_image_height: Optional[int] = 600,
+         show_visualization: Optional[bool] = True
          ) -> tuple:
     """
     plots histogram for a given list of atoms and residues with some filters. One of either residue or atom or list
     of atoms is required
 
-    :param residue:  residue name in IUPAC format; '*' for all standard residues: default None
-    :param atom:  atom name in IUPAC format; '*' for all standard atoms; default None
-    :param list_of_atoms: list of atoms in IUPAC atom; example '['ALA-CA','CYS-CB']'; default None
-    :param filtered: Filters values beyond (sd_limt)*(standard deviation) on both sides of the mean; default:True
-    :param sd_limit: scaling factor used to filter data based on standard deviation; default 10
-    :param ambiguity: ambiguity filter; default '*' => no filter
-    :param ph_min: PH filter (min);default None
-    :param ph_max: PH filter (max); default None
-    :param t_min: Temperature filter (min); default None
-    :param histnorm: One of 'percent', 'probability', 'density', or 'probability density' If None, the output of histfunc is used as is. If 'probability', the output of histfunc for a given bin is divided by the sum of the output of histfunc for all bins. If 'percent', the output of histfunc for a given bin is divided by the sum of the output of histfunc for all bins and multiplied by 100. If 'density', the output of histfunc for a given bin is divided by the size of the bin. If 'probability density', the output of histfunc for a given bin is normalized such that it corresponds to the probability that a random event whose distribution is described by the output of histfunc will fall into that bin.
-    :param t_max: Temperature filter (max); default None
-    :param standard_amino_acids: get data only form standard amino acids and nucleic acids; default:True
-    :param plot_type: plot type; supported types 'histogram','box','violin' ; default histogram
-    :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
-    :param output_file: output file name; if provided, the output will be written in a file ,
-        otherwise opens in a web browser; default ;None
-    :param output_image_width: output image width to write in a file; default:800
-    :param output_image_height: output image height to write in a file; default 600
-    :param show_visualization: Automatically opens the visualization on a web browser; default True
+    :param residue: Residue name in IUPAC format; use '*' for any residue
+    :type residue: str
+    :param atom: Atom name in IUPAC format; Wild card supported; example HB*; use '*' for any atom
+    :type atom: str
+    :param list_of_atoms: list of atoms; example ['ALA-CB','CYS-N','TYR-CB'], defaults to None
+    :type list_of_atoms: list, optional
+    :param filtered: Filters values beyond (sd_limit)*(standard deviation) on both sides of the mean,
+        defaults to True
+    :type filtered: bool, optional
+    :param sd_limit: scaling factor used to filter data based on standard deviation, defaults to 10.0
+    :type sd_limit: float, optional
+    :param ambiguity: filter based on chemical shift ambiguity code, defaults to '*' means no filter
+    :type ambiguity: str, optional
+    :param ph_min: minimum value for the filter based on PH value, defaults to None
+    :type ph_min: float, optional
+    :param ph_max: maximum value for the filter based on PH value, defaults to None
+    :type ph_max: float, optional
+    :param t_min: minimum value for the filter based on temperature value, defaults to None
+    :type t_min: float, optional
+    :param t_max: maximum value for the filter based on temperature value, defaults to None
+    :type t_max: float, optional
+    :param standard_amino_acids: get data only form standard amino acids and nucleic acids when '*' is used for residue,
+        defaults to True
+    :type standard_amino_acids: bool, optional
+    :param histnorm: Specifies the type of normalization used for this histogram trace. If None, the span of each bar
+        corresponds to the number of occurrences (i.e. the number of data points lying inside the bins).
+        If 'percent' / 'probability', the span of each bar corresponds to the percentage / fraction of occurrences with
+        respect to the total number of sample points (here, the sum of all bin HEIGHTS equals 100% / 1). If 'density',
+        the span of each bar corresponds to the number of occurrences in a bin divided by the size of the bin interval
+        (here, the sum of all bin AREAS equals the total number of sample points). If 'probability density', the area of
+        each bar corresponds to the probability that an event will fall into the corresponding bin (here, the sum of all
+        bin AREAS equals 1) defaults to None
+    :type histnorm: str, optional
+    :param plot_type: visualization type 'histogram', 'box' or 'violin', defaults to 'histogram'
+    :type plot_type: str, optional
+    :param output_format: visualizations can be exported as interactive 'html' file
+        or as static images in 'jpg','jpeg','png','pdf','webp','svg', defaults to 'html'
+    :type output_format: str, optional
+    :param output_file: file name to export visualization
+    :type output_file: str, optional
+    :param output_image_width: The width of the exported image in layout pixels, defaults to 800
+    :type output_image_width: int, optional
+    :param output_image_height: The height of the exported image in layout pixels, defaults to 600
+    :type output_image_height: int, optional
+    :param show_visualization: Visualization automatically opens in a web browser or as
+        embedded visualization in Jupyter Notebook. This feature can be disabled
+        by setting this flag as False, defaults to True
+    :type show_visualization: bool, optional
     :return: chemical shift data and tags as tuple (chemical shifts, tags)
+    :rtype: tuple
     """
 
     columns, cs_data = ChemicalShiftStatistics.get_data_from_bmrb(residue=residue,
@@ -119,38 +153,76 @@ def hist(residue=None,
     return x, tag
 
 
-def hist2d(residue, atom1, atom2, filtered=True, sd_limit=10,
-           ambiguity1='*', ambiguity2='*',
-           ph_min=None, ph_max=None, t_min=None, t_max=None,
-           histnorm='',
-           plot_type='heatmap', output_format='html',
-           output_file=None,
-           output_image_width=800,
-           output_image_height=600,
-           show_visualization=True) -> tuple:
+def hist2d(residue: str,
+           atom1: str,
+           atom2: str,
+           filtered: Optional[bool] = True,
+           sd_limit: Optional[float] = 10.0,
+           ambiguity1: Optional[Union[str, int]] = '*',
+           ambiguity2: Optional[Union[str, int]] = '*',
+           ph_min: Optional[float] = None,
+           ph_max: Optional[float] = None,
+           t_min: Optional[float] = None,
+           t_max: Optional[float] = None,
+           histnorm: Optional[str] = None,
+           plot_type: Optional[str] = 'heatmap',
+           output_format: Optional[str] = 'html',
+           output_file: Optional[str] = None,
+           output_image_width: Optional[int] = 800,
+           output_image_height: Optional[int] = 600,
+           show_visualization: Optional[bool] = True) -> tuple:
     """
     Generates chemical shift correlation plot for any two atoms from a given residue.
 
     :param residue: residue name in IUPAC format
+    :type residue: str
     :param atom1: atom name in IUPAC format
+    :type atom1: str
     :param atom2: atom name in IUPAC format
-    :param filtered: Filters values beyond (sd_limit)*(standard deviation) on both sides of the mean; default:True
-    :param sd_limit: scaling factor used to filter data based on standard deviation; default 10
-    :param ambiguity1: ambiguity filter; default '*' => no filter
-    :param ambiguity2: ambiguity filter; default '*' => no filter
-    :param ph_min: PH filter (min);default None
-    :param ph_max: PH filter (max); default None
-    :param t_min: Temperature filter (min); default None
-    :param t_max: Temperature filter (max); default None
-    :param histnorm: histnorm for the distribution 'probability','percent','probability density')
-    :param plot_type: plot type; support types 'heatmap','contour'
-    :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
-    :param output_file: output file name; if provided, the output will be written in a file ,
-        otherwise opens in a web browser; default ;None
-    :param output_image_width: output image width to write in a file; default:800
-    :param output_image_height: output image height to write in a file; default 600
-    :param show_visualization: Automatically opens the visualization on a web browser; default True
+    :type atom2: str
+    :param filtered: Filters values beyond (sd_limit)*(standard deviation) on both sides of the mean,
+        defaults to True
+    :type filtered: bool, optional
+    :param sd_limit: scaling factor used to filter data based on standard deviation, defaults to 10.0
+    :type sd_limit: float, optional
+    :param ambiguity1: filter based on chemical shift ambiguity code for atom1, defaults to '*' means no filter
+    :type ambiguity1: str, optional
+    :param ambiguity2: filter based on chemical shift ambiguity code for atom2, defaults to '*' means no filter
+    :type ambiguity2: str, optional
+    :param ph_min: minimum value for the filter based on PH value, defaults to None
+    :type ph_min: float, optional
+    :param ph_max: maximum value for the filter based on PH value, defaults to None
+    :type ph_max: float, optional
+    :param t_min: minimum value for the filter based on temperature value, defaults to None
+    :type t_min: float, optional
+    :param t_max: maximum value for the filter based on temperature value, defaults to None
+    :type t_max: float, optional
+    :param histnorm: Specifies the type of normalization used for this histogram trace. If None, the span of each bar
+        corresponds to the number of occurrences (i.e. the number of data points lying inside the bins).
+        If 'percent' / 'probability', the span of each bar corresponds to the percentage / fraction of occurrences with
+        respect to the total number of sample points (here, the sum of all bin HEIGHTS equals 100% / 1). If 'density',
+        the span of each bar corresponds to the number of occurrences in a bin divided by the size of the bin interval
+        (here, the sum of all bin AREAS equals the total number of sample points). If 'probability density', the area of
+        each bar corresponds to the probability that an event will fall into the corresponding bin (here, the sum of all
+        bin AREAS equals 1) defaults to None
+    :type histnorm: str, optional
+    :param plot_type: visualization type 'contour' or 'heatmap', defaults to 'heatmap'
+    :type plot_type: str, optional
+    :param output_format: visualizations can be exported as interactive 'html' file
+        or as static images in 'jpg','jpeg','png','pdf','webp','svg', defaults to 'html'
+    :type output_format: str, optional
+    :param output_file: file name to export visualization
+    :type output_file: str, optional
+    :param output_image_width: The width of the exported image in layout pixels, defaults to 800
+    :type output_image_width: int, optional
+    :param output_image_height: The height of the exported image in layout pixels, defaults to 600
+    :type output_image_height: int, optional
+    :param show_visualization: Visualization automatically opens in a web browser or as
+        embedded visualization in Jupyter Notebook. This feature can be disabled
+        by setting this flag as False, defaults to True
+    :type show_visualization: bool, optional
     :return: tuple (chemical shift list of atom1, chemical shift list of atom2)
+    :rtype: tuple
     """
 
     x, y = ChemicalShiftStatistics.get_2d_chemical_shifts(residue=residue,
@@ -206,39 +278,82 @@ def hist2d(residue, atom1, atom2, filtered=True, sd_limit=10,
     return x, y
 
 
-def conditional_hist(residue, atom, filtering_rules,
-                     ph_min=None, ph_max=None, t_min=None, t_max=None,
-                     histnorm='',
-                     standard_amino_acids=True,
-                     plot_type='histogram', output_format='html',
-                     output_file=None,
-                     output_image_width=800,
-                     output_image_height=600,
-                     show_visualization=True
-                     ) -> tuple:
+def conditional_hist(residue: str,
+                     atom: str,
+                     filtering_rules: Optional[list],
+                     ph_min: Optional[float] = None,
+                     ph_max: Optional[float] = None,
+                     t_min: Optional[float] = None,
+                     t_max: Optional[float] = None,
+                     h_tolerance: Optional[float] = 0.1,
+                     c_tolerance: Optional[float] = 2.0,
+                     n_tolerance: Optional[float] = 2.0,
+                     standard_amino_acids: Optional[bool] = True,
+                     histnorm: Optional[str] = None,
+                     plot_type: Optional[str] = 'heatmap',
+                     output_format: Optional[str] = 'html',
+                     output_file: Optional[str] = None,
+                     output_image_width: Optional[int] = 800,
+                     output_image_height: Optional[int] = 600,
+                     show_visualization: Optional[bool] = True) -> tuple:
     """
-    Plots the distribution of the given atom in the residue along with the filtered distribution besed
+    Plots the distribution of the given atom in the residue along with the filtered distribution based
     on the chemical shift values of the other atoms in the residue
 
-    :param residue: residue name in IUPAC format; example 'CYS'
-    :param atom: atom name in IUPAC format; example 'CB'
-    :param filtering_rules: list of atoms and chemical shift values as tuples; example[('CA',64.5),('H',7.8)]
-    :param ph_min: PH filter (min);default None
-    :param ph_max: PH filter (max); default None
-    :param t_min: Temperature filter (min); default None
-    :param t_max: Temperature filter (max); default None
-    :param histnorm: histnorm for the distribution 'probability','percent','probability density')
-    :param standard_amino_acids: get data only form standard amino acids and nucleic acids; default:True
-    :param plot_type: plot type; support types 'heatmap','contour'
-    :param output_format: output format type; supported types 'html','jpg','png','pdf','webp';default 'html'
-    :param output_file: output file name; if provided, the output will be written in a file ,
-        otherwise opens in a web browser; default ;None
-    :param output_image_width: output image width to write in a file; default:800
-    :param output_image_height: output image height to write in a file; default 600
-    :param show_visualization: Automatically opens the visualization on a web browser; default True
+    :param residue: residue name in IUPAC format
+    :type residue: str
+    :param atom: atom name in IUPAC format
+    :type atom: str
+    :param filtering_rules: list of atoms and chemical shift values as
+        tuples to use as a filter; example[('CA',64.5),('H',7.8)]
+    :type filtering_rules: list
+    :param ph_min: minimum value for the filter based on PH value, defaults to None
+    :type ph_min: float, optional
+    :param ph_max: maximum value for the filter based on PH value, defaults to None
+    :type ph_max: float, optional
+    :param t_min: minimum value for the filter based on temperature value, defaults to None
+    :type t_min: float, optional
+    :param t_max: maximum value for the filter based on temperature value, defaults to None
+    :type t_max: float, optional
+    :param h_tolerance: tolerance value in ppm to filter H chemical shifts. It will allow the chemical shift value
+        given in the filtering_rules +/- tolerance, defaults to 0.1
+    :type h_tolerance: float, optional
+    :param c_tolerance: tolerance value in ppm to filter C chemical shifts, It will allow the chemical shift value
+        given in the filtering_rules +/- tolerance, defaults to 2.0
+    :type c_tolerance: float, optional
+    :param n_tolerance: tolerance value in ppm to filter N chemical shifts, It will allow the chemical shift value
+        given in the filtering_rules +/- tolerance, defaults to 2.0
+    :type n_tolerance: float, optional
+    :param standard_amino_acids: get data only form standard amino acids and nucleic acids when '*' is used for residue,
+        defaults to True
+    :type standard_amino_acids: bool, optional
+    :param histnorm: Specifies the type of normalization used for this histogram trace. If None, the span of each bar
+        corresponds to the number of occurrences (i.e. the number of data points lying inside the bins).
+        If 'percent' / 'probability', the span of each bar corresponds to the percentage / fraction of occurrences with
+        respect to the total number of sample points (here, the sum of all bin HEIGHTS equals 100% / 1). If 'density',
+        the span of each bar corresponds to the number of occurrences in a bin divided by the size of the bin interval
+        (here, the sum of all bin AREAS equals the total number of sample points). If 'probability density', the area of
+        each bar corresponds to the probability that an event will fall into the corresponding bin (here, the sum of all
+        bin AREAS equals 1) defaults to None
+    :type histnorm: str, optional
+    :param plot_type: visualization type 'histogram', 'box' or 'violin', defaults to 'histogram'
+    :type plot_type: str, optional
+    :param output_format: visualizations can be exported as interactive 'html' file
+        or as static images in 'jpg','jpeg','png','pdf','webp','svg', defaults to 'html'
+    :type output_format: str, optional
+    :param output_file: file name to export visualization
+    :type output_file: str, optional
+    :param output_image_width: The width of the exported image in layout pixels, defaults to 800
+    :type output_image_width: int, optional
+    :param output_image_height: The height of the exported image in layout pixels, defaults to 600
+    :type output_image_height: int, optional
+    :param show_visualization: Visualization automatically opens in a web browser or as
+        embedded visualization in Jupyter Notebook. This feature can be disabled
+        by setting this flag as False, defaults to True
+    :type show_visualization: bool, optional
     :return: chemical shift data and tags as tuple (chemical shifts, tags)
+    :rtype: tuple
     """
-
     columns, cs_data = ChemicalShiftStatistics.get_data_from_bmrb(residue=residue,
                                                                   atom=atom,
                                                                   ph_min=ph_min,
@@ -262,6 +377,9 @@ def conditional_hist(residue, atom, filtering_rules,
                                                              ph_max=ph_max,
                                                              t_min=t_min,
                                                              t_max=t_max,
+                                                             h_tolerance=h_tolerance,
+                                                             c_tolerance=c_tolerance,
+                                                             n_tolerance=n_tolerance,
                                                              standard_amino_acids=standard_amino_acids
                                                              )
     if len(x1) == 0:
