@@ -110,14 +110,16 @@ def get_data(residue: str,
     data = api_data['data']
     for i in range(len(data)):
         data[i][cs_index] = float(data[i][cs_index])
-        try:
-            data[i][temp_index] = float(data[i][temp_index])
-        except TypeError:
-            print(data[i])
-        try:
-            data[i][ph_index] = float(data[i][ph_index])
-        except TypeError:
-            print(data[i])
+        if t_min is not None or t_max is not None:
+            try:
+                data[i][temp_index] = float(data[i][temp_index])
+            except TypeError:
+                pass
+        if ph_min is not None or ph_max is not None:
+            try:
+                data[i][ph_index] = float(data[i][ph_index])
+            except TypeError:
+                pass
     if len(data):
         if standard_amino_acids:
             data = [i for i in data if i[res_index] in standard]
