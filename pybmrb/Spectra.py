@@ -1206,7 +1206,7 @@ def generic_2d(atom_x: str,
 
 
 def export_peak_list(peak_list: tuple,
-                     output_file_name: str,
+                     output_file_name: Optional[str] = None,
                      output_format: str = 'csv',
                      include_side_chain: bool = True) -> dict:
     """
@@ -1215,7 +1215,7 @@ def export_peak_list(peak_list: tuple,
     :param peak_list: Output tuple from any peak list/spectrum simulation function from the module Spectra
     :type peak_list: tuple
     :param output_file_name: output file name
-    :type output_file_name: str
+    :type output_file_name: str, optional
     :param output_format: output format 'csv' or 'sparky', defaults to 'csv'
     :type output_format: str, optional
     :param include_side_chain: whether or not include side chain resonances in the output, defaults to True

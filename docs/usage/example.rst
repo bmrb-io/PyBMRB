@@ -58,7 +58,7 @@ You may also use residue as legend to turn on and off different residue types
     :alt: n15hsqc
     :align: center
 
-    `Click here for interactive html for n15-HSQC from BMRB entries along with NMR-STAR file and a peak list <../_static/example2.html>`_
+    `Click here for interactive html for n15-HSQC from BMRB entries along with NMR-STAR file and a peak list <../_static/example3.html>`_
 
 
 - Example 4: Multiple entries from BMRB with chemical shift tracking

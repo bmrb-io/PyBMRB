@@ -125,11 +125,11 @@ You may easily generate chemical shift histogram of any atom or list of atoms or
 
     cs_data = Histogram.hist(residue='TYR', atom='CB')
 
-.. figure:: ../_images/tyr-cb.jpg
+.. figure:: ../_images/quick_star_hist1.jpg
     :alt: tyr-cb
     :align: center
 
-    Chemical shift distribution of TYR CB
+    `Chemical shift distribution of TYR CB <../_static/quick_star_hist1.html>`_
 
 Different plot types (box, violin) are also supported. Click the figure caption for html version. When you mouseover the
 box and violin plots, it will show the statistical properties of the distribution
@@ -138,21 +138,21 @@ box and violin plots, it will show the statistical properties of the distributio
 
     cs_data = Histogram.hist(residue='CYS', atom='CB',plot_type='box')
 
-.. figure:: ../_images/cys-cb-box.jpg
+.. figure:: ../_images/quick_star_hist2.jpg
     :alt: tyr-cb
     :align: center
 
-    `Box plot <../_static/cys-cb-box.html>`_
+    `Box plot <../_static/quick_star_hist2.html>`_
 
 .. code:: python
 
     cs_data = Histogram.hist(residue='CYS', atom='CB',plot_type='violin')
 
-.. figure:: ../_images/cys-cb-violin.jpg
+.. figure:: ../_images/quick_star_hist3.jpg
     :alt: tyr-cb
     :align: center
 
-    `Violin plot <../_static/cys-cb-violin.html>`_
+    `Violin plot <../_static/quick_star_hist3.html>`_
 
 
 You may also use the wildcard
@@ -161,11 +161,11 @@ You may also use the wildcard
 
     cs_data = Histogram.hist(residue='TYR', atom='H*')
 
-.. figure:: ../_images/tyr-h.jpg
+.. figure:: ../_images/quick_star_hist4.jpg
     :alt: tyr-cb
     :align: center
 
-    Chemical shift distribution of TYR protons
+    `Chemical shift distribution of TYR protons <../_static/quick_star_hist4.html>`_
 
 
 Leaving out the residue will plot CB chemical shift distribution of all 20 standard amino acids
@@ -174,11 +174,11 @@ Leaving out the residue will plot CB chemical shift distribution of all 20 stand
 
     cs_data = Histogram.hist( atom='CB')
 
-.. figure:: ../_images/cb.jpg
+.. figure:: ../_images/quick_star_hist5.jpg
     :alt: tyr-cb
     :align: center
 
-    Chemical shift distribution of CB
+    `Chemical shift distribution of CB <../_static/quick_star_hist5.html>`_
 
 You may also plot 2D chemical shift correlation plot for two atoms in the same residue
 
@@ -186,11 +186,11 @@ You may also plot 2D chemical shift correlation plot for two atoms in the same r
 
     cs_data = Histogram.hist2d(residue='CYS',atom1='N', atom2='CB')
 
-.. figure:: ../_images/cys-n-cb.jpg
+.. figure:: ../_images/quick_star_hist6.jpg
     :alt: tyr-cb
     :align: center
 
-    Chemical shift correlation
+    `Chemical shift correlation <../_static/quick_star_hist6.html>`_
 
 More examples can be found :ref:`Examples page<Examples>`.
 

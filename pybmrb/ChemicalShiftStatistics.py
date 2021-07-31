@@ -108,6 +108,16 @@ def get_data(residue: str,
     atm_index = columns.index('Atom_chem_shift.Atom_ID')
     amb_index = columns.index('Atom_chem_shift.Ambiguity_code')
     data = api_data['data']
+    for i in range(len(data)):
+        data[i][cs_index] = float(data[i][cs_index])
+        try:
+            data[i][temp_index] = float(data[i][temp_index])
+        except TypeError:
+            print(data[i])
+        try:
+            data[i][ph_index] = float(data[i][ph_index])
+        except TypeError:
+            print(data[i])
     if len(data):
         if standard_amino_acids:
             data = [i for i in data if i[res_index] in standard]
@@ -132,13 +142,17 @@ def get_data(residue: str,
             data = [i for i in data if
                     a_dict[i[atm_index]]['min_cs'] < float(i[cs_index]) < a_dict[i[atm_index]]['max_cs']]
         if ph_min is not None:
-            data = [i for i in data if i[ph_index] is not None and i[ph_index] >= ph_min]
+            data2 = [i for i in data if i[ph_index] is not None]
+            data = [i for i in data2 if i[ph_index] is not None and i[ph_index] >= ph_min]
         if ph_max is not None:
-            data = [i for i in data if i[ph_index] is not None and i[ph_index] <= ph_max]
+            data2 = [i for i in data if i[ph_index] is not None]
+            data = [i for i in data2 if i[ph_index] is not None and i[ph_index] <= ph_max]
         if t_min is not None:
-            data = [i for i in data if i[temp_index] >= t_min]
+            data2 = [i for i in data if i[temp_index] is not None]
+            data = [i for i in data2 if i[temp_index] >= t_min]
         if t_max is not None:
-            data = [i for i in data if i[temp_index] <= t_max]
+            data2 = [i for i in data if i[temp_index] is not None]
+            data = [i for i in data2 if i[temp_index] <= t_max]
     else:
         logging.info('Data for {}-{} not found in BMRB database'.format(residue, atom))
     return columns, data
@@ -644,11 +658,3 @@ def get_statistics(residue: str,
             print('\t\tCount\t\t\t\t:{}'.format(cs_stat[key]['count']))
             print("\n")
     return cs_stat
-#
-# if __name__=="__main__":
-#     x=get_data_from_bmrb(list_of_atoms='ALA-N')
-#     # #print (x[0])
-#     # y=ChemicalShiftStatistics._list_to_dict(x[0],x[1])
-#     #x=ChemicalShiftStatistics.get_2d_chemical_shifts(residue='ALA',atom1='CA',atom2='CB')
-#     #x=ChemicalShiftStatistics.get_filtered_data_from_bmrb(residue='THR',atom='N',filtering_rules=[('CB',69.51),('CA',60.79),('H',8.13)])
-#     ChemicalShiftStatistics.get_statistics(residue='GLY',atom='XX')
