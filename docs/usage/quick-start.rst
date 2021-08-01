@@ -79,7 +79,7 @@ compare your data with BMRB as overlying |n15| - HSQC spectra using the followin
 
 This will open the visualization on your default web browser. When you mouseover the tool-tip it will show the information
 about each peak. You may turn on and off the data set using legend on the right.
-`Click here to view the output1 <../_static/n15hsqc_compare.html>`_
+`Click here to view the output1 <../_static/quick_start_n15hsqc_compare.html>`_
 
 If you want the output as an image and not to open the visualization on web browser then use the following option
 
@@ -87,7 +87,7 @@ If you want the output as an image and not to open the visualization on web brow
 
     peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077], input_file_names='tests/test_data/MyData.str', legend='dataset', output_format='jpg', output_file='n15hsqc_compare.jpg', show_visualization = False)
 
-.. figure:: ../_images/n15hsqc_compare.jpg
+.. figure:: ../_images/quick_start_n15hsqc_compare.jpg
     :alt: n15hsqc
     :align: center
 
@@ -101,16 +101,16 @@ If you want to trace the chemical shift changes, use the following command
 
     peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077], input_file_names='tests/test_data/MyData.str', legend='dataset', draw_trace = True)
 
-`Click here to view the output2 <../_static/n15hsqc_compare2.html>`_
+`Click here to view the output2 <../_static/quick_start_n15hsqc_compare2.html>`_
 
 If you don't have your data in NMR-STAR format, then no problem!. You may extract the peak list from any NMR spectra as
 a csv file. You may use the csv file to compare your peak list with any BMRB entry
 
 .. code:: python
 
-    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077], input_file_names='tests/test_data/MyData.str', legend='dataset', draw_trace = True)
+    peak_list = Spectra.n15hsqc(bmrb_ids=[17076,17077], peak_list='tests/test_data/test_peak_list.csv', legend='dataset', draw_trace = True)
 
-.. figure:: ../_images/n15_peaklist.jpg
+.. figure:: ../_images/quick_start_n15_peaklist.jpg
     :alt: n15hsqc
     :align: center
 
@@ -125,11 +125,11 @@ You may easily generate chemical shift histogram of any atom or list of atoms or
 
     cs_data = Histogram.hist(residue='TYR', atom='CB')
 
-.. figure:: ../_images/tyr-cb.jpg
+.. figure:: ../_images/quick_star_hist1.jpg
     :alt: tyr-cb
     :align: center
 
-    Chemical shift distribution of TYR CB
+    `Chemical shift distribution of TYR CB <../_static/quick_star_hist1.html>`_
 
 Different plot types (box, violin) are also supported. Click the figure caption for html version. When you mouseover the
 box and violin plots, it will show the statistical properties of the distribution
@@ -138,21 +138,21 @@ box and violin plots, it will show the statistical properties of the distributio
 
     cs_data = Histogram.hist(residue='CYS', atom='CB',plot_type='box')
 
-.. figure:: ../_images/cys-cb-box.jpg
+.. figure:: ../_images/quick_star_hist2.jpg
     :alt: tyr-cb
     :align: center
 
-    `Box plot <../_static/cys-cb-box.html>`_
+    `Box plot <../_static/quick_star_hist2.html>`_
 
 .. code:: python
 
     cs_data = Histogram.hist(residue='CYS', atom='CB',plot_type='violin')
 
-.. figure:: ../_images/cys-cb-violin.jpg
+.. figure:: ../_images/quick_star_hist3.jpg
     :alt: tyr-cb
     :align: center
 
-    `Violin plot <../_static/cys-cb-violin.html>`_
+    `Violin plot <../_static/quick_star_hist3.html>`_
 
 
 You may also use the wildcard
@@ -161,11 +161,11 @@ You may also use the wildcard
 
     cs_data = Histogram.hist(residue='TYR', atom='H*')
 
-.. figure:: ../_images/tyr-h.jpg
+.. figure:: ../_images/quick_star_hist4.jpg
     :alt: tyr-cb
     :align: center
 
-    Chemical shift distribution of TYR protons
+    `Chemical shift distribution of TYR protons <../_static/quick_star_hist4.html>`_
 
 
 Leaving out the residue will plot CB chemical shift distribution of all 20 standard amino acids
@@ -174,11 +174,11 @@ Leaving out the residue will plot CB chemical shift distribution of all 20 stand
 
     cs_data = Histogram.hist( atom='CB')
 
-.. figure:: ../_images/cb.jpg
+.. figure:: ../_images/quick_star_hist5.jpg
     :alt: tyr-cb
     :align: center
 
-    Chemical shift distribution of CB
+    `Chemical shift distribution of CB <../_static/quick_star_hist5.html>`_
 
 You may also plot 2D chemical shift correlation plot for two atoms in the same residue
 
@@ -186,11 +186,11 @@ You may also plot 2D chemical shift correlation plot for two atoms in the same r
 
     cs_data = Histogram.hist2d(residue='CYS',atom1='N', atom2='CB')
 
-.. figure:: ../_images/cys-n-cb.jpg
+.. figure:: ../_images/quick_star_hist6.jpg
     :alt: tyr-cb
     :align: center
 
-    Chemical shift correlation
+    `Chemical shift correlation <../_static/quick_star_hist6.html>`_
 
 More examples can be found :ref:`Examples page<Examples>`.
 

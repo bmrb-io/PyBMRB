@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-
+"""
+This module extracts chemical shift information from BMRB entries, NMR-STAR files and PyNMRSTAR entry objects
+"""
 from __future__ import print_function
 import logging
 import os
 import pynmrstar
-from typing import Union, List
+from typing import Union, List, Optional
 
 # Set the log level to INFO
 logging.getLogger().setLevel(logging.INFO)
@@ -18,14 +20,19 @@ one_letter_code = dict([(value, key) for key, value in three_letter_code.items()
 
 def _from_pynmrstar_entry_object(entry_data: pynmrstar.Entry,
                                  data_set_id: str,
-                                 auth_tag: bool = False, ) -> dict:
+                                 auth_tag: Optional[bool] = False, ) -> dict:
     """
     Extracts chemical shift data as dictionary from PyNMRSTAR entry object
 
     :param entry_data: PyNMRSTAR entry object
-    :param data_set_id: Data set identifier (bmrb id or filename or user defined id)
-    :param auth_tag: Use author sequence numbering True/False default: False
+    :type entry_data: pynmrstar.Entry
+    :param data_set_id: Data set identifier
+    :type data_set_id: str
+    :param auth_tag: Use sequence numbers from _Atom_chem_shift.Auth_seq_ID instead of _Atom_chem_shift.Comp_index_ID
+        in the NMR-STAR file/BMRB entry, defaults to False
+    :type auth_tag: bool, optional
     :return: Chemical shift dictionary {data_set_id:{chain_id:{seq_id:{atom_id:cs_value}},'seq_ids':[1,2,3,4..]}}
+    :rtype: dict
     """
     cs_data = {}
     # entry_data = pynmrstar.Entry.from_database(bmrb_id)
@@ -80,15 +87,20 @@ def _from_pynmrstar_entry_object(entry_data: pynmrstar.Entry,
 
 
 def from_entry_object(entry_objects: Union[pynmrstar.Entry, List[pynmrstar.Entry]],
-                      auth_tag: bool = False,
-                      data_set_id: Union[str, List[str]] = None) -> dict:
+                      auth_tag: Optional[bool] = False,
+                      data_set_id: Optional[Union[str, List[str]]] = None) -> dict:
     """
-    Extracts chemical shift information one or more PyNMRSTAR entry object
+    Extracts chemical shift information from one or more PyNMRSTAR entry object
 
     :param entry_objects: list of pynmrstar entry object  or single entry object
-    :param auth_tag: Use author sequence numbering True/False default: False
-    :param data_set_id: User defined data set id default: filename
+    :type entry_objects: pynmrstar.Entry/list
+    :param auth_tag: Use sequence numbers from _Atom_chem_shift.Auth_seq_ID instead of _Atom_chem_shift.Comp_index_ID
+        in the NMR-STAR file/BMRB entry, defaults to False
+    :type auth_tag: bool, optional
+    :param data_set_id: User defined data set id defaults to None
+    :type data_set_id: str, optional
     :return: Chemical shift dictionary {data_set_id:{chain_id:{seq_id:{atom_id:cs_value}},'seq_ids':[1,2,3,4..]}}
+    :rtype: dict
     """
 
     all_cs_data = {}
@@ -124,9 +136,14 @@ def from_file(input_file_names: Union[str, List[str]],
     Extracts chemical shift information one or more NMR-STAR files
 
     :param input_file_names: list of NMR-STAR file names with full path or single file name with full path
-    :param auth_tag: Use author sequence numbering True/False default: False
-    :param data_set_id: User defined data set id default: filename
+    :type input_file_names: str/list
+    :param auth_tag: Use sequence numbers from _Atom_chem_shift.Auth_seq_ID instead of _Atom_chem_shift.Comp_index_ID
+        in the NMR-STAR file/BMRB entry, defaults to False
+    :type auth_tag: bool, optional
+    :param data_set_id: User defined data set id defaults to None
+    :type data_set_id: str, optional
     :return: Chemical shift dictionary {data_set_id:{chain_id:{seq_id:{atom_id:cs_value}},'seq_ids':[1,2,3,4..]}}
+    :rtype: dict
     """
 
     if type(input_file_names) is list:
@@ -154,14 +171,18 @@ def from_file(input_file_names: Union[str, List[str]],
     return all_cs_data
 
 
-def from_bmrb(bmrb_ids: Union[str, List[str]],
-              auth_tag: bool = False) -> dict:
+def from_bmrb(bmrb_ids: Union[str, List[str], int, List[int]],
+              auth_tag: Optional[bool] = False) -> dict:
     """
     Extracts chemical shift information directly from BMRB database for a given BMRB entry or list of entries
 
     :param bmrb_ids: List of BMRB entries ids or single BMRB ID
-    :param auth_tag: Use author sequence numbering True/False default: False
+    :type bmrb_ids: str/int/list
+    :param auth_tag: Use sequence numbers from _Atom_chem_shift.Auth_seq_ID instead of _Atom_chem_shift.Comp_index_ID
+        in the NMR-STAR file/BMRB entry, defaults to False
+    :type auth_tag: bool, optional
     :return: Chemical shift dictionary {data_set_id:{chain_id:{seq_id:{atom_id:cs_value}},'seq_ids':[1,2,3,4..]}}
+    :rtype: dict
     """
 
     if type(bmrb_ids) is list:
@@ -196,11 +217,3 @@ def from_bmrb(bmrb_ids: Union[str, List[str]],
             logging.error('Entry {} not found in public database'.format(bmrb_ids))
             raise IOError('Entry not found in public database: {}'.format(bmrb_ids))
     return all_cs_data
-
-#
-# if __name__ == "__main__":
-#     p = ChemicalShift().from_bmrb(bmrb_ids='15060')
-#     print(p)
-# #     # p.from_file('/Users/kumaran/MyData.str',data_set_id='test')
-# #     # p.
-# #
