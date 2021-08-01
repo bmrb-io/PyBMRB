@@ -654,7 +654,7 @@ def get_statistics(residue: str,
             print('\t\t{}'.format(key))
             print('\t\tMean\t\t\t\t:{}'.format(cs_stat[key]['mean']))
             print('\t\tMedian\t\t\t\t:{}'.format(cs_stat[key]['median']))
-            print('\t\tStandard deviation\t:{}'.format(cs_stat[key]['std']))
+            print('\t\tStandard deviation\t\t:{}'.format(cs_stat[key]['std']))
             print('\t\tMinimum\t\t\t\t:{}'.format(cs_stat[key]['min']))
             print('\t\tMaximum\t\t\t\t:{}'.format(cs_stat[key]['max']))
             print('\t\tCount\t\t\t\t:{}'.format(cs_stat[key]['count']))
