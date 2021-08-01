@@ -1,6 +1,8 @@
-3.0.6
+3.0.7
 ------
 
-    - Bug fix: Filtering chemical shifts based on standard deviation was not working properly when you 
-    fetch chemical shifts of more than one atom type. It is fixed now. 
+    - File extension will NOT be added automatically for output filenames. User specified filename is uses as it is. 
+    - Documentation improved. Parameter type hint added to every parameter
+    - Chemical shift values in API dump are now converted into float before processing. 
+
 
