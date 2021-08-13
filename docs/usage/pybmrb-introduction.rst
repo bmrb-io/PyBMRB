@@ -16,7 +16,7 @@ NMR-STAR
 ~~~~~~~~~
 
 BMRB uses NMR-STAR :footcite:`Ulrich2019` data
-model, which is an object oriented data model driven by
+model, which is a data model driven by
 `NMR-STAR dictionary <https://github.com/uwbmrb/nmr-star-dictionary>`_ . Each BMRB entry includes
 the meta data such as the information about the biological sample and solvent, experimental conditions,
 instrument details, author information and so on along with the observed NMR chemical shift data. NMR chemical
@@ -28,10 +28,8 @@ for machine to machine communication and programmatic access.
 
 Why do we need PyBMRB?
 ~~~~~~~~~~~~~~~~~~~~~~~~
-BMRB is mostly used by  biologists and biochemists who have very little or no programing experience.Though NMR-STAR files are
-resourceful for the research community, one needs to understand the NMR-STAR data model and to know little bit of programing
-to extract the desired information from NMR-STAR files. NMR spectroscopists may want to view the data as NMR spectra and
-compare with their spectra measured using their sample. PyBMRB can do this in a single command, aviods the hustle
+BMRB is mostly used by  biologists and biochemists who have very little or no programing experience. NMR spectroscopists may want to view the data as NMR spectra and
+compare with their spectra measured using their sample. PyBMRB can do this in a single command, avoids the hassle
 of downloading and parsing the data for visualization. This would greatly benefit the research community by allowing them
 to quickly and easily compare their data with any BMRB entry and  visualizing the BMRB data in different types of 2D spectra.
 
