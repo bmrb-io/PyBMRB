@@ -7,7 +7,7 @@ user to view the one dimensional chemical shift list a multi-dimensional NMR spe
 different atom types can also be visualized as histograms and heatmaps using this library.
 
 This package uses `PyNMRSTAR <https://github.com/uwbmrb/PyNMRSTAR>`_ to parse the NMR-STAR files
-and `BMRB-API <https://github.com/uwbmrb/BMRB-API>`_ to fetch the data directly from BMRB, which avoids the hustle of
+and `BMRB-API <https://github.com/uwbmrb/BMRB-API>`_ to fetch the data directly from BMRB, which avoids the hassle of
 downloading and parsing the data from BMRB for visualization purpose.  This package is developed and maintained by BMRB.
 
 
