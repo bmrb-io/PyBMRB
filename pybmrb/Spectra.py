@@ -1280,12 +1280,12 @@ def export_peak_list(peak_list: tuple,
             if not include_side_chain:
                 if atom_x in back_bone and atom_y in back_bone:
                     csv_dict['Assignment'].append(assignment)
-                    csv_dict['w1'].append(peak_list[0][i])
-                    csv_dict['w2'].append(peak_list[1][i])
+                    csv_dict['w1'].append(peak_list[1][i])
+                    csv_dict['w2'].append(peak_list[0][i])
             else:
                 csv_dict['Assignment'].append(assignment)
-                csv_dict['w1'].append(peak_list[0][i])
-                csv_dict['w2'].append(peak_list[1][i])
+                csv_dict['w1'].append(peak_list[1][i])
+                csv_dict['w2'].append(peak_list[0][i])
         if output_file_name is not None:
             fo = open(output_file_name, 'w')
             fo.write('Assignment  \t{:>6}\t\t{:>6}\n\n'.format('w1', 'w2'))
