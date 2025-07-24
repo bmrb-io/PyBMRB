@@ -74,3 +74,8 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+# python3 -m sphinx.ext.intersphinx https://docs.python-requests.org/en/master/objects.inv
+intersphinx_mapping = {
+    'requests': ('https://docs.python-requests.org/en/master/', None),
+    'python': ('https://docs.python.org/3', None)
+}
