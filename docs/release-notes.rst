@@ -1,5 +1,14 @@
 Release notes
 =============
+3.0.9
+------
+
+    - Supported python versions updated
+
+3.0.8
+------
+
+    - Sparky peak list bug fixed
 
 3.0.7
 ------
