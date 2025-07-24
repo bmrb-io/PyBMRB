@@ -1,7 +1,8 @@
-sphinx==3.5.4
+sphinx==5.1.1
 sphinxcontrib-bibtex
 sphinx-copybutton
 pandas
 pynmrstar>=3.0.4
 plotly>=4.5.4
 numpy>=1.15.0
+sphinx_rtd_theme
