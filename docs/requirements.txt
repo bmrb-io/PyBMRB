@@ -1,4 +1,4 @@
-sphinx==3.5.4
+sphinx==5.1.1
 sphinxcontrib-bibtex
 sphinx-copybutton
 pandas
